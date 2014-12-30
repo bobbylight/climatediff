@@ -1,0 +1,38 @@
+#results {
+   margin-top: 3em;
+}
+
+/* SVG chart styling */
+.chart {
+   width: 500px;
+   height: 450px;
+}
+
+.chart .rect1 {
+  fill: steelblue;
+}
+.chart .rect2 {
+  fill: crimson;
+}
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
+
+.axis text {
+  fill: black;
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+y {
+   padding-left: 30px;
+}

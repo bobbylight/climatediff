@@ -1,0 +1,22 @@
+{
+  "name": "ClimateDiffWebapp",
+  "version": "0.1.0",
+  "authors": [
+    "bobbylight <robert.e.futrell@gmail.com>"
+  ],
+  "description": "Simple web application to compare climates of two cities",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "**/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "1.10.2",
+    "bootstrap": "~3",
+    "d3": "~3.5"
+  }
+}

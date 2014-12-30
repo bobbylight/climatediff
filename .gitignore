@@ -1,0 +1,6 @@
+.DS_Store
+.tmp
+bower_components
+dist
+node_modules
+
