@@ -3,4 +3,5 @@
 bower_components
 dist
 node_modules
+all-locations.db
 

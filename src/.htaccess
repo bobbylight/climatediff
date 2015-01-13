@@ -1,0 +1,11 @@
+# Pretty up our URLs for a RESTful API
+# Redirect "api/arg1/arg2/arg3" urls to "api.php/arg1/arg2/arg3"
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule %{REQUEST_FILENAME} !-f
+RewriteRule api/ api/index.php [QSA,L]
+#RewriteRule login login.php
+#RewriteRule logoff logoff.php
+</IfModule>
+
+AddType text/css .css
