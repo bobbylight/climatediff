@@ -65,6 +65,23 @@
 <!--   <script src='js/appUtil.js'></script>-->
    <!-- endbuild -->
 
+<script>
+var city1Handle;
+var city1 = $('#city1');
+city1.on('input', function(e) {
+   if (city1Handle) {
+      clearTimeout(city1Handle);
+      city1Handle = null;
+   }
+   city1Handle = setTimeout(function() {
+      $.ajax('api/locations?input=' + city1.val() + '&limit=10')
+         .done(function(response) {
+            console.log(response);
+         });
+   }, 1000);
+});
+</script>
+
 </body>
 
 </html>

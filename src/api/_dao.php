@@ -11,12 +11,28 @@ function _openConnection() {
    return $db;
 }
 
-function getMatchingCities($input) {
+function getMatchingCities($input, $limit = 0) {
+   
+   # Check for bad input
+   if (!is_numeric($limit) or $limit < 0) {
+      return array();
+   }
    
    $db = _openConnection();
-   $input = "$input%";
    
-   $sql = "select city_id, city_name from cities where city_name like :input";
+   # All digits => treat as zip code, otherwise treat as start of city name
+   if (ctype_digit($input)) {
+      $input = "%$input%";
+   }
+   else {
+      $input = "$input%";
+   }
+   
+   # Note: limit only valid in mysql, sqlite, postgres
+   $sql = 'select city_id, city_name from cities where city_name like :input';
+   if ($limit > 0) {
+      $sql .= " limit $limit";
+   }
    
    $data = array();
    
