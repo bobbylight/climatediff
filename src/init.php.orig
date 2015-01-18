@@ -1,0 +1,6 @@
+<?php
+
+# NCDC/NOAA web service token (http://www.ncdc.noaa.gov/cdo-web/token)
+$token = 'xxx';
+
+?>

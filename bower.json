@@ -17,6 +17,10 @@
   "dependencies": {
     "jquery": "1.10.2",
     "bootstrap": "~3",
-    "d3": "~3.5"
+    "d3": "~3.5",
+    "angular": "~1.2",
+    "angular-route": "~1.2",
+    "angular-resource": "~1.2",
+    "angular-ui-bootstrap": "~0.12.0"
   }
 }

@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html ng-app='cdApp'>
 
 <head>
    <title>ClimateDiff - Quickly compare climates between cities</title>
@@ -9,24 +9,28 @@
    <link href="css/all.css" rel="stylesheet">
 </head>
 
-<body onload='init()'>
+<body ng-controller='MainCtrl' onload='init()'>
 
    <?php include 'banner.php'; ?>
    
    <div class='container'>
    
-      <form id='cityForm' role='form' class='form-inline'>
+      <form ng-submit='updateClimateDiff()' id='cityForm' role='form' class='form-inline'>
          
          <div class='row'>
          
             <span id='city1-span' class='col-md-3 col-md-offset-2'>
                <label for='city1'>City 1:</label>
-               <input type='text' id='city1' name='city1' class='form-control' placeholder='City name'>
+               <input type='text' ng-model='city1' class='form-control' placeholder='City name'
+                     typeahead="address for address in getLocationCompletions($viewValue)" typeahead-loading="loadingLocations1">
+               <i ng-show="loadingLocations1" class="glyphicon glyphicon-refresh">Loading...</i>
             </span>
             
             <span id='city2-span' class='col-md-3'>
                <label for='city2'>City 2:</label>
-               <input type='text' id='city2' name='city2' class='form-control' placeholder='City name'>
+               <input type='text' ng-model='city2' class='form-control' placeholder='City name'
+                     typeahead="address for address in getLocationCompletions($viewValue)" typeahead-loading="loadingLocations2">
+               <i ng-show="loadingLocations2" class="glyphicon glyphicon-refresh">Loading...</i>
             </span>
             
             <span id='submit-span' class='col-md-2'>
@@ -41,46 +45,29 @@
          
       </form>
       
-      <div id='results'>
-         <div id='resultsLabel'></div>
-         <svg id='chart' class='chart'></svg>
+      <div id='results' ng-show='resultsLoaded'>
+<!--         <div ng-bind='resultsLabel'></div>-->
+<!--         <svg id='chart' class='chart'></svg>-->
+         <cd-bar-chart></cd-bar-chart>
       </div>
       
    </div>
    
    <!-- build:js js/climatediff.min.js -->
-   <script src="js/app.js"></script>
    <script src="../bower_components/jquery/jquery.js"></script>
 <!--   <script src='../bower_components/jquery.lazyload/jquery.lazyload.js'></script>-->
    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
    <script src="../bower_components/d3/d3.js"></script>
-<!--   <script src='../bower_components/angular/angular.js'></script>-->
-<!--   <script src='../bower_components/angular-route/angular-route.js'></script>-->
-<!--   <script src="../bower_components/angular-resource/angular-resource.js"></script>-->
-<!--   <script src='../bower_components/angular-bindonce/bindonce.js'></script>-->
+   <script src='../bower_components/angular/angular.js'></script>
+   <script src='../bower_components/angular-route/angular-route.js'></script>
+   <script src="../bower_components/angular-resource/angular-resource.js"></script>
+<!--   <script src="../bower_components/angular-bootstrap/build/angular-ui.js"></script>-->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.js"></script>
 <!--   <script src='js/services.js'></script>-->
-<!--   <script src='js/controllers.js'></script>-->
-<!--   <script src='js/directives.js'></script>-->
-<!--   <script src='js/app.js'></script>-->
-<!--   <script src='js/appUtil.js'></script>-->
+   <script src='js/controllers.js'></script>
+   <script src='js/directives.js'></script>
+   <script src='js/app.js'></script>
    <!-- endbuild -->
-
-<script>
-var city1Handle;
-var city1 = $('#city1');
-city1.on('input', function(e) {
-   if (city1Handle) {
-      clearTimeout(city1Handle);
-      city1Handle = null;
-   }
-   city1Handle = setTimeout(function() {
-      $.ajax('api/locations?input=' + city1.val() + '&limit=10')
-         .done(function(response) {
-            console.log(response);
-         });
-   }, 1000);
-});
-</script>
 
 </body>
 

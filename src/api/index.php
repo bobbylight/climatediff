@@ -18,14 +18,20 @@ require 'codeguy-Slim-4906b77/Slim/Slim.php';
 \Slim\Slim::registerAutoloader();
 
 $app = new \Slim\Slim();
-$app->response->headers->set('Content-Type', 'application/json');
 
 $app->get('/hello/:name', function ($name) use ($app) {
+   $app->response->headers->set('Content-Type', 'application/json');
    $app->render('hello.php', array('name' => $name));
 });
 
 $app->get('/locations', function () use ($app) {
+   $app->response->headers->set('Content-Type', 'application/json');
    $app->render('locations.php');
+});
+
+$app->get('/climatediff/:locId1(/:locId2)', function ($locId1, $locId2 = null) use ($app) {
+   $app->response->headers->set('Content-Type', 'text/plain');
+   $app->render('climatediff.php', array('loc1' => $locId1, 'loc2' => $locId2));
 });
 
 //$app->get('/game/:system(/:game)', function($system, $game = null) use ($app) {
