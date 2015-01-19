@@ -37,7 +37,11 @@ controllers.controller('MainCtrl', ['$scope', '$http', function($scope, $http) {
          $scope.resultsLoaded = true;
       $scope.resultsLabel = 'Comparing ' + $scope.city1 + ' to ' + $scope.city2 + ':';
       // TODO: Fetch 'data' from service, directive has a watch on it
-      $scope.data = new Date().getTime();
+      return $http.get('api/climatediff/' + $scope.city1 + '/' + $scope.city2)
+         .then(function(response) {
+            console.log(JSON.stringify(response));
+            $scope.data = response.data;
+         });
    };
    
 }]);

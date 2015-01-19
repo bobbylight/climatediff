@@ -30,7 +30,7 @@ $app->get('/locations', function () use ($app) {
 });
 
 $app->get('/climatediff/:locId1(/:locId2)', function ($locId1, $locId2 = null) use ($app) {
-   $app->response->headers->set('Content-Type', 'text/plain');
+   $app->response->headers->set('Content-Type', 'application/json');
    $app->render('climatediff.php', array('loc1' => $locId1, 'loc2' => $locId2));
 });
 

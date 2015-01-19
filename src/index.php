@@ -22,14 +22,14 @@
             <span id='city1-span' class='col-md-3 col-md-offset-2'>
                <label for='city1'>City 1:</label>
                <input type='text' ng-model='city1' class='form-control' placeholder='City name'
-                     typeahead="address for address in getLocationCompletions($viewValue)" typeahead-loading="loadingLocations1">
+                     typeahead="loc for loc in getLocationCompletions($viewValue)" typeahead-loading="loadingLocations1">
                <i ng-show="loadingLocations1" class="glyphicon glyphicon-refresh">Loading...</i>
             </span>
             
             <span id='city2-span' class='col-md-3'>
                <label for='city2'>City 2:</label>
                <input type='text' ng-model='city2' class='form-control' placeholder='City name'
-                     typeahead="address for address in getLocationCompletions($viewValue)" typeahead-loading="loadingLocations2">
+                     typeahead="loc for loc in getLocationCompletions($viewValue)" typeahead-loading="loadingLocations2">
                <i ng-show="loadingLocations2" class="glyphicon glyphicon-refresh">Loading...</i>
             </span>
             
