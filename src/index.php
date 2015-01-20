@@ -63,6 +63,7 @@
    <script src="../bower_components/angular-resource/angular-resource.js"></script>
 <!--   <script src="../bower_components/angular-bootstrap/build/angular-ui.js"></script>-->
    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.js"></script>
+   <script src='js/d3.legend.js'></script>
 <!--   <script src='js/services.js'></script>-->
    <script src='js/controllers.js'></script>
    <script src='js/directives.js'></script>

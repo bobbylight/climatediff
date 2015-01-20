@@ -33,14 +33,33 @@ controllers.controller('MainCtrl', ['$scope', '$http', function($scope, $http) {
 */
    };
    
+   function celsiusToFahrenheit(data) {
+      function cToF(c) {
+         return c * (9/5) + 32;
+      }
+      return data.map(function(elem) {
+         elem.city1.min = cToF(elem.city1.min);
+         elem.city1.median = cToF(elem.city1.median);
+         elem.city1.max = cToF(elem.city1.max);
+         elem.city2.min = cToF(elem.city2.min);
+         elem.city2.median = cToF(elem.city2.median);
+         elem.city2.max = cToF(elem.city2.max);
+         return elem;
+      });
+   }
+   
    $scope.updateClimateDiff = function() {
          $scope.resultsLoaded = true;
       $scope.resultsLabel = 'Comparing ' + $scope.city1 + ' to ' + $scope.city2 + ':';
       // TODO: Fetch 'data' from service, directive has a watch on it
       return $http.get('api/climatediff/' + $scope.city1 + '/' + $scope.city2)
-         .then(function(response) {
-            console.log(JSON.stringify(response));
-            $scope.data = response.data;
+         .success(function(data, status, headers, config) {
+            console.log(JSON.stringify(data));
+            data.data = celsiusToFahrenheit(data.data);
+            $scope.data = data;
+         })
+         .error(function(data, status, headers, config) {
+            alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
          });
    };
    

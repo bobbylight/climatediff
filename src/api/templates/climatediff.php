@@ -97,6 +97,10 @@ function _fetchCityClimate($loc, &$response, $index) {
 // Raleigh, NC: CITY:US370017
 // FIPS:54081
 
+# This is the easiest way to return HTTP 500 if e.g. curl_exec times out.
+# PHP by default still returns 200 OK for fatal errors (!)
+http_response_code(500);
+
 $data = array();
 for ($i=0; $i < 12; $i++) {
    $monthData = array( 'city1' => array() );
@@ -112,6 +116,7 @@ if (isset($loc2)) {
    _fetchCityClimate($loc2, $response, 2);
 }
 
+http_response_code(200);
 echo json_encode($response, JSON_NUMERIC_CHECK);
 
 ?>

@@ -15,12 +15,6 @@
   fill: crimson;
 }
 
-.chart text {
-  fill: white;
-  font: 10px sans-serif;
-  text-anchor: end;
-}
-
 .axis text {
   fill: black;
   font: 10px sans-serif;
@@ -35,4 +29,54 @@
 
 y {
    padding-left: 30px;
+}
+
+.bar-chart.results-label {
+   font-weight: bolder;
+   font-size: x-large;
+   padding-bottom: 2em;
+}
+
+#results {
+   text-align: center;
+}
+
+/* Area chart stuff */
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.area {
+  fill: lightsteelblue;
+  fill-opacity: 0.3;
+  stroke-width: 0;
+}
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+.area2 {
+  fill: lightcoral;
+  fill-opacity: 0.3;
+  stroke-width: 0;
+}
+.line2 {
+  fill: none;
+  stroke: maroon;
+  stroke-width: 1.5px;
+}
+
+/* Legend stuff */
+.legend rect {
+   fill:white;
+   stroke:black;
+   opacity:0.8;
 }
