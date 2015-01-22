@@ -11,6 +11,8 @@
 
 <body ng-controller='MainCtrl' onload='init()'>
 
+   <span us-spinner="{radius:30, width:8, length: 16, top: '90%' }" spinner-key='spinner-99'></span>
+
    <?php include 'banner.php'; ?>
    
    <div class='container'>
@@ -63,6 +65,8 @@
    <script src="../bower_components/angular-resource/angular-resource.js"></script>
 <!--   <script src="../bower_components/angular-bootstrap/build/angular-ui.js"></script>-->
    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.js"></script>
+   <script src="../bower_components/spin.js/spin.js"></script>
+   <script src="../bower_components/angular-spinner/angular-spinner.js"></script>
    <script src='js/d3.legend.js'></script>
 <!--   <script src='js/services.js'></script>-->
    <script src='js/controllers.js'></script>

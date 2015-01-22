@@ -48,6 +48,10 @@ function _fetchCityClimate($loc, &$response, $index) {
    $data = &$response['data'];
    $id = "city$index";
    
+   $metadata = &$response['metadata'];
+   $cityMetadata = array( 'city_id' => $locId,
+         'city_name' => $loc );
+   
    for ($i = 0; $i < 12; $i++) {
       $data[$i][$id]['min'] = 0;
       $data[$i][$id]['minCount'] = 0;
@@ -76,6 +80,13 @@ function _fetchCityClimate($loc, &$response, $index) {
    }
    
    for ($month = 0; $month < 12; $month++) {
+      if ($data[$month][$id]['minCount'] == 0 ||
+            $data[$month][$id]['medianCount'] == 0 ||
+            $data[$month][$id]['maxCount'] == 0) {
+         $data = [];
+         $cityMetadata['error'] = 'No data found for this city.';
+         break;
+      }
       $data[$month][$id]['min'] /= $data[$month][$id]['minCount'];
       $data[$month][$id]['min'] /= 10; // Measurements are in tenths of degrees
       $data[$month][$id]['min'] = round($data[$month][$id]['min'], $decimalCount);
@@ -87,9 +98,6 @@ function _fetchCityClimate($loc, &$response, $index) {
       $data[$month][$id]['max'] = round($data[$month][$id]['max'], $decimalCount);
    }
    
-   $metadata = &$response['metadata'];
-   $cityMetadata = array( 'city_id' => $locId,
-         'city_name' => $loc );
    array_push($metadata, $cityMetadata);
 }
 
@@ -112,7 +120,7 @@ for ($i=0; $i < 12; $i++) {
 $response = array( 'data' => $data, 'metadata' => array() );
    
 _fetchCityClimate($loc1, $response, 1);
-if (isset($loc2)) {
+if (isset($loc2) && !isset($response['metadata'][0]['error'])) {
    _fetchCityClimate($loc2, $response, 2);
 }
 

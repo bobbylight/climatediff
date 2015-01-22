@@ -1,5 +1,5 @@
 var climatediff = angular.module('cdApp',
-   [ 'ui.bootstrap', 'cdControllers', 'cdDirectives' ]);
+   [ 'ui.bootstrap', 'angularSpinner', 'cdControllers', 'cdDirectives' ]);
    //[ 'gcControllers', 'gcDirectives', 'gcServices', 'pasvaz.bindonce' ]);
 
 /*

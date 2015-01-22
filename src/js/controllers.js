@@ -49,17 +49,28 @@ controllers.controller('MainCtrl', ['$scope', '$http', function($scope, $http) {
    }
    
    $scope.updateClimateDiff = function() {
-         $scope.resultsLoaded = true;
+      $scope.resultsLoaded = true;
+      
+      $scope.maskResults = true;
+//      $scope.startSpin();
+      
       $scope.resultsLabel = 'Comparing ' + $scope.city1 + ' to ' + $scope.city2 + ':';
-      // TODO: Fetch 'data' from service, directive has a watch on it
+      // Mimic an empty data set to clear out previous graphs
+      $scope.data = { data: [],
+            metadata: [ { 'city_name': $scope.city1 }, { 'city_name': $scope.city2 } ] };
+      
       return $http.get('api/climatediff/' + $scope.city1 + '/' + $scope.city2)
          .success(function(data, status, headers, config) {
             console.log(JSON.stringify(data));
             data.data = celsiusToFahrenheit(data.data);
             $scope.data = data;
+//            $scope.stopSpin();
+            $scope.maskResults = false;
          })
          .error(function(data, status, headers, config) {
             alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
+//            $scope.stopSpin();
+            $scope.maskResults = false;
          });
    };
    

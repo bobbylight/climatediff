@@ -1,6 +1,6 @@
 var directives = angular.module('cdDirectives', []);
 
-directives.directive('cdBarChart', [ function() {
+directives.directive('cdBarChart', [ 'usSpinnerService', function(usSpinnerService) {
    'use strict';
    
    var $previouslySelected;
@@ -157,7 +157,7 @@ chart.append('path')
          .style('font-size', '12px')
          .call(d3.legend);
          
-      $scope.resultsLoaded = true;
+//      $scope.resultsLoaded = true;
       
    }
    
@@ -170,6 +170,18 @@ chart.append('path')
                return; // First time through
             }
             createChart(scope);
+         });
+         
+         scope.$watch('maskResults', function(newValue, oldValue) {
+            if (newValue === oldValue) {
+               return; // First time through
+            }
+            if (newValue) {
+               usSpinnerService.spin('spinner-1');
+            }
+            else {
+               usSpinnerService.stop('spinner-1');
+            }
          });
          
       },
