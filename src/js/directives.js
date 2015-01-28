@@ -8,6 +8,58 @@ directives.directive('cdBarChart', [ 'usSpinnerService', function(usSpinnerServi
    var months = [ 'January', 'February', 'March', 'April', 'May', 'June',
          'July', 'August', 'September', 'October', 'November', 'December' ];
    
+   function appendCityArea(chart, $scope, index, xScale, yScale) {
+      
+      var data = $scope.data;
+      
+      var city = 'city' + (index + 1);
+      
+      var area = d3.svg.area()
+            .x(function(d, i) { return xScale(i); })
+            .y0(function(d) { return yScale(d[city].min); })
+            .y1(function(d) { return yScale(d[city].max); })
+            .interpolate('cardinal');
+      var minLine = d3.svg.line()
+            .x(function(d, i) { return xScale(i); })
+            .y(function(d) { return yScale(d[city].min); })
+            .interpolate('cardinal');
+      var maxLine = d3.svg.line()
+            .x(function(d, i) { return xScale(i); })
+            .y(function(d) { return yScale(d[city].max); })
+            .interpolate('cardinal');
+      
+      chart.append('path')
+         .datum(data.data)
+         .attr('class', 'area' + (index+1))
+         .attr('d', area);
+      chart.append('path')
+         .datum(data.data)
+         .attr('class', 'line' + (index+1))
+         .attr('d', minLine)
+         .attr('data-legend', function(d) { return data.metadata[index].city_name; })
+         .attr('data-legend-pos', index);
+      chart.append('path')
+         .datum(data.data)
+         .attr('class', 'line' + (index+1))
+         .attr('d', maxLine);
+      
+      var points = chart.selectAll(".point")
+              .data(data.data)
+            .enter().append("svg:circle")
+               .attr('class', 'point' + (index+1))
+               .attr("cx", function(d, i) { return xScale(i) })
+               .attr("cy", function(d, i) { return yScale(d[city].max); })
+               .attr("r", function(d, i) { return 3 });
+      points = chart.selectAll(".point")
+              .data(data.data)
+            .enter().append("svg:circle")
+               .attr('class', 'point' + (index+1))
+               .attr("cx", function(d, i) { return xScale(i) })
+               .attr("cy", function(d, i) { return yScale(d[city].min); })
+               .attr("r", function(d, i) { return 3 });
+      
+   }
+   
    function createChart($scope) {
       
       // Margins for axes.  Could also be used for spacing, titles, etc.
@@ -17,7 +69,7 @@ directives.directive('cdBarChart', [ 'usSpinnerService', function(usSpinnerServi
       var chartWidth = $('#chart').width() - chartMargin.left - chartMargin.right;
       var chartHeight = $('#chart').height() - chartMargin.top - chartMargin.bottom;
       
-      var scale = d3.scale.linear()
+      var yScale = d3.scale.linear()
             .range([ chartHeight, 0 ]);
       
       var barPad = 0.1;
@@ -25,9 +77,6 @@ directives.directive('cdBarChart', [ 'usSpinnerService', function(usSpinnerServi
       var xScale = d3.scale.ordinal()
             .domain([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ])
             .rangeRoundPoints([ 0, chartWidth ], barPad, barOuterPad);
-//            .rangeRoundBands([ 0, chartWidth ], barPad, barOuterPad);
-//var xScale = d3.scale.ordinal().domain([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ]).range([ 0, chartWidth ]);
-
       
       var data = $scope.data;
       
@@ -35,41 +84,15 @@ directives.directive('cdBarChart', [ 'usSpinnerService', function(usSpinnerServi
       var min = d3.max(data.data, function(entry) { return Math.max(entry.city1.min, entry.city2.min); });
       min = Math.min(min, 0);
       var max = d3.max(data.data, function(entry) { return Math.max(entry.city1.max, entry.city2.max); });
-      scale.domain([min, max+topPadding]);
+      yScale.domain([min, max+topPadding]);
       
       // Remove previous chart, if any
       d3.select('#chart')
          .select('g').remove();
-/*
-      var chart = d3.select("#chart")
-         .append("g")
+      
+      var chart = d3.select('#chart')
+         .append('g')
             .attr("transform", "translate(" + chartMargin.left + ", " + chartMargin.top + ")");
-*/
-var area = d3.svg.area()
-      .x(function(d, i) { return xScale(i); })
-      .y0(function(d) { return scale(d.city1.min); })
-      .y1(function(d) { return scale(d.city1.max); });
-var minLine = d3.svg.line()
-      .x(function(d, i) { return xScale(i); })
-      .y(function(d) { return scale(d.city1.min); });
-var maxLine = d3.svg.line()
-      .x(function(d, i) { return xScale(i); })
-      .y(function(d) { return scale(d.city1.max); });
-
-var area2 = d3.svg.area()
-      .x(function(d, i) { return xScale(i); })
-      .y0(function(d) { return scale(d.city2.min); })
-      .y1(function(d) { return scale(d.city2.max); });
-var minLine2 = d3.svg.line()
-      .x(function(d, i) { return xScale(i); })
-      .y(function(d) { return scale(d.city2.min); });
-var maxLine2 = d3.svg.line()
-      .x(function(d, i) { return xScale(i); })
-      .y(function(d) { return scale(d.city2.max); });
-
-var chart = d3.select('#chart')
-      .append('g')
-         .attr("transform", "translate(" + chartMargin.left + ", " + chartMargin.top + ")");
 
       var xAxis = d3.svg.axis()
          .scale(xScale)
@@ -87,69 +110,15 @@ var chart = d3.select('#chart')
             .attr('transform', function(d) { return 'rotate(-65)' });
       
       var yAxis = d3.svg.axis()
-         .scale(scale)
+         .scale(yScale)
          .orient("left")
          .tickFormat(function(d, i) { return d + '\u00b0 F'; });
       chart.append("g")
          .classed({ 'y': true, 'axis': true })
          .call(yAxis);
       
-chart.append('path')
-   .datum(data.data)
-   .attr('class', 'area')
-   .attr('d', area);
-chart.append('path')
-   .datum(data.data)
-   .attr('class', 'line')
-   .attr('d', minLine)
-   .attr('data-legend', function(d) { return data.metadata[0].city_name; })
-   .attr('data-legend-pos', 1);
-chart.append('path')
-   .datum(data.data)
-   .attr('class', 'line')
-   .attr('d', maxLine);
-chart.append('path')
-   .datum(data.data)
-   .attr('class', 'area2')
-   .attr('d', area2);
-chart.append('path')
-   .datum(data.data)
-   .attr('class', 'line2')
-   .attr('d', minLine2)
-   .attr('data-legend', function(d) { return data.metadata[1].city_name; })
-   .attr('data-legend-pos', 2);
-chart.append('path')
-   .datum(data.data)
-   .attr('class', 'line2')
-   .attr('d', maxLine2);
-//      var bars = chart
-//         .append("g")
-//            .selectAll("g")
-//            .data(data.data)
-//            .enter().append("g")
-//               .attr('transform', function(d, i) { return 'translate(' + xScale(i) + ', 0)'; });
-//      
-//      bars.append("rect")
-//         .classed('rect1', true)
-//         .attr("x", 0)
-//         .attr("y", function(d) { return scale(d.city1.max); })
-//         .attr("width", barWidth)
-//         .attr("height", function(d) { return chartHeight - scale(d.city1.max); });
-//      bars.append("rect")
-//         .classed('rect2', true)
-//         .attr("x", barWidth + 2)
-//         .attr("y", function(d) { return scale(d.city2.max); })
-//         .attr("width", barWidth - 1)
-//         .attr("height", function(d) { return chartHeight - scale(d.city2.max); });
-      
-//            bars.append("text")
-//               .attr("x", barWidth / 2)
-//               .attr("y", function(d) { return scale(d.val1) - 3; })
-//               .attr("dx", ".35em")
-//               .text(function(d) { return d.val1; });
-      
-      
-      //$('#resultsLabel').html(JSON.stringify(data));
+      appendCityArea(chart, $scope, 0, xScale, yScale);
+      appendCityArea(chart, $scope, 1, xScale, yScale);
       
       var legend = chart.append('g')
          .attr('class', 'legend')

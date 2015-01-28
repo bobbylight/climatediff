@@ -1,3 +1,9 @@
+.app-icon-big {
+   background-image: url(../img/sun93.svg);
+   width: 40px;
+   height: 40px;
+}
+
 #results {
    margin-top: 3em;
 }
@@ -48,7 +54,7 @@ y {
   stroke: #000;
   shape-rendering: crispEdges;
 }
-.area {
+.area1 {
   fill: lightsteelblue;
   fill-opacity: 0.3;
   stroke-width: 0;
@@ -58,10 +64,13 @@ y {
   stroke: #000;
   shape-rendering: crispEdges;
 }
-.line {
+.line1 {
   fill: none;
   stroke: steelblue;
   stroke-width: 1.5px;
+}
+.point1 {
+  fill: steelblue;
 }
 .area2 {
   fill: lightcoral;
@@ -72,6 +81,9 @@ y {
   fill: none;
   stroke: maroon;
   stroke-width: 1.5px;
+}
+.point2 {
+  fill: maroon;
 }
 
 /* Legend stuff */
