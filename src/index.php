@@ -9,62 +9,22 @@
    <link href="css/all.css" rel="stylesheet">
 </head>
 
-<body ng-controller='MainCtrl' onload='init()'>
+<body ng-controller='MainCtrl'>
 
    <span us-spinner="{radius:30, width:8, length: 16, top: '90%' }" spinner-key='spinner-99'></span>
 
    <?php include 'banner.php'; ?>
    
-   <div class='container'>
-   
-      <form ng-submit='updateClimateDiff()' id='cityForm' role='form' class='form-inline'>
-         
-         <div class='row'>
-         
-            <span id='city1-span' class='col-md-3 col-md-offset-2'>
-               <label for='city1'>City 1:</label>
-               <input type='text' ng-model='city1' class='form-control' placeholder='City name'
-                     typeahead="loc for loc in getLocationCompletions($viewValue)" typeahead-loading="loadingLocations1">
-               <i ng-show="loadingLocations1" class="glyphicon glyphicon-refresh">Loading...</i>
-            </span>
-            
-            <span id='city2-span' class='col-md-3'>
-               <label for='city2'>City 2:</label>
-               <input type='text' ng-model='city2' class='form-control' placeholder='City name'
-                     typeahead="loc for loc in getLocationCompletions($viewValue)" typeahead-loading="loadingLocations2">
-               <i ng-show="loadingLocations2" class="glyphicon glyphicon-refresh">Loading...</i>
-            </span>
-            
-            <span id='submit-span' class='col-md-2'>
-               <button type='submit' class='form-control btn btn-primary'>Compare!</button>
-            </span>
-         </div>
-         
-         <div class='row'>
-            
-            
-         </div>
-         
-      </form>
-      
-      <div id='results' ng-show='resultsLoaded'>
-<!--         <div ng-bind='resultsLabel'></div>-->
-<!--         <svg id='chart' class='chart'></svg>-->
-         <cd-bar-chart></cd-bar-chart>
-      </div>
-      
-   </div>
+   <div ng-view style='height:100%'></div>
    
    <!-- build:js js/climatediff.min.js -->
    <script src="../bower_components/jquery/jquery.js"></script>
-<!--   <script src='../bower_components/jquery.lazyload/jquery.lazyload.js'></script>-->
    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
    <script src="../bower_components/d3/d3.js"></script>
    <script src='../bower_components/angular/angular.js'></script>
    <script src='../bower_components/angular-route/angular-route.js'></script>
    <script src="../bower_components/angular-resource/angular-resource.js"></script>
-<!--   <script src="../bower_components/angular-bootstrap/build/angular-ui.js"></script>-->
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.js"></script>
+   <script src="../bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js"></script>
    <script src="../bower_components/spin.js/spin.js"></script>
    <script src="../bower_components/angular-spinner/angular-spinner.js"></script>
    <script src='js/d3.legend.js'></script>

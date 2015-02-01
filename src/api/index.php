@@ -14,8 +14,9 @@
  *       * Optional 'limit' parameter limits result set size
  */
 
-require 'codeguy-Slim-4906b77/Slim/Slim.php';
-\Slim\Slim::registerAutoloader();
+//require 'codeguy-Slim-4906b77/Slim/Slim.php';
+//\Slim\Slim::registerAutoloader();
+require 'vendor/autoload.php';
 
 $app = new \Slim\Slim();
 

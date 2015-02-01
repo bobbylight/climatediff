@@ -1,0 +1,8 @@
+{
+    "config": {
+        "vendor-dir": "src/api/vendor"
+    },
+    "require": {
+        "slim/slim": "2.*"
+    }
+}

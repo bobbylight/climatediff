@@ -1,6 +1,10 @@
 var controllers = angular.module('cdControllers', ['ngRoute', 'ngResource']);
 
-controllers.controller('MainCtrl', ['$scope', '$http', function($scope, $http) {
+controllers.controller('MainCtrl', ['$scope', function($scope) {
+   'use strict';
+}]);
+
+controllers.controller('MainPageCtrl', ['$scope', '$http', function($scope, $http) {
    'use strict';
    
    $scope.city1 = 'Raleigh, NC';
@@ -83,4 +87,9 @@ controllers.controller('MenuCtrl', ['$scope', '$location', function($scope, $loc
       return $location.path() === routeName;
    };
    
+}]);
+
+controllers.controller('AboutCtrl', ['$scope', function($scope) {
+   'use strict';
+
 }]);

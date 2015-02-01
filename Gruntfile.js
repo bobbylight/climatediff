@@ -35,7 +35,7 @@ module.exports = function(grunt) {
          main: {
             expand: true,
             cwd: 'src/',
-            src: [ '*.php', '.htaccess', '*.csv', '*.db' ],
+            src: [ 'api/**', 'directives/**', 'partials/*.html', '*.php', '.htaccess', '*.csv', '*.db' ],
             dest: 'dist/',
          },
       },

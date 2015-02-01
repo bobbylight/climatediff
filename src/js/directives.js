@@ -47,16 +47,16 @@ directives.directive('cdBarChart', [ 'usSpinnerService', function(usSpinnerServi
               .data(data.data)
             .enter().append("svg:circle")
                .attr('class', 'point' + (index+1))
-               .attr("cx", function(d, i) { return xScale(i) })
+               .attr("cx", function(d, i) { return xScale(i); })
                .attr("cy", function(d, i) { return yScale(d[city].max); })
-               .attr("r", function(d, i) { return 3 });
+               .attr("r", function(d, i) { return 3; });
       points = chart.selectAll(".point")
               .data(data.data)
             .enter().append("svg:circle")
                .attr('class', 'point' + (index+1))
-               .attr("cx", function(d, i) { return xScale(i) })
+               .attr("cx", function(d, i) { return xScale(i); })
                .attr("cy", function(d, i) { return yScale(d[city].min); })
-               .attr("r", function(d, i) { return 3 });
+               .attr("r", function(d, i) { return 3; });
       
    }
    
@@ -107,7 +107,7 @@ directives.directive('cdBarChart', [ 'usSpinnerService', function(usSpinnerServi
             .style('text-anchor', 'end')
             .attr('dx', '-.8em')
             .attr('dy', '.15em')
-            .attr('transform', function(d) { return 'rotate(-65)' });
+            .attr('transform', function(d) { return 'rotate(-65)'; });
       
       var yAxis = d3.svg.axis()
          .scale(yScale)
