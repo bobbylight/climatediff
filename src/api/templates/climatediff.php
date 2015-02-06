@@ -21,6 +21,7 @@ function _fetchCityClimate($loc, &$response, $index) {
       exit;
    }
    
+   $start = microtime(true);
    $START_DATE='2014-01-01';
    $END_DATE='2014-12-31';
    $offs = 0;
@@ -28,6 +29,7 @@ function _fetchCityClimate($loc, &$response, $index) {
    $DATA_SET_ID="GHCNDMS";
    $DATA_TYPES="MMNT,MMXT,MNTM";
    $decimalCount = 2;
+   $debug = true;
    
    $apiRoot = 'http://www.ncdc.noaa.gov/cdo-web/api/v2/data';
    
@@ -37,6 +39,9 @@ function _fetchCityClimate($loc, &$response, $index) {
    curl_setopt($ch, CURLOPT_HEADER, 0);
    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "token: $token" ));
    $json = curl_exec($ch);
+   if ($debug) {
+      $curlInfo = curl_getinfo($ch);
+   }
    curl_close($ch);
    #echo $json;
    
@@ -44,13 +49,15 @@ function _fetchCityClimate($loc, &$response, $index) {
    
    $decodedJson = json_decode($json, true);
    $results = $decodedJson['results'];
+   $totalTime = microtime(true) - $start;
    
    $data = &$response['data'];
    $id = "city$index";
    
    $metadata = &$response['metadata'];
    $cityMetadata = array( 'city_id' => $locId,
-         'city_name' => $loc );
+         'city_name' => $loc,
+         'total_time' => $totalTime);
    
    for ($i = 0; $i < 12; $i++) {
       $data[$i][$id]['min'] = 0;
@@ -99,6 +106,11 @@ function _fetchCityClimate($loc, &$response, $index) {
    }
    
    array_push($metadata, $cityMetadata);
+   
+   if ($debug === true) {
+      $debugData = &$response['debug'];
+      $debugData[$id] = $curlInfo;
+   }
 }
 
 // Example location IDs:
@@ -117,7 +129,7 @@ for ($i=0; $i < 12; $i++) {
    }
    array_push($data, $monthData);
 }
-$response = array( 'data' => $data, 'metadata' => array() );
+$response = array( 'data' => $data, 'metadata' => array(), 'debug' => array() );
    
 _fetchCityClimate($loc1, $response, 1);
 if (isset($loc2) && !isset($response['metadata'][0]['error'])) {

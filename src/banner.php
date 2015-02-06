@@ -1,5 +1,5 @@
 <nav class="navbar navbar-default" role="navigation" ng-controller='MenuCtrl'>
-  <div class="container-fluid">
+  <div class="container">
   
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">

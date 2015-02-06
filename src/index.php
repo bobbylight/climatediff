@@ -17,6 +17,12 @@
    
    <div ng-view style='height:100%'></div>
    
+<!--   <div class='footer'>-->
+<!--      <div class='container'>-->
+<!--         Copyright (c) 2015 Climatediff-->
+<!--      </div>-->
+<!--   </div>-->
+   
    <!-- build:js js/climatediff.min.js -->
    <script src="../bower_components/jquery/jquery.js"></script>
    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
