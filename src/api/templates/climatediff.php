@@ -2,20 +2,11 @@
 require_once('../init.php');
 require_once('_dao.php');
 
-function _getLocId($loc) {
-   $matches = getMatchingCities($loc, 4);
-   # TODO: What if they type in junk and hit enter?
-   if (sizeof($matches) > 0) {
-      return $matches[0]['city_id'];
-   }
-   return null;
-}
-
 function _fetchCityClimate($loc, &$response, $index) {
    
    global $token;
    
-   $locId = _getLocId($loc);
+   $locId = getLocationId($loc);
    if (is_null($locId)) {
       header("HTTP/1.1 500 Internal Server Error");
       exit;
@@ -48,7 +39,8 @@ function _fetchCityClimate($loc, &$response, $index) {
    # TODO: If result count > 1000, we'll need to make more requests
    
    $decodedJson = json_decode($json, true);
-   $results = $decodedJson['results'];
+   # For some cities we receive {}.  Example: "Raleigh, NC 27605"
+   $results = isset($decodedJson['results']) ? $decodedJson['results'] : array();
    $totalTime = microtime(true) - $start;
    
    $data = &$response['data'];
@@ -132,7 +124,7 @@ for ($i=0; $i < 12; $i++) {
 $response = array( 'data' => $data, 'metadata' => array(), 'debug' => array() );
    
 _fetchCityClimate($loc1, $response, 1);
-if (isset($loc2) && !isset($response['metadata'][0]['error'])) {
+if (isset($loc2)) {# && !isset($response['metadata'][0]['error'])) {
    _fetchCityClimate($loc2, $response, 2);
 }
 

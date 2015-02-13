@@ -4,18 +4,18 @@
       
       <div class='row'>
       
-         <span id='city1-span' class='col-md-3 col-md-offset-2'>
+         <span id='city1-span' class='col-md-3 col-md-offset-2 city-info'>
             <label for='city1'>City 1:</label>
-            <input type='text' ng-model='city1' class='form-control' placeholder='City name'
+            <input type='text' ng-model='city1' class='form-control' placeholder='City name' autofocus
+                  typeahead-wait-ms='typeaheadWaitMillis'
                   typeahead="loc for loc in getLocationCompletions($viewValue)" typeahead-loading="loadingLocations1">
-            <i ng-show="loadingLocations1" class="glyphicon glyphicon-refresh">Loading...</i>
          </span>
          
-         <span id='city2-span' class='col-md-3'>
+         <span id='city2-span' class='col-md-3 city-info'>
             <label for='city2'>City 2:</label>
             <input type='text' ng-model='city2' class='form-control' placeholder='City name'
+                  typeahead-wait-ms='typeaheadWaitMillis'
                   typeahead="loc for loc in getLocationCompletions($viewValue)" typeahead-loading="loadingLocations2">
-            <i ng-show="loadingLocations2" class="glyphicon glyphicon-refresh">Loading...</i>
          </span>
          
          <span id='submit-span' class='col-md-2'>

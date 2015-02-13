@@ -9,6 +9,7 @@ controllers.controller('MainPageCtrl', ['$scope', '$http', function($scope, $htt
    
    $scope.city1 = 'Raleigh, NC';
    $scope.city2 = 'Philadelphia, PA';
+   $scope.typeaheadWaitMillis = 500;
    
    $scope.getLocationCompletions = function(val) {
       return $http.get('api/locations', {
@@ -42,12 +43,16 @@ controllers.controller('MainPageCtrl', ['$scope', '$http', function($scope, $htt
          return c * (9/5) + 32;
       }
       return data.map(function(elem) {
-         elem.city1.min = cToF(elem.city1.min);
-         elem.city1.median = cToF(elem.city1.median);
-         elem.city1.max = cToF(elem.city1.max);
-         elem.city2.min = cToF(elem.city2.min);
-         elem.city2.median = cToF(elem.city2.median);
-         elem.city2.max = cToF(elem.city2.max);
+         if (elem.city1) {
+            elem.city1.min = cToF(elem.city1.min);
+            elem.city1.median = cToF(elem.city1.median);
+            elem.city1.max = cToF(elem.city1.max);
+         }
+         if (elem.city2) {
+            elem.city2.min = cToF(elem.city2.min);
+            elem.city2.median = cToF(elem.city2.median);
+            elem.city2.max = cToF(elem.city2.max);
+         }
          return elem;
       });
    }

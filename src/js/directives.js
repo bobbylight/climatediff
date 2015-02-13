@@ -11,8 +11,15 @@ directives.directive('cdBarChart', [ 'usSpinnerService', function(usSpinnerServi
    function appendCityArea(chart, $scope, index, xScale, yScale) {
       
       var data = $scope.data;
+      if (!data || !data.data || data.data.length === 0) {
+         return;
+      }
       
       var city = 'city' + (index + 1);
+      if (!data.data[0][city]) {
+         console.log('Note: No data in response for city: "' + city + '"');
+         return;
+      }
       
       var area = d3.svg.area()
             .x(function(d, i) { return xScale(i); })
@@ -28,6 +35,7 @@ directives.directive('cdBarChart', [ 'usSpinnerService', function(usSpinnerServi
             .y(function(d) { return yScale(d[city].max); })
             .interpolate('cardinal');
       
+//      console.log('^^^ ' + JSON.stringify(area));
       chart.append('path')
          .datum(data.data)
          .attr('class', 'area' + (index+1))
@@ -81,9 +89,30 @@ directives.directive('cdBarChart', [ 'usSpinnerService', function(usSpinnerServi
       var data = $scope.data;
       
       var topPadding = 5;
-      var min = d3.max(data.data, function(entry) { return Math.max(entry.city1.min, entry.city2.min); });
-      min = Math.min(min, 0);
-      var max = d3.max(data.data, function(entry) { return Math.max(entry.city1.max, entry.city2.max); });
+      
+      var min, max;
+      function maxFrom2Cities(entry) {
+         var max1 = entry.city1 ? entry.city1.max : 0;
+         var max2 = entry.city2 ? entry.city2.max : 0;
+         return Math.max(max1, max2);
+      }
+      function minFrom2Cities(entry) {
+         var min1 = entry.city1 ? entry.city1.min : 0;
+         var min2 = entry.city2 ? entry.city2.min : 0;
+         return Math.min(min1, min2);
+      }
+      if (data.data.length !== 0) {
+         min = d3.min(data.data, function(entry) { return minFrom2Cities(entry); });
+         min = Math.min(min, 0);
+         max = d3.max(data.data, function(entry) { return maxFrom2Cities(entry); });
+      }
+      else {
+         min = 0;
+         max = 100;
+      }
+//      var min = d3.max(data.data, function(entry) { return Math.max(entry.city1.min, entry.city2.min); });
+//      min = Math.min(min, 0);
+//      var max = d3.max(data.data, function(entry) { return Math.max(entry.city1.max, entry.city2.max); });
       yScale.domain([min, max+topPadding]);
       
       // Remove previous chart, if any

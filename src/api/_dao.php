@@ -11,6 +11,15 @@ function _openConnection() {
    return $db;
 }
 
+function getLocationId($loc) {
+   $matches = getMatchingCities($loc, 4);
+   # TODO: What if they type in junk and hit enter?
+   if (sizeof($matches) > 0) {
+      return $matches[0]['city_id'];
+   }
+   return null;
+}
+
 function getMatchingCities($input, $limit = 0) {
    
    # Check for bad input

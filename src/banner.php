@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default" role="navigation" ng-controller='MenuCtrl'>
+<nav class="navbar navbar-inverse" role="navigation" ng-controller='MenuCtrl'>
   <div class="container">
   
     <!-- Brand and toggle get grouped for better mobile display -->

@@ -10,18 +10,24 @@
 </head>
 
 <body ng-controller='MainCtrl'>
-
+   <div id='wrapper'>
+   
    <span us-spinner="{radius:30, width:8, length: 16, top: '90%' }" spinner-key='spinner-99'></span>
 
    <?php include 'banner.php'; ?>
    
-   <div ng-view style='height:100%'></div>
+   <div class='main-view' ng-view></div>
    
-<!--   <div class='footer'>-->
-<!--      <div class='container'>-->
-<!--         Copyright (c) 2015 Climatediff-->
-<!--      </div>-->
-<!--   </div>-->
+   <footer class='footer navbar-inverse'>
+      <div class='container'>
+         <div class='row'>
+            Copyright &copy; 2015 Climatediff
+         </div>
+         <div class='row'>
+            <a href='http://github.com/bobbylight/climatediff'><i class="fa fa-github"></i></a>
+         </div>
+      </div>
+   </footer>
    
    <!-- build:js js/climatediff.min.js -->
    <script src="../bower_components/jquery/jquery.js"></script>
@@ -40,6 +46,7 @@
    <script src='js/app.js'></script>
    <!-- endbuild -->
 
+   </div>
 </body>
 
 </html>
