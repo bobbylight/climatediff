@@ -8,4 +8,5 @@ all-locations.db
 composer.lock
 composer.phar
 vendor
-
+*.zip
+interesting-datatypes.txt

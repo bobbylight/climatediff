@@ -16,6 +16,10 @@
    "shadow": false,
    "strict": true,
    "undef": true,        // Warns about unknown globals
-   "unused": "vars"     // Warn on unused variables (explicitly vars, not function params)
+   "unused": "vars",     // Warn on unused variables (explicitly vars, not function params)
    
+   // TODO: Move globals and exporteds into Gruntfile?
+   "globals": {
+      "angular": true
+   }
 }

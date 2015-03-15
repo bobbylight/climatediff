@@ -2,6 +2,35 @@
 require_once('../init.php');
 require_once('_dao.php');
 
+function _doCurl($url, $headers, $debug) {
+   
+   $result = array();
+   
+   # TODO: CURLOPT_RETURNTRANSFER makes the response much too slow ( > 30 seconds when returning all data).
+   # Removing that option makes things very fast, but we cannot manipulate the data before returning a response.
+   # Figure out why!
+   $ch = curl_init($url);
+   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+   curl_setopt($ch, CURLOPT_HEADER, 0);
+   if ($headers != null) {
+      curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+   }
+   curl_setopt($ch, CURLOPT_TIMEOUT, 90);
+   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 90);
+   
+   $json = curl_exec($ch);
+   if ($debug) {
+      $result['curlInfo'] = curl_getinfo($ch);
+   }
+   
+   curl_close($ch);
+   #echo $json;
+   
+   $result['response'] = json_decode($json, true);
+   return $result;
+}
+
 function _fetchCityClimate($loc, &$response, $index) {
    
    global $token;
@@ -18,30 +47,39 @@ function _fetchCityClimate($loc, &$response, $index) {
    $offs = 0;
    $limit = 1000;
    $DATA_SET_ID="GHCNDMS";
-   $DATA_TYPES="MMNT,MMXT,MNTM";
+   $DATA_TYPES="MMNT,MMXT,MNTM,TPCP";
    $decimalCount = 2;
    $debug = true;
    
    $apiRoot = 'http://www.ncdc.noaa.gov/cdo-web/api/v2/data';
+#$apiRoot = 'http://205.167.25.172/cdo-web/api/v2/data';
+
+   $results = array();
+   $totalTimes = array();
+   $curlInfos = array();
    
-   $ch = curl_init("$apiRoot?offs=$offs&limit=$limit&datasetid=$DATA_SET_ID&datatypeid=$DATA_TYPES&locationid=$locId&startdate=$START_DATE&enddate=$END_DATE");
-   curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-   curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 0);
-   curl_setopt($ch, CURLOPT_HEADER, 0);
-   curl_setopt($ch, CURLOPT_HTTPHEADER, array( "token: $token" ));
-   $json = curl_exec($ch);
-   if ($debug) {
-      $curlInfo = curl_getinfo($ch);
+   # We loop in case we ask for data with > 1000 rows
+   # TODO: Prevent making > 5 requests per second!
+   $done = false;
+   while (!$done) {
+      
+      $query = "$apiRoot?offs=$offs&limit=$limit&datasetid=$DATA_SET_ID&datatypeid=$DATA_TYPES&locationid=$locId&startdate=$START_DATE&enddate=$END_DATE";
+      $curlResult = _doCurl($query, array( "token: $token" ), $debug);
+      if ($debug) {
+         array_push($curlInfos, $curlResult['curlInfo']);
+      }
+      array_push($response['queries'], $query);
+      $decodedJson = $curlResult['response'];
+
+      # For some cities we receive {}.  Example: "Raleigh, NC 27605".  Not sure why - no data?
+      $results = array_merge($results, (isset($decodedJson['results']) ? $decodedJson['results'] : array()));
+      array_push($totalTimes, (microtime(true) - $start));
+      
+      $returnedOffs = intval($decodedJson['metadata']['resultset']['offset']);
+      $returnedCount = intval($decodedJson['metadata']['resultset']['count']);
+      $done = ($returnedCount < $limit);
+      $offs = $returnedOffs + $returnedCount;
    }
-   curl_close($ch);
-   #echo $json;
-   
-   # TODO: If result count > 1000, we'll need to make more requests
-   
-   $decodedJson = json_decode($json, true);
-   # For some cities we receive {}.  Example: "Raleigh, NC 27605"
-   $results = isset($decodedJson['results']) ? $decodedJson['results'] : array();
-   $totalTime = microtime(true) - $start;
    
    $data = &$response['data'];
    $id = "city$index";
@@ -49,7 +87,7 @@ function _fetchCityClimate($loc, &$response, $index) {
    $metadata = &$response['metadata'];
    $cityMetadata = array( 'city_id' => $locId,
          'city_name' => $loc,
-         'total_time' => $totalTime);
+         'total_time' => $totalTimes);
    
    for ($i = 0; $i < 12; $i++) {
       $data[$i][$id]['min'] = 0;
@@ -58,6 +96,8 @@ function _fetchCityClimate($loc, &$response, $index) {
       $data[$i][$id]['medianCount'] = 0;
       $data[$i][$id]['max'] = 0;
       $data[$i][$id]['maxCount'] = 0;
+      $data[$i][$id]['precip'] = 0;
+      $data[$i][$id]['precipCount'] = 0;
    }
    
    foreach ($results as &$result) {
@@ -72,18 +112,27 @@ function _fetchCityClimate($loc, &$response, $index) {
          $data[$month][$id]['max'] += $result['value'];
          $data[$month][$id]['maxCount']++;
       }
-      else {
+      elseif ($datatype == 'MNTM') {
          $data[$month][$id]['median'] += $result['value'];
          $data[$month][$id]['medianCount']++;
+      }
+      elseif ($datatype == 'TPCP') {
+         $data[$month][$id]['precip'] += $result['value'];
+         $data[$month][$id]['precipCount']++;
       }
    }
    
    for ($month = 0; $month < 12; $month++) {
       if ($data[$month][$id]['minCount'] == 0 ||
             $data[$month][$id]['medianCount'] == 0 ||
-            $data[$month][$id]['maxCount'] == 0) {
+            $data[$month][$id]['maxCount'] == 0
+            || $data[$month][$id]['precipCount'] == 0) {
+         $cityMetadata['error'] = 'No data found for this city (' .
+               $data[$month][$id]['minCount'] . ', ' .
+               $data[$month][$id]['medianCount'] . ', ' .
+               $data[$month][$id]['maxCount'] . ', ' .
+               $data[$month][$id]['precipCount'] . ').';
          $data = [];
-         $cityMetadata['error'] = 'No data found for this city.';
          break;
       }
       $data[$month][$id]['min'] /= $data[$month][$id]['minCount'];
@@ -95,13 +144,16 @@ function _fetchCityClimate($loc, &$response, $index) {
       $data[$month][$id]['max'] /= $data[$month][$id]['maxCount'];
       $data[$month][$id]['max'] /= 10; // Measurements are in tenths of degrees
       $data[$month][$id]['max'] = round($data[$month][$id]['max'], $decimalCount);
+      $data[$month][$id]['precip'] /= $data[$month][$id]['precipCount'];
+      # TODO: Convert to inches, or 10ths of inches?
+      $data[$month][$id]['precip'] = round($data[$month][$id]['precip'], $decimalCount);
    }
    
    array_push($metadata, $cityMetadata);
    
    if ($debug === true) {
       $debugData = &$response['debug'];
-      $debugData[$id] = $curlInfo;
+      $debugData[$id] = $curlInfos;
    }
 }
 
@@ -121,7 +173,8 @@ for ($i=0; $i < 12; $i++) {
    }
    array_push($data, $monthData);
 }
-$response = array( 'data' => $data, 'metadata' => array(), 'debug' => array() );
+$response = array( 'data' => $data, 'metadata' => array(), 'debug' => array(),
+   'queries' => array() );
    
 _fetchCityClimate($loc1, $response, 1);
 if (isset($loc2)) {# && !isset($response['metadata'][0]['error'])) {
