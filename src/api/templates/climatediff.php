@@ -6,9 +6,6 @@ function _doCurl($url, $headers, $debug) {
    
    $result = array();
    
-   # TODO: CURLOPT_RETURNTRANSFER makes the response much too slow ( > 30 seconds when returning all data).
-   # Removing that option makes things very fast, but we cannot manipulate the data before returning a response.
-   # Figure out why!
    $ch = curl_init($url);
    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
@@ -44,7 +41,7 @@ function _fetchCityClimate($loc, &$response, $index) {
    $start = microtime(true);
    $START_DATE='2014-01-01';
    $END_DATE='2014-12-31';
-   $offs = 0;
+   $offs = 1;
    $limit = 1000;
    $DATA_SET_ID="GHCNDMS";
    $DATA_TYPES="MMNT,MMXT,MNTM,TPCP";
@@ -63,22 +60,22 @@ function _fetchCityClimate($loc, &$response, $index) {
    $done = false;
    while (!$done) {
       
-      $query = "$apiRoot?offs=$offs&limit=$limit&datasetid=$DATA_SET_ID&datatypeid=$DATA_TYPES&locationid=$locId&startdate=$START_DATE&enddate=$END_DATE";
+      $query = "$apiRoot?offset=$offs&limit=$limit&datasetid=$DATA_SET_ID&datatypeid=$DATA_TYPES&locationid=$locId&startdate=$START_DATE&enddate=$END_DATE";
       $curlResult = _doCurl($query, array( "token: $token" ), $debug);
       if ($debug) {
          array_push($curlInfos, $curlResult['curlInfo']);
       }
       array_push($response['queries'], $query);
       $decodedJson = $curlResult['response'];
-
+      
       # For some cities we receive {}.  Example: "Raleigh, NC 27605".  Not sure why - no data?
       $results = array_merge($results, (isset($decodedJson['results']) ? $decodedJson['results'] : array()));
       array_push($totalTimes, (microtime(true) - $start));
       
       $returnedOffs = intval($decodedJson['metadata']['resultset']['offset']);
       $returnedCount = intval($decodedJson['metadata']['resultset']['count']);
-      $done = ($returnedCount < $limit);
-      $offs = $returnedOffs + $returnedCount;
+      $done = count($results) >= $returnedCount;#($returnedCount < $limit);
+      $offs = count($results) + 1;//$returnedOffs + $returnedCount;
    }
    
    $data = &$response['data'];
@@ -127,7 +124,7 @@ function _fetchCityClimate($loc, &$response, $index) {
             $data[$month][$id]['medianCount'] == 0 ||
             $data[$month][$id]['maxCount'] == 0
             || $data[$month][$id]['precipCount'] == 0) {
-         $cityMetadata['error'] = 'No data found for this city (' .
+         $cityMetadata['error'] = "No data found for this city for month $month (" .
                $data[$month][$id]['minCount'] . ', ' .
                $data[$month][$id]['medianCount'] . ', ' .
                $data[$month][$id]['maxCount'] . ', ' .
