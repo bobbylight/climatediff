@@ -24,16 +24,16 @@
       </div>
       
       <div class='row'>
-         
-         
+         <h1 ng-bind='resultsTitle'></h1>
       </div>
       
    </form>
    
-   <div id='results' ng-show='resultsLoaded'>
-<!--         <div ng-bind='resultsLabel'></div>-->
-<!--         <svg id='chart' class='chart'></svg>-->
-      <cd-bar-chart></cd-bar-chart>
+   <div id='results' ng-show='showCharts'>
+      <cd-area-chart title='Temperature' spinner-index='1' data='tempData'
+            plotter='renderTemperatureChart()' mask='maskTempResults'></cd-area-chart>
+      <cd-area-chart title='Precipitation' spinner-index='2' data='precipData'
+            plotter='renderTemperatureChart()' mask='maskPrecipResults'></cd-area-chart>
    </div>
    
 </div>

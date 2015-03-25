@@ -7,6 +7,15 @@
 html, body {
    height: 100%;
 }
+h1 {
+   text-align: center;
+}
+
+.main-chart-div {
+   border: 1px solid #ddd;
+   border-radius: 4px 4px 0 0;
+   margin-bottom: 2em;
+}
 
 .navbar {
    border-radius: 0; /* Remove 4-pixel radius in bootstrap default */
@@ -49,7 +58,7 @@ html, body {
 
 /* SVG chart styling */
 .chart {
-   width: 700px;
+   width: 95%;
    height: 450px;
 }
 
@@ -76,10 +85,13 @@ y {
    padding-left: 30px;
 }
 
-.bar-chart.results-label {
+.area-chart.results-label {
    font-weight: bolder;
    font-size: x-large;
    padding-bottom: 2em;
+text-align: initial;
+color: #808080;
+margin: 0.5em;
 }
 
 /* Area chart stuff */

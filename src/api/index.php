@@ -30,19 +30,15 @@ $app->get('/locations', function () use ($app) {
    $app->render('locations.php');
 });
 
-$app->get('/climatediff/:locId1(/:locId2)', function ($locId1, $locId2 = null) use ($app) {
+$app->get('/temperature/:locId1(/:locId2)', function ($locId1, $locId2 = null) use ($app) {
    $app->response->headers->set('Content-Type', 'application/json');
-   $app->render('climatediff.php', array('loc1' => $locId1, 'loc2' => $locId2));
+   $app->render('temperature.php', array('loc1' => $locId1, 'loc2' => $locId2));
 });
 
-//$app->get('/game/:system(/:game)', function($system, $game = null) use ($app) {
-//   if ($system==='nes') {
-//      $app->render('nes.php', array('games' => $game));
-//   }
-//   else {
-//      error("Unknown game system: $system");
-//   }
-//});
+$app->get('/precipitation/:locId1(/:locId2)', function ($locId1, $locId2 = null) use ($app) {
+   $app->response->headers->set('Content-Type', 'application/json');
+   $app->render('precipitation.php', array('loc1' => $locId1, 'loc2' => $locId2));
+});
 
 $app->run();
 

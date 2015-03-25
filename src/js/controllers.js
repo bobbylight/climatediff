@@ -7,9 +7,14 @@ controllers.controller('MainCtrl', ['$scope', function($scope) {
 controllers.controller('MainPageCtrl', ['$scope', '$http', function($scope, $http) {
    'use strict';
    
-   $scope.city1 = 'Raleigh, NC';
-   $scope.city2 = 'Philadelphia, PA';
+   $scope.city1 = 'Raleigh, NC US';
+   $scope.city2 = 'Lexington, KY US';
    $scope.typeaheadWaitMillis = 500;
+   
+   $scope.renderTemperatureChart = function() {
+      'use strict';
+      return chartDrawers.renderTemperatureChart;
+   };
    
    $scope.getLocationCompletions = function(val) {
       return $http.get('api/locations', {
@@ -58,28 +63,45 @@ controllers.controller('MainPageCtrl', ['$scope', '$http', function($scope, $htt
    }
    
    $scope.updateClimateDiff = function() {
-      $scope.resultsLoaded = true;
       
-      $scope.maskResults = true;
-//      $scope.startSpin();
+      $scope.showCharts = true;
+      $scope.maskTempResults = true;
+      $scope.maskPrecipResults = true;
       
-      $scope.resultsLabel = 'Comparing ' + $scope.city1 + ' to ' + $scope.city2 + ':';
+      $scope.resultsTitle = 'Comparing ' + $scope.city1 + ' to ' + $scope.city2 + ':';
+      
       // Mimic an empty data set to clear out previous graphs
-      $scope.data = { data: [],
+      $scope.tempData = { data: [],
+            metadata: [ { 'city_name': $scope.city1 }, { 'city_name': $scope.city2 } ] };
+      $scope.precipData = { data: [],
             metadata: [ { 'city_name': $scope.city1 }, { 'city_name': $scope.city2 } ] };
       
-      return $http.get('api/climatediff/' + $scope.city1 + '/' + $scope.city2)
+      function updatePrecipChart() {
+         return $http.get('api/precipitation/' + $scope.city1 + '/' + $scope.city2)
+            .success(function(data, status, headers, config) {
+               console.log(JSON.stringify(data));
+               //data.data = celsiusToFahrenheit(data.data);
+               $scope.precipData = data;
+               $scope.maskPrecipResults = false;
+            })
+            .error(function(data, status, headers, config) {
+               alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
+               $scope.maskPrecipResults = false;
+            });
+      }
+      
+      return $http.get('api/temperature/' + $scope.city1 + '/' + $scope.city2)
          .success(function(data, status, headers, config) {
             console.log(JSON.stringify(data));
             data.data = celsiusToFahrenheit(data.data);
-            $scope.data = data;
-//            $scope.stopSpin();
-            $scope.maskResults = false;
+            $scope.tempData = data;
+            $scope.maskTempResults = false;
+            updatePrecipChart();
          })
          .error(function(data, status, headers, config) {
             alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
-//            $scope.stopSpin();
-            $scope.maskResults = false;
+            $scope.maskTempResults = false;
+            updatePrecipChart();
          });
    };
    

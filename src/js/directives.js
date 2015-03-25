@@ -1,81 +1,20 @@
 var directives = angular.module('cdDirectives', []);
 
-directives.directive('cdBarChart', [ 'usSpinnerService', function(usSpinnerService) {
+directives.directive('cdAreaChart', [ 'usSpinnerService', function(usSpinnerService) {
    'use strict';
-   
-   var $previouslySelected;
    
    var months = [ 'January', 'February', 'March', 'April', 'May', 'June',
          'July', 'August', 'September', 'October', 'November', 'December' ];
    
-   function appendCityArea(chart, $scope, index, xScale, yScale) {
-      
-      var data = $scope.data;
-      if (!data || !data.data || data.data.length === 0) {
-         return;
-      }
-      
-      var city = 'city' + (index + 1);
-      if (!data.data[0][city]) {
-         console.log('Note: No data in response for city: "' + city + '"');
-         return;
-      }
-      
-      var area = d3.svg.area()
-            .x(function(d, i) { return xScale(i); })
-            .y0(function(d) { return yScale(d[city].min); })
-            .y1(function(d) { return yScale(d[city].max); })
-            .interpolate('cardinal');
-      var minLine = d3.svg.line()
-            .x(function(d, i) { return xScale(i); })
-            .y(function(d) { return yScale(d[city].min); })
-            .interpolate('cardinal');
-      var maxLine = d3.svg.line()
-            .x(function(d, i) { return xScale(i); })
-            .y(function(d) { return yScale(d[city].max); })
-            .interpolate('cardinal');
-      
-//      console.log('^^^ ' + JSON.stringify(area));
-      chart.append('path')
-         .datum(data.data)
-         .attr('class', 'area' + (index+1))
-         .attr('d', area);
-      chart.append('path')
-         .datum(data.data)
-         .attr('class', 'line' + (index+1))
-         .attr('d', minLine)
-         .attr('data-legend', function(d) { return data.metadata[index].city_name; })
-         .attr('data-legend-pos', index);
-      chart.append('path')
-         .datum(data.data)
-         .attr('class', 'line' + (index+1))
-         .attr('d', maxLine);
-      
-      var points = chart.selectAll(".point")
-              .data(data.data)
-            .enter().append("svg:circle")
-               .attr('class', 'point' + (index+1))
-               .attr("cx", function(d, i) { return xScale(i); })
-               .attr("cy", function(d, i) { return yScale(d[city].max); })
-               .attr("r", function(d, i) { return 3; });
-      points = chart.selectAll(".point")
-              .data(data.data)
-            .enter().append("svg:circle")
-               .attr('class', 'point' + (index+1))
-               .attr("cx", function(d, i) { return xScale(i); })
-               .attr("cy", function(d, i) { return yScale(d[city].min); })
-               .attr("r", function(d, i) { return 3; });
-      
-   }
-   
-   function createChart($scope) {
+   function createChart($scope, element, chartRenderFunc) {
       
       // Margins for axes.  Could also be used for spacing, titles, etc.
       var chartMargin = { top: 0, right: 0, bottom: 60, left: 40 };
       
       // Height of actual chart content area.
-      var chartWidth = $('#chart').width() - chartMargin.left - chartMargin.right;
-      var chartHeight = $('#chart').height() - chartMargin.top - chartMargin.bottom;
+      var $chartElem = $(element).find('.chart');
+      var chartWidth = $chartElem.width() - chartMargin.left - chartMargin.right;
+      var chartHeight = $chartElem.height() - chartMargin.top - chartMargin.bottom;
       
       var yScale = d3.scale.linear()
             .range([ chartHeight, 0 ]);
@@ -116,10 +55,11 @@ directives.directive('cdBarChart', [ 'usSpinnerService', function(usSpinnerServi
       yScale.domain([min, max+topPadding]);
       
       // Remove previous chart, if any
-      d3.select('#chart')
+      var chartDomNode = $chartElem[0];
+      d3.select(chartDomNode)
          .select('g').remove();
       
-      var chart = d3.select('#chart')
+      var chart = d3.select(chartDomNode)
          .append('g')
             .attr("transform", "translate(" + chartMargin.left + ", " + chartMargin.top + ")");
 
@@ -146,10 +86,11 @@ directives.directive('cdBarChart', [ 'usSpinnerService', function(usSpinnerServi
          .classed({ 'y': true, 'axis': true })
          .call(yAxis);
       
-      appendCityArea(chart, $scope, 0, xScale, yScale);
-      appendCityArea(chart, $scope, 1, xScale, yScale);
+      (chartRenderFunc())(chart, $scope, xScale, yScale);
+//      appendCityArea(chart, $scope, 0, xScale, yScale);
+//      appendCityArea(chart, $scope, 1, xScale, yScale);
       
-      var legend = chart.append('g')
+      /*var legend = */chart.append('g')
          .attr('class', 'legend')
          .attr('transform', 'translate(50, 30)')
          .style('font-size', '12px')
@@ -161,29 +102,37 @@ directives.directive('cdBarChart', [ 'usSpinnerService', function(usSpinnerServi
    
    return {
       restrict: 'E',
-      link: function(scope, element, attr) {
+      scope: {
+         spinnerIndex: '@spinnerIndex',
+         chartTitle: '@title',
+         data: '=data',
+         mask: '=mask',
+         plotter: '&plotter'
+      },
+      link: function(scope, element, attrs) {
          
          scope.$watch('data', function(newValue, oldValue) {
             if (newValue === oldValue) {
                return; // First time through
             }
-            createChart(scope);
+            createChart(scope, element, scope.plotter);
          });
          
-         scope.$watch('maskResults', function(newValue, oldValue) {
+         var spinnerId = 'spinner-' + scope.spinnerIndex;
+         scope.$watch('mask', function(newValue, oldValue) {
             if (newValue === oldValue) {
                return; // First time through
             }
             if (newValue) {
-               usSpinnerService.spin('spinner-1');
+               usSpinnerService.spin(spinnerId);
             }
             else {
-               usSpinnerService.stop('spinner-1');
+               usSpinnerService.stop(spinnerId);
             }
          });
          
       },
-      templateUrl: 'directives/barChart.html'
+      templateUrl: 'directives/areaChart.html'
    };
    
 }]);
