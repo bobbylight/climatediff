@@ -12,8 +12,11 @@ controllers.controller('MainPageCtrl', ['$scope', '$http', function($scope, $htt
    $scope.typeaheadWaitMillis = 500;
    
    $scope.renderTemperatureChart = function() {
-      'use strict';
       return chartDrawers.renderTemperatureChart;
+   };
+   
+   $scope.renderPrecipitationChart = function() {
+      return chartDrawers.renderPrecipitationChart;
    };
    
    $scope.getLocationCompletions = function(val) {

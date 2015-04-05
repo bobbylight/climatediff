@@ -109,8 +109,9 @@ function _fetchCityClimate($loc, &$response, $index) {
          break;
       }
       $data[$month][$id]['precip'] /= $data[$month][$id]['precipCount'];
-      # TODO: Convert to inches, or 10ths of inches?
-      $data[$month][$id]['precip'] = round($data[$month][$id]['precip'], $decimalCount);
+# TODO: Not yet sure of unit of measurement.  For now pretending it's tenths of mm (mm * 10)
+$inches = ($data[$month][$id]['precip'] / 10) * 0.03937007874;
+      $data[$month][$id]['precip'] = round($inches, $decimalCount);
    }
    
    array_push($metadata, $cityMetadata);
