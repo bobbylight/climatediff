@@ -7,6 +7,7 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    
    <link href="css/all.css" rel="stylesheet">
+<link rel="stylesheet" href="//rawgithub.com/Caged/d3-tip/master/examples/example-styles.css">
 </head>
 
 <body ng-controller='MainCtrl'>
@@ -33,6 +34,7 @@
    <script src="../bower_components/jquery/jquery.js"></script>
    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
    <script src="../bower_components/d3/d3.js"></script>
+   <script src="../bower_components/d3-tip/index.js"></script>
    <script src='../bower_components/angular/angular.js'></script>
    <script src='../bower_components/angular-route/angular-route.js'></script>
    <script src="../bower_components/angular-resource/angular-resource.js"></script>
@@ -43,7 +45,6 @@
 <!--   <script src='js/services.js'></script>-->
    <script src='js/controllers.js'></script>
    <script src='js/directives.js'></script>
-   <script src='js/chartDrawers.js'></script>
    <script src='js/app.js'></script>
    <!-- endbuild -->
 

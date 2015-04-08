@@ -1,12 +1,120 @@
 var directives = angular.module('cdDirectives', []);
 
-directives.directive('cdTemperatureChart', [ 'usSpinnerService', function(usSpinnerService) {
-   'use strict';
+(function() {
    
    var months = [ 'January', 'February', 'March', 'April', 'May', 'June',
          'July', 'August', 'September', 'October', 'November', 'December' ];
    
-   function createChart($scope, element, chartRenderFunc) {
+   function expandPoint(tipCallback) {
+      return function(e) {
+         tipCallback(e);
+         d3.select(this).transition()
+            .attr('r', 6);
+      };
+   }
+   function collapsePoint(tipCallback) {
+      return function(e) {
+         tipCallback(e);
+         d3.select(this).transition()
+            .attr('r', 3);
+      };
+   }
+   
+directives.directive('cdTemperatureChart', [ 'usSpinnerService', function(usSpinnerService) {
+   'use strict';
+   
+   function _appendCityArea(chart, $scope, index, xScale, yScale) {
+      
+      var data = $scope.data;
+      if (!data || !data.data || data.data.length === 0) {
+         return;
+      }
+      
+      var city = 'city' + (index + 1);
+      if (!data.data[0][city]) {
+         console.log('Note: No data in response for city: "' + city + '"');
+         return;
+      }
+      
+      var area = d3.svg.area()
+            .x(function(d, i) { return xScale(i); })
+            .y0(function(d) { return yScale(d[city].min); })
+            .y1(function(d) { return yScale(d[city].max); })
+            .interpolate('cardinal');
+      var minLine = d3.svg.line()
+            .x(function(d, i) { return xScale(i); })
+            .y(function(d) { return yScale(d[city].min); })
+            .interpolate('cardinal');
+      var maxLine = d3.svg.line()
+            .x(function(d, i) { return xScale(i); })
+            .y(function(d) { return yScale(d[city].max); })
+            .interpolate('cardinal');
+      
+      chart.append('path')
+         .datum(data.data)
+         .attr('class', 'area' + (index+1))
+         .attr('d', area);
+      chart.append('path')
+         .datum(data.data)
+         .attr('class', 'line' + (index+1))
+         .attr('d', minLine)
+         .attr('data-legend', function(d) { return data.metadata[index].city_name; })
+         .attr('data-legend-pos', index);
+      chart.append('path')
+         .datum(data.data)
+         .attr('class', 'line' + (index+1))
+         .attr('d', maxLine);
+      
+   }
+   
+   function _appendCityAreaPoints(chart, $scope, index, xScale, yScale) {
+      
+      var data = $scope.data;
+      if (!data || !data.data || data.data.length === 0) {
+         return;
+      }
+      
+      var city = 'city' + (index + 1);
+      if (!data.data[0][city]) {
+         console.log('Note: No data in response for city: "' + city + '"');
+         return;
+      }
+      
+      var tip = d3.tip().attr('class', 'd3-tip').html(function(d) {
+         return d[city].max;
+      });
+      chart.call(tip);
+      tip.offset([ -10, 0 ]);
+      var points = chart.selectAll(".point")
+              .data(data.data)
+            .enter().append("svg:circle")
+               .attr('class', 'point' + (index+1))
+               .attr("cx", function(d, i) { return xScale(i); })
+               .attr("cy", function(d, i) { return yScale(d[city].max); })
+               .attr("r", function(d, i) { return 3; })
+               .attr('pointer-events', 'all')
+               .on('mouseover', expandPoint(tip.show))
+               .on('mouseout', collapsePoint(tip.hide));
+      
+      tip = d3.tip().attr('class', 'd3-tip').html(function(d) {
+         return d[city].min;
+      });
+      chart.call(tip);
+      tip.offset([ -10, 0 ]);
+      points = chart.selectAll(".point")
+              .data(data.data)
+            .enter().append("svg:circle")
+               .attr('class', 'point' + (index+1))
+               .attr("cx", function(d, i) { return xScale(i); })
+               .attr("cy", function(d, i) { return yScale(d[city].min); })
+               .attr("r", function(d, i) { return 3; })
+               .attr('pointer-events', 'all')
+               .on('mouseover', expandPoint(tip.show))
+               .on('mouseout', collapsePoint(tip.hide));
+      
+   }
+   
+   function createChart($scope, element) {
       
       // Margins for axes.  Could also be used for spacing, titles, etc.
       var chartMargin = { top: 0, right: 0, bottom: 60, left: 40 };
@@ -86,9 +194,10 @@ directives.directive('cdTemperatureChart', [ 'usSpinnerService', function(usSpin
          .classed({ 'y': true, 'axis': true })
          .call(yAxis);
       
-      (chartRenderFunc())(chart, $scope, xScale, yScale);
-//      appendCityArea(chart, $scope, 0, xScale, yScale);
-//      appendCityArea(chart, $scope, 1, xScale, yScale);
+      _appendCityArea(chart, $scope, 0, xScale, yScale);
+      _appendCityArea(chart, $scope, 1, xScale, yScale);
+      _appendCityAreaPoints(chart, $scope, 0, xScale, yScale);
+      _appendCityAreaPoints(chart, $scope, 1, xScale, yScale);
       
       /*var legend = */chart.append('g')
          .attr('class', 'legend')
@@ -106,8 +215,7 @@ directives.directive('cdTemperatureChart', [ 'usSpinnerService', function(usSpin
          spinnerIndex: '@spinnerIndex',
          chartTitle: '@title',
          data: '=data',
-         mask: '=mask',
-         plotter: '&plotter'
+         mask: '=mask'
       },
       link: function(scope, element, attrs) {
          
@@ -115,7 +223,7 @@ directives.directive('cdTemperatureChart', [ 'usSpinnerService', function(usSpin
             if (newValue === oldValue) {
                return; // First time through
             }
-            createChart(scope, element, scope.plotter);
+            createChart(scope, element);
          });
          
          var spinnerId = 'spinner-' + scope.spinnerIndex;
@@ -132,7 +240,7 @@ directives.directive('cdTemperatureChart', [ 'usSpinnerService', function(usSpin
          });
          
       },
-      templateUrl: 'directives/areaChart.html'
+      templateUrl: 'directives/tempChart.html'
    };
    
 }]);
@@ -140,10 +248,74 @@ directives.directive('cdTemperatureChart', [ 'usSpinnerService', function(usSpin
 directives.directive('cdPrecipChart', [ 'usSpinnerService', function(usSpinnerService) {
    'use strict';
    
-   var months = [ 'January', 'February', 'March', 'April', 'May', 'June',
-         'July', 'August', 'September', 'October', 'November', 'December' ];
+   var _appendCityPrecipPoints = function(chart, $scope, index, xScale, yScale) {
+      
+      var data = $scope.data;
+      if (!data || !data.data || data.data.length === 0) {
+         return;
+      }
+      
+      var city = 'city' + (index + 1);
+      if (!data.data[0][city]) {
+         console.log('Note: No data in response for city: "' + city + '"');
+         return;
+      }
+      
+      var tip = d3.tip().attr('class', 'd3-tip').html(function(d) {
+         return d[city].precip;
+      });
+      chart.call(tip);
+      tip.offset([ -10, 0 ]);
+      /*var points = */chart.selectAll(".point")
+              .data(data.data)
+            .enter().append("svg:circle")
+               .attr('class', 'point' + (index+1))
+               .attr("cx", function(d, i) { return xScale(i); })
+               .attr("cy", function(d, i) { return yScale(d[city].precip); })
+               .attr("r", function(d, i) { return 3; })
+               .attr('pointer-events', 'all')
+               .on('mouseover', expandPoint(tip.show))
+               .on('mouseout', collapsePoint(tip.hide));
+      
+   };
    
-   function createChart($scope, element, chartRenderFunc) {
+   var _appendCityPrecip = function(chart, $scope, index, xScale, yScale) {
+      
+      var data = $scope.data;
+      if (!data || !data.data || data.data.length === 0) {
+         return;
+      }
+      
+      var city = 'city' + (index + 1);
+      if (!data.data[0][city]) {
+         console.log('Note: No data in response for city: "' + city + '"');
+         return;
+      }
+      
+      var area = d3.svg.area()
+            .x(function(d, i) { return xScale(i); })
+            .y0(function(d) { return yScale(d[city].precip); })
+            .y1(function(d) { return yScale(0); })
+            .interpolate('cardinal');
+      var maxLine = d3.svg.line()
+            .x(function(d, i) { return xScale(i); })
+            .y(function(d) { return yScale(d[city].precip); })
+            .interpolate('cardinal');
+      
+      chart.append('path')
+         .datum(data.data)
+         .attr('class', 'area' + (index+1))
+         .attr('d', area);
+      chart.append('path')
+         .datum(data.data)
+         .attr('class', 'line' + (index+1))
+         .attr('d', maxLine)
+         .attr('data-legend', function(d) { return data.metadata[index].city_name; })
+         .attr('data-legend-pos', index);
+      
+   };
+   
+   function createChart($scope, element) {
       
       // Margins for axes.  Could also be used for spacing, titles, etc.
       var chartMargin = { top: 0, right: 0, bottom: 60, left: 40 };
@@ -164,7 +336,7 @@ directives.directive('cdPrecipChart', [ 'usSpinnerService', function(usSpinnerSe
       
       var data = $scope.data;
       
-      var topPadding = 5;
+      var topPadding = 1;
       
       var min = 0,
           max;
@@ -208,14 +380,15 @@ directives.directive('cdPrecipChart', [ 'usSpinnerService', function(usSpinnerSe
       var yAxis = d3.svg.axis()
          .scale(yScale)
          .orient("left")
-         .tickFormat(function(d, i) { return d + '\u00b0 F'; });
+         .tickFormat(function(d, i) { return d + '"'; });
       chart.append("g")
          .classed({ 'y': true, 'axis': true })
          .call(yAxis);
       
-      (chartRenderFunc())(chart, $scope, xScale, yScale);
-//      appendCityArea(chart, $scope, 0, xScale, yScale);
-//      appendCityArea(chart, $scope, 1, xScale, yScale);
+      _appendCityPrecip(chart, $scope, 0, xScale, yScale);
+      _appendCityPrecip(chart, $scope, 1, xScale, yScale);
+      _appendCityPrecipPoints(chart, $scope, 0, xScale, yScale);
+      _appendCityPrecipPoints(chart, $scope, 1, xScale, yScale);
       
       /*var legend = */chart.append('g')
          .attr('class', 'legend')
@@ -233,8 +406,7 @@ directives.directive('cdPrecipChart', [ 'usSpinnerService', function(usSpinnerSe
          spinnerIndex: '@spinnerIndex',
          chartTitle: '@title',
          data: '=data',
-         mask: '=mask',
-         plotter: '&plotter'
+         mask: '=mask'
       },
       link: function(scope, element, attrs) {
          
@@ -242,7 +414,7 @@ directives.directive('cdPrecipChart', [ 'usSpinnerService', function(usSpinnerSe
             if (newValue === oldValue) {
                return; // First time through
             }
-            createChart(scope, element, scope.plotter);
+            createChart(scope, element);
          });
          
          var spinnerId = 'spinner-' + scope.spinnerIndex;
@@ -259,7 +431,9 @@ directives.directive('cdPrecipChart', [ 'usSpinnerService', function(usSpinnerSe
          });
          
       },
-      templateUrl: 'directives/areaChart.html'
+      templateUrl: 'directives/precipChart.html'
    };
    
 }]);
+
+})();

@@ -11,14 +11,6 @@ controllers.controller('MainPageCtrl', ['$scope', '$http', function($scope, $htt
    $scope.city2 = 'Lexington, KY US';
    $scope.typeaheadWaitMillis = 500;
    
-   $scope.renderTemperatureChart = function() {
-      return chartDrawers.renderTemperatureChart;
-   };
-   
-   $scope.renderPrecipitationChart = function() {
-      return chartDrawers.renderPrecipitationChart;
-   };
-   
    $scope.getLocationCompletions = function(val) {
       return $http.get('api/locations', {
          params: {
