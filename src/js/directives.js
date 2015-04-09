@@ -1,6 +1,7 @@
 var directives = angular.module('cdDirectives', []);
 
 (function() {
+   'use strict';
    
    var months = [ 'January', 'February', 'March', 'April', 'May', 'June',
          'July', 'August', 'September', 'October', 'November', 'December' ];
@@ -20,10 +21,16 @@ var directives = angular.module('cdDirectives', []);
       };
    }
    
-directives.directive('cdTemperatureChart', [ 'usSpinnerService', function(usSpinnerService) {
-   'use strict';
+   function createEmptyArea(xScale, yScale) {
+      return d3.svg.area()
+         .x(function(d, i) { return xScale(i); })
+         .y0(function(d) { return yScale(0); })
+         .y1(function(d) { return yScale(0); })
+         .interpolate('cardinal');
+   }
    
-   function _appendCityArea(chart, $scope, index, xScale, yScale) {
+   function appendCityArea(chart, $scope, index, xScale, yScale,
+         maxField, minField) {
       
       var data = $scope.data;
       if (!data || !data.data || data.data.length === 0) {
@@ -38,36 +45,43 @@ directives.directive('cdTemperatureChart', [ 'usSpinnerService', function(usSpin
       
       var area = d3.svg.area()
             .x(function(d, i) { return xScale(i); })
-            .y0(function(d) { return yScale(d[city].min); })
-            .y1(function(d) { return yScale(d[city].max); })
+            .y0(function(d) { var index = d[city][minField] || 0; return yScale(index); })
+            .y1(function(d) { return yScale(d[city][maxField]); })
             .interpolate('cardinal');
-      var minLine = d3.svg.line()
-            .x(function(d, i) { return xScale(i); })
-            .y(function(d) { return yScale(d[city].min); })
-            .interpolate('cardinal');
-      var maxLine = d3.svg.line()
-            .x(function(d, i) { return xScale(i); })
-            .y(function(d) { return yScale(d[city].max); })
-            .interpolate('cardinal');
-      
       chart.append('path')
          .datum(data.data)
          .attr('class', 'area' + (index+1))
+         .attr('d', createEmptyArea(xScale, yScale))
+         .transition()
+         .duration(5000)
          .attr('d', area);
+      
+      if (minField) {
+         var minLine = d3.svg.line()
+               .x(function(d, i) { return xScale(i); })
+               .y(function(d) { return yScale(d[city][minField]); })
+               .interpolate('cardinal');
+         chart.append('path')
+            .datum(data.data)
+            .attr('class', 'line' + (index+1))
+            .attr('d', minLine);
+      }
+      
+      var maxLine = d3.svg.line()
+            .x(function(d, i) { return xScale(i); })
+            .y(function(d) { return yScale(d[city][maxField]); })
+            .interpolate('cardinal');
       chart.append('path')
          .datum(data.data)
          .attr('class', 'line' + (index+1))
-         .attr('d', minLine)
+         .attr('d', maxLine)
          .attr('data-legend', function(d) { return data.metadata[index].city_name; })
          .attr('data-legend-pos', index);
-      chart.append('path')
-         .datum(data.data)
-         .attr('class', 'line' + (index+1))
-         .attr('d', maxLine);
       
    }
    
-   function _appendCityAreaPoints(chart, $scope, index, xScale, yScale) {
+   function appendCityAreaPoints(chart, $scope, index, xScale, yScale,
+         maxVar, minVar) {
       
       var data = $scope.data;
       if (!data || !data.data || data.data.length === 0) {
@@ -81,7 +95,7 @@ directives.directive('cdTemperatureChart', [ 'usSpinnerService', function(usSpin
       }
       
       var tip = d3.tip().attr('class', 'd3-tip').html(function(d) {
-         return d[city].max;
+         return d[city][maxVar];
       });
       chart.call(tip);
       tip.offset([ -10, 0 ]);
@@ -90,29 +104,33 @@ directives.directive('cdTemperatureChart', [ 'usSpinnerService', function(usSpin
             .enter().append("svg:circle")
                .attr('class', 'point' + (index+1))
                .attr("cx", function(d, i) { return xScale(i); })
-               .attr("cy", function(d, i) { return yScale(d[city].max); })
+               .attr("cy", function(d, i) { return yScale(d[city][maxVar]); })
                .attr("r", function(d, i) { return 3; })
                .attr('pointer-events', 'all')
                .on('mouseover', expandPoint(tip.show))
                .on('mouseout', collapsePoint(tip.hide));
       
-      tip = d3.tip().attr('class', 'd3-tip').html(function(d) {
-         return d[city].min;
-      });
-      chart.call(tip);
-      tip.offset([ -10, 0 ]);
-      points = chart.selectAll(".point")
-              .data(data.data)
-            .enter().append("svg:circle")
-               .attr('class', 'point' + (index+1))
-               .attr("cx", function(d, i) { return xScale(i); })
-               .attr("cy", function(d, i) { return yScale(d[city].min); })
-               .attr("r", function(d, i) { return 3; })
-               .attr('pointer-events', 'all')
-               .on('mouseover', expandPoint(tip.show))
-               .on('mouseout', collapsePoint(tip.hide));
+      if (minVar) {
+         tip = d3.tip().attr('class', 'd3-tip').html(function(d) {
+            return d[city][minVar];
+         });
+         chart.call(tip);
+         tip.offset([ -10, 0 ]);
+         points = chart.selectAll(".point")
+                 .data(data.data)
+               .enter().append("svg:circle")
+                  .attr('class', 'point' + (index+1))
+                  .attr("cx", function(d, i) { return xScale(i); })
+                  .attr("cy", function(d, i) { return yScale(d[city][minVar]); })
+                  .attr("r", function(d, i) { return 3; })
+                  .attr('pointer-events', 'all')
+                  .on('mouseover', expandPoint(tip.show))
+                  .on('mouseout', collapsePoint(tip.hide));
+      }
       
    }
+   
+directives.directive('cdTemperatureChart', [ 'usSpinnerService', function(usSpinnerService) {
    
    function createChart($scope, element) {
       
@@ -194,10 +212,10 @@ directives.directive('cdTemperatureChart', [ 'usSpinnerService', function(usSpin
          .classed({ 'y': true, 'axis': true })
          .call(yAxis);
       
-      _appendCityArea(chart, $scope, 0, xScale, yScale);
-      _appendCityArea(chart, $scope, 1, xScale, yScale);
-      _appendCityAreaPoints(chart, $scope, 0, xScale, yScale);
-      _appendCityAreaPoints(chart, $scope, 1, xScale, yScale);
+      appendCityArea(chart, $scope, 0, xScale, yScale, 'max', 'min');
+      appendCityArea(chart, $scope, 1, xScale, yScale, 'max', 'min');
+      appendCityAreaPoints(chart, $scope, 0, xScale, yScale, 'max', 'min');
+      appendCityAreaPoints(chart, $scope, 1, xScale, yScale, 'max', 'min');
       
       /*var legend = */chart.append('g')
          .attr('class', 'legend')
@@ -246,74 +264,6 @@ directives.directive('cdTemperatureChart', [ 'usSpinnerService', function(usSpin
 }]);
 
 directives.directive('cdPrecipChart', [ 'usSpinnerService', function(usSpinnerService) {
-   'use strict';
-   
-   var _appendCityPrecipPoints = function(chart, $scope, index, xScale, yScale) {
-      
-      var data = $scope.data;
-      if (!data || !data.data || data.data.length === 0) {
-         return;
-      }
-      
-      var city = 'city' + (index + 1);
-      if (!data.data[0][city]) {
-         console.log('Note: No data in response for city: "' + city + '"');
-         return;
-      }
-      
-      var tip = d3.tip().attr('class', 'd3-tip').html(function(d) {
-         return d[city].precip;
-      });
-      chart.call(tip);
-      tip.offset([ -10, 0 ]);
-      /*var points = */chart.selectAll(".point")
-              .data(data.data)
-            .enter().append("svg:circle")
-               .attr('class', 'point' + (index+1))
-               .attr("cx", function(d, i) { return xScale(i); })
-               .attr("cy", function(d, i) { return yScale(d[city].precip); })
-               .attr("r", function(d, i) { return 3; })
-               .attr('pointer-events', 'all')
-               .on('mouseover', expandPoint(tip.show))
-               .on('mouseout', collapsePoint(tip.hide));
-      
-   };
-   
-   var _appendCityPrecip = function(chart, $scope, index, xScale, yScale) {
-      
-      var data = $scope.data;
-      if (!data || !data.data || data.data.length === 0) {
-         return;
-      }
-      
-      var city = 'city' + (index + 1);
-      if (!data.data[0][city]) {
-         console.log('Note: No data in response for city: "' + city + '"');
-         return;
-      }
-      
-      var area = d3.svg.area()
-            .x(function(d, i) { return xScale(i); })
-            .y0(function(d) { return yScale(d[city].precip); })
-            .y1(function(d) { return yScale(0); })
-            .interpolate('cardinal');
-      var maxLine = d3.svg.line()
-            .x(function(d, i) { return xScale(i); })
-            .y(function(d) { return yScale(d[city].precip); })
-            .interpolate('cardinal');
-      
-      chart.append('path')
-         .datum(data.data)
-         .attr('class', 'area' + (index+1))
-         .attr('d', area);
-      chart.append('path')
-         .datum(data.data)
-         .attr('class', 'line' + (index+1))
-         .attr('d', maxLine)
-         .attr('data-legend', function(d) { return data.metadata[index].city_name; })
-         .attr('data-legend-pos', index);
-      
-   };
    
    function createChart($scope, element) {
       
@@ -385,10 +335,10 @@ directives.directive('cdPrecipChart', [ 'usSpinnerService', function(usSpinnerSe
          .classed({ 'y': true, 'axis': true })
          .call(yAxis);
       
-      _appendCityPrecip(chart, $scope, 0, xScale, yScale);
-      _appendCityPrecip(chart, $scope, 1, xScale, yScale);
-      _appendCityPrecipPoints(chart, $scope, 0, xScale, yScale);
-      _appendCityPrecipPoints(chart, $scope, 1, xScale, yScale);
+      appendCityArea(chart, $scope, 0, xScale, yScale, 'precip');
+      appendCityArea(chart, $scope, 1, xScale, yScale, 'precip');
+      appendCityAreaPoints(chart, $scope, 0, xScale, yScale, 'precip');
+      appendCityAreaPoints(chart, $scope, 1, xScale, yScale, 'precip');
       
       /*var legend = */chart.append('g')
          .attr('class', 'legend')
