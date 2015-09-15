@@ -14,6 +14,7 @@
    "laxcomma": true,     // Suppress warnings about comma-first style in object literals
    "newcap": true,       // Require constructor functions to be capitalized
    "noempty": true,      // Prohibit empty blocks in code
+   "node": true,
    "shadow": false,
    "strict": true,
    "undef": true,        // Warns about unknown globals

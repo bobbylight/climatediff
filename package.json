@@ -2,19 +2,18 @@
   "name": "climatediff",
   "version": "0.1.0",
   "devDependencies": {
-    "grunt": "~0.4.5",
-    "grunt-contrib-concat": "~0.1.2",
-    "grunt-contrib-compress": "~0.7.0",
-    "grunt-contrib-jshint": "~0.10.0",
-    "grunt-contrib-nodeunit": "~0.2.0",
-    "grunt-contrib-uglify": "~0.2.6",
-    "grunt-contrib-watch": "~0.5.3",
-    "grunt-usemin": "~2.0.2",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-copy": "~0.4.1",
-    "grunt-contrib-cssmin": "~0.11.0",
-    "grunt-json-minify": "~0.4.0",
-    "grunt-jsdoc": "~0.5.4",
-    "grunt-uncss": "~0.3.8"
+    "del": "^2.0.1",
+    "gulp": "^3.9.0",
+    "gulp-concat-css": "^2.2.0",
+    "gulp-cssmin": "^0.1.7",
+    "gulp-debug": "~2.1.0",
+    "gulp-jshint": "^1.11.2",
+    "gulp-less": "^3.0.3",
+    "gulp-minify-html": "~1.0.4",
+    "gulp-rev": "~6.0.1",
+    "gulp-uglify": "~1.4.1",
+    "gulp-usemin": "~0.3.14",
+    "jshint-stylish": "^2.0.1",
+    "run-sequence": "^1.1.2"
   }
 }
