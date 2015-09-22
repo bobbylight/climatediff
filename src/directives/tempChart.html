@@ -3,8 +3,8 @@
    <div class='area-chart results-label'>
       <div ng-bind='chartTitle' class='pull-left'></div>
       <div class='btn-group pull-right' role='group' aria-label='Units'>
-         <button type='button' class='btn btn-default'>Fahrenheit</button>
-         <button type='button' class='btn btn-default'>Celsius</button>
+         <button type='button' class='btn btn-default' ng-click="setUnits({ units: 'fahrenheit' })">Fahrenheit</button>
+         <button type='button' class='btn btn-default' ng-click="setUnits({ units: 'celsius' })">Celsius</button>
       </div>
    </div>
    <span style='padding: 10px'> <!-- todo: some kind of fade in/out of bg while loading -->

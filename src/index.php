@@ -42,7 +42,7 @@
    <script src="../bower_components/spin.js/spin.js"></script>
    <script src="../bower_components/angular-spinner/angular-spinner.js"></script>
    <script src='js/d3.legend.js'></script>
-<!--   <script src='js/services.js'></script>-->
+   <script src='js/services.js'></script>
    <script src='js/controllers.js'></script>
    <script src='js/directives.js'></script>
    <script src='js/app.js'></script>

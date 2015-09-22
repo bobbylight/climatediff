@@ -1,10 +1,10 @@
-var controllers = angular.module('cdControllers', ['ngRoute', 'ngResource']);
+var controllers = angular.module('cdControllers', ['ngRoute', 'ngResource', 'cdServices']);
 
 controllers.controller('MainCtrl', ['$scope', function($scope) {
    'use strict';
 }]);
 
-controllers.controller('MainPageCtrl', ['$scope', '$http', function($scope, $http) {
+controllers.controller('MainPageCtrl', ['$scope', '$http', 'Utils', function($scope, $http, Utils) {
    'use strict';
    
    $scope.city1 = 'Raleigh, NC US';
@@ -39,23 +39,48 @@ controllers.controller('MainPageCtrl', ['$scope', '$http', function($scope, $htt
    };
    
    function celsiusToFahrenheit(data) {
-      function cToF(c) {
-         return c * (9/5) + 32;
-      }
       return data.map(function(elem) {
          if (elem.city1) {
-            elem.city1.min = cToF(elem.city1.min);
-            elem.city1.median = cToF(elem.city1.median);
-            elem.city1.max = cToF(elem.city1.max);
+            elem.city1.min = Utils.celsiusToFahrenheit(elem.city1.min);
+            elem.city1.median = Utils.celsiusToFahrenheit(elem.city1.median);
+            elem.city1.max = Utils.celsiusToFahrenheit(elem.city1.max);
          }
          if (elem.city2) {
-            elem.city2.min = cToF(elem.city2.min);
-            elem.city2.median = cToF(elem.city2.median);
-            elem.city2.max = cToF(elem.city2.max);
+            elem.city2.min = Utils.celsiusToFahrenheit(elem.city2.min);
+            elem.city2.median = Utils.celsiusToFahrenheit(elem.city2.median);
+            elem.city2.max = Utils.celsiusToFahrenheit(elem.city2.max);
          }
          return elem;
       });
    }
+   
+   function fahrenheitToCelsius(data) {
+      return data.map(function(elem) {
+         if (elem.city1) {
+            elem.city1.min = Utils.fahrenheitToCelsius(elem.city1.min);
+            elem.city1.median = Utils.fahrenheitToCelsius(elem.city1.median);
+            elem.city1.max = Utils.fahrenheitToCelsius(elem.city1.max);
+         }
+         if (elem.city2) {
+            elem.city2.min = Utils.fahrenheitToCelsius(elem.city2.min);
+            elem.city2.median = Utils.fahrenheitToCelsius(elem.city2.median);
+            elem.city2.max = Utils.fahrenheitToCelsius(elem.city2.max);
+         }
+         return elem;
+      });
+   }
+   
+   $scope.setUnits = function(units) {
+      console.log(' --- ' + units);
+      var temp = $scope.tempData.data;
+      if (units === 'fahrenheit') {
+         temp = celsiusToFahrenheit(temp);
+      }
+      else if (units === 'celsius') {
+         temp = fahrenheitToCelsius(temp);
+      }
+      $scope.tempData.data = temp;
+   };
    
    $scope.updateClimateDiff = function() {
       

@@ -31,6 +31,7 @@
    
    <div id='results' ng-show='showCharts'>
       <cd-temperature-chart title='Temperature' spinner-index='1' data='tempData'
+            set-units='setUnits(units)'
             mask='maskTempResults'></cd-temperature-chart>
       <cd-precip-chart title='Precipitation' spinner-index='2' data='precipData'
             mask='maskPrecipResults'></cd-precip-chart>

@@ -5,6 +5,7 @@ var directives = angular.module('cdDirectives', []);
    
    var months = [ 'January', 'February', 'March', 'April', 'May', 'June',
          'July', 'August', 'September', 'October', 'November', 'December' ];
+   var TRANSITION_DURATION_MILLIS = 300;
    
    function expandPoint(tipCallback) {
       return function(e) {
@@ -53,7 +54,7 @@ var directives = angular.module('cdDirectives', []);
          .attr('class', 'area' + (index+1))
          .attr('d', createEmptyArea(xScale, yScale))
          .transition()
-         .duration(5000)
+         .duration(TRANSITION_DURATION_MILLIS)
          .attr('d', area);
       
       if (minField) {
@@ -232,12 +233,13 @@ directives.directive('cdTemperatureChart', [ 'usSpinnerService', function(usSpin
       scope: {
          spinnerIndex: '@spinnerIndex',
          chartTitle: '@title',
+         setUnits: '&',
          data: '=data',
          mask: '=mask'
       },
       link: function(scope, element, attrs) {
          
-         scope.$watch('data', function(newValue, oldValue) {
+         scope.$watch('data.data', function(newValue, oldValue) {
             if (newValue === oldValue) {
                return; // First time through
             }
