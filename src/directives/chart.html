@@ -1,0 +1,13 @@
+<div class='main-chart-div' style='position: relative'>
+   <div class='area-chart results-label'>
+      <div class='pull-left'>{{::vm.chartTitle}}</div>
+      <div class='btn-group pull-right' role='group' aria-label='Units'>
+         <button type='button' class='btn btn-default' ng-click="vm.setUnits({ units: 'fahrenheit' })">Fahrenheit</button>
+         <button type='button' class='btn btn-default' ng-click="vm.setUnits({ units: 'celsius' })">Celsius</button>
+      </div>
+   </div>
+   <div class='chart-content' style='padding: 10px'> <!-- todo: some kind of fade in/out of bg while loading -->
+      <span us-spinner="{radius:30, width:8, length: 16 }" spinner-key='spinner-{{::vm.spinnerIndex}}'></span>
+      <svg ng-show='vm.dataLoaded' id='chart-{{::vm.spinnerIndex}}' class='chart' preserveAspectRatio="none"></svg>
+   </div>
+</div>

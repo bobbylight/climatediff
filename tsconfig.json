@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "declaration": false,
+    "noImplicitAny": false,
+    "removeComments": false,
+    "preserveConstEnums": true,
+    "outDir": "src/js",
+    "rootDir": "src/app",
+    "sourceMap": true
+  },
+  "exclude": [
+    "node_modules",
+    "src/js",
+    "typings/browser",
+    "typings/browser.d.ts"
+  ]
+}
