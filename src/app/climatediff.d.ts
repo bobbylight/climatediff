@@ -9,7 +9,7 @@ declare module climatediff {
      * debug information from curl.
      */
     export interface CityDebugInfo {
-        total_time: number,
+        total_time: number;
         url: string;
     }
 
@@ -19,13 +19,13 @@ declare module climatediff {
     }
 
     export interface TemperatureResponse {
-        data: MonthRecord[],
+        data: MonthRecord[];
         debug: { // TODO: Make not arrays!!
             city1: CityDebugInfo[],
             city2: CityDebugInfo[]
-        },
-        metadata: any,
-        queries: string[]
+        };
+        metadata: any;
+        queries: string[];
     }
 }
 

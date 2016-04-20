@@ -1,5 +1,5 @@
-var app = angular.module('cdApp',
-    [ 'angularSpinner', 'ui.router' ]);
+const app: ng.IModule = angular.module('cdApp',
+    [ 'ui.bootstrap', 'angularSpinner', 'ui.router' ]);
 
 app.config(['$stateProvider', ($stateProvider: ng.ui.IStateProvider) => {
     'use strict';

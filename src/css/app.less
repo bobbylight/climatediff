@@ -1,33 +1,38 @@
+@chart-border-color: #ddd;
+
 .app-icon-big {
   background-image: url(../img/sun93.svg);
   width: 40px;
   height: 40px;
 }
-html,
-body {
+
+html, body {
   height: 100%;
 }
 h1 {
   text-align: center;
 }
+
 .main-chart-div {
-  border: 1px solid #ddd;
+  border: 1px solid @chart-border-color;
   border-radius: 4px 4px 0 0;
   margin-bottom: 2em;
   height: 450px;
   display: flex;
   flex-flow: column;
 }
+
 .navbar {
-  border-radius: 0;
-  /* Remove 4-pixel radius in bootstrap default */
+  border-radius: 0; /* Remove 4-pixel radius in bootstrap default */
 }
+
 .city-form {
   text-align: center;
 }
 .city-info {
   white-space: nowrap;
 }
+
 #wrapper {
   position: relative;
   padding-bottom: 60px;
@@ -47,36 +52,47 @@ h1 {
 .footer a {
   color: #9d9d9d;
 }
+
+.main-view {
+}
+
 #results {
   margin-top: 3em;
   text-align: center;
 }
+
 /* SVG chart styling */
 .chart {
   width: 100%;
   height: 100%;
   /*width: 800px;*/
   /*height: 450px;*/
+
+  .rect1 {
+    fill: steelblue;
+  }
+  .rect2 {
+    fill: crimson;
+  }
+
 }
-.chart .rect1 {
-  fill: steelblue;
-}
-.chart .rect2 {
-  fill: crimson;
-}
+
 .axis text {
   fill: black;
   font: 10px sans-serif;
 }
+
 .axis path,
 .axis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
 }
+
 y {
   padding-left: 30px;
 }
+
 .area-chart.results-label {
   font-weight: bolder;
   font-size: x-large;
@@ -86,9 +102,11 @@ y {
   margin: 0.5em;
   flex: 0 1 auto;
 }
+
 .chart-content {
   flex: 1 1 auto;
 }
+
 /* Area chart stuff */
 .axis path,
 .axis line {
@@ -127,8 +145,9 @@ y {
 .point2 {
   fill: maroon;
 }
+
 /* Legend stuff */
 .legend rect {
   fill: white;
-  stroke: #ddd;
+  stroke: @chart-border-color;
 }

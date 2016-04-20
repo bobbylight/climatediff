@@ -15,9 +15,9 @@ module climatediff {
         tempData: any;
         precipData: any;
 
-        static $inject: string[] = [ '$scope', '$http', 'Utils' ];
+        static $inject: string[] = [ '$scope', '$http', '$timeout', 'Utils' ];
 
-        constructor(private $scope: ng.IScope, private $http: ng.IHttpService, private Utils: climatediff.UtilService) {
+        constructor(private $scope: ng.IScope, private $http: ng.IHttpService, private $timeout: ng.ITimeoutService, private Utils: climatediff.UtilService) {
 
             this.city1 = 'Raleigh, NC US';
             this.city2 = 'Lexington, KY US';
@@ -31,8 +31,8 @@ module climatediff {
             };
         }
 
-        private celsiusToFahrenheit(data) {
-            return data.map((elem) => {
+        private celsiusToFahrenheit(data: any) {
+            return data.map((elem: any) => {
                 if (elem.city1) {
                     elem.city1.min = this.Utils.celsiusToFahrenheit(elem.city1.min);
                     elem.city1.median = this.Utils.celsiusToFahrenheit(elem.city1.median);
@@ -47,8 +47,8 @@ module climatediff {
             });
         }
 
-        private fahrenheitToCelsius(data) {
-            return data.map((elem) => {
+        private fahrenheitToCelsius(data: any) {
+            return data.map((elem: any) => {
                 if (elem.city1) {
                     elem.city1.min = this.Utils.fahrenheitToCelsius(elem.city1.min);
                     elem.city1.median = this.Utils.fahrenheitToCelsius(elem.city1.median);
@@ -71,7 +71,7 @@ module climatediff {
                 }
             }).then(function(response: any) {
                 console.log(JSON.stringify(response));
-                return response.data.map(function(item) {
+                return response.data.map(function(item: any) {
                     return item.city_name;
                 });
             });
@@ -90,9 +90,9 @@ module climatediff {
              */
         }
 
-        setUnits(units) {
+        setUnits(units: string) {
             console.log(' --- ' + units);
-            var temp = this.tempData.data;
+            var temp: any = this.tempData.data;
             if (units === 'fahrenheit') {
                 temp = this.celsiusToFahrenheit(temp);
             }
@@ -116,30 +116,30 @@ module climatediff {
             this.precipData = { data: [],
                 metadata: [ { 'city_name': this.city1 }, { 'city_name': this.city2 } ] };
 
-            const updatePrecipChart = () => {
+            const updatePrecipChart: Function = () => {
                 return this.$http.get('api/precipitation/' + this.city1 + '/' + this.city2)
-                    .success((data, status, headers, config) => {
+                    .success((data: any, status: number, headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) => {
                         console.log(JSON.stringify(data));
                         //data.data = celsiusToFahrenheit(data.data);
-                        this.precipData = data;
                         this.maskPrecipResults = false;
+                        this.$timeout(() => { this.precipData = data; }, 0);
                     })
-                    .error(function(data, status, headers, config) {
+                    .error(function(data: any, status: number, headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) {
                         alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
                         this.maskPrecipResults = false;
                     });
             };
 
             return this.$http.get('api/temperature/' + this.city1 + '/' + this.city2)
-                .success((data: climatediff.TemperatureResponse, status, headers, config) => {
+                .success((data: climatediff.TemperatureResponse, status: number, headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) => {
                     data.data = this.celsiusToFahrenheit(data.data);
                     // this.tempMetadata = data.metadata;
                     // this.tempData = data.data;
-                    this.tempData = data;
                     this.maskTempResults = false;
+                    this.$timeout(() => { this.tempData = data; }, 0);
                     updatePrecipChart();
                 })
-                .error((data, status, headers, config) => {
+                .error((data: any, status: number, headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) => {
                     alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
                     this.maskTempResults = false;
                     updatePrecipChart();

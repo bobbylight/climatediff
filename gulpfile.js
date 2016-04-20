@@ -3,6 +3,7 @@
 var gulp = require('gulp');
 var debug = require('gulp-debug');
 var del = require('del');
+var less = require('gulp-less');
 var runSequence = require('run-sequence');
 var usemin = require('gulp-usemin');
 var uglify = require('gulp-uglify');
@@ -17,11 +18,19 @@ var tslint = require('gulp-tslint');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
 var merge = require('merge2');
+var livereload = require('gulp-livereload');
 
 gulp.task('clean', function() {
     return del([
         './dist'
     ]);
+});
+
+gulp.task('less', function() {
+    return gulp.src('src/css/*.less')
+        .pipe(less())
+        .pipe(gulp.dest('src/css'))
+        .pipe(livereload());
 });
 
 gulp.task('usemin', function() {
@@ -66,17 +75,26 @@ gulp.task('jshint', function() {
         .pipe(jshint.reporter(stylish))
         .pipe(jshint.reporter('fail'));
 });
+gulp.task('-jshint-without-failing', function() {
+    return gulp.src([ 'src/**/*.js' ])
+        .pipe(jshint())
+        .pipe(jshint.reporter(stylish));
+});
 
 gulp.task('copy-non-minified-files', function() {
     return gulp.src([ 'src/**', 'src/.htaccess', '!src/css/**', '!src/js/**', '!src/index.php' ])
         .pipe(gulp.dest('dist/'));
 });
 
-gulp.task('default', function() {
-    runSequence('tslint', 'clean', 'compile-ts', 'usemin', 'cssmin', 'copy-non-minified-files');
+gulp.task('-watch-ts-sequential-actions', function() {
+    runSequence('tslint', 'compile-ts', '-jshint-without-failing');
+});
+gulp.task('watch', [ 'less', '-watch-ts-sequential-actions' ], function() {
+    livereload.listen();
+    gulp.watch('src/app/**/*.ts', [ '-watch-ts-sequential-actions' ]);
+    gulp.watch('src/css/*.less', [ 'less' ]);
 });
 
-gulp.task('watch', [ 'default' ], function() {
-    gulp.watch('src/**/*.php', [ 'copy-non-minified-files' ]);
-    gulp.watch('src/app/**/*.ts', [ 'tslint', 'compile-ts', 'jshint' ]);
+gulp.task('default', function() {
+    runSequence('less', 'tslint', 'clean', 'compile-ts', 'jshint', 'usemin', 'cssmin', 'copy-non-minified-files');
 });

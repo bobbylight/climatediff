@@ -23,7 +23,7 @@ angular.module('cdApp').directive('cdAbout', [() => {
                 };
                 aboutDialog.on('hidden.bs.modal', <any>hideHandler);
             }
-        })
+        });
     };
     
     return {
