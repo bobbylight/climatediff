@@ -17,7 +17,7 @@ module climatediff {
 
         static $inject: string[] = [ '$scope', '$http', '$timeout', 'Utils' ];
 
-        constructor(private $scope: ng.IScope, private $http: ng.IHttpService, private $timeout: ng.ITimeoutService, private Utils: climatediff.UtilService) {
+        constructor($scope: ng.IScope, private $http: ng.IHttpService, private $timeout: ng.ITimeoutService, private Utils: UtilService) {
 
             this.city1 = 'Raleigh, NC US';
             this.city2 = 'Lexington, KY US';
@@ -92,7 +92,7 @@ module climatediff {
 
         setUnits(units: string) {
             console.log(' --- ' + units);
-            var temp: any = this.tempData.data;
+            let temp: any = this.tempData.data;
             if (units === 'fahrenheit') {
                 temp = this.celsiusToFahrenheit(temp);
             }
@@ -131,7 +131,7 @@ module climatediff {
             };
 
             return this.$http.get('api/temperature/' + this.city1 + '/' + this.city2)
-                .success((data: climatediff.TemperatureResponse, status: number, headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) => {
+                .success((data: TemperatureResponse, status: number, headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) => {
                     data.data = this.celsiusToFahrenheit(data.data);
                     // this.tempMetadata = data.metadata;
                     // this.tempData = data.data;

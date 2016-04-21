@@ -61,7 +61,7 @@ gulp.task('compile-ts', function() {
         tsResult.js
             .pipe(sourcemaps.write('.'))
             .pipe(gulp.dest('src/js/'))
-    ]);
+    ]).pipe(livereload({ quiet: true }));
 });
 gulp.task('tslint', function() {
     return gulp.src([ 'src/app/**/*.ts' ])
@@ -83,7 +83,8 @@ gulp.task('-jshint-without-failing', function() {
 
 gulp.task('copy-non-minified-files', function() {
     return gulp.src([ 'src/**', 'src/.htaccess', '!src/css/**', '!src/js/**', '!src/index.php' ])
-        .pipe(gulp.dest('dist/'));
+        .pipe(gulp.dest('dist/'))
+        .pipe(livereload({ quiet: true }));
 });
 
 gulp.task('-watch-ts-sequential-actions', function() {
@@ -93,6 +94,7 @@ gulp.task('watch', [ 'less', '-watch-ts-sequential-actions' ], function() {
     livereload.listen();
     gulp.watch('src/app/**/*.ts', [ '-watch-ts-sequential-actions' ]);
     gulp.watch('src/css/*.less', [ 'less' ]);
+    gulp.watch([ 'src/*.php', 'src/**/*.html' ], [ 'copy-non-minified-files' ]);
 });
 
 gulp.task('default', function() {

@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="css/all.css" rel="stylesheet">
-    <link rel="stylesheet" href="//rawgithub.com/Caged/d3-tip/master/examples/example-styles.css">
 </head>
 
 <body>
@@ -22,10 +21,7 @@
     <footer class='footer navbar-inverse'>
         <div class='container'>
             <div class='row'>
-                Copyright &copy; 2015 Climatediff
-            </div>
-            <div class='row'>
-                <a href='http://github.com/bobbylight/climatediff'><i class="fa fa-github"></i></a>
+                &copy; 2016 Climatediff
             </div>
         </div>
     </footer>

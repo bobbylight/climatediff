@@ -30,7 +30,7 @@ module climatediff {
     }
 }
 
-angular.module('cdApp').directive('cdChart', [ 'usSpinnerService', 'Months', function(usSpinnerService: any, Months: climatediff.MonthService) {
+angular.module('cdApp').directive('cdChart', [ 'usSpinnerService', 'Months', (usSpinnerService: any, Months: climatediff.MonthService) => {
     'use strict';
 
     const TRANSITION_DURATION_MILLIS: number = 300;
@@ -201,15 +201,15 @@ angular.module('cdApp').directive('cdChart', [ 'usSpinnerService', 'Months', fun
 
         const topPadding: number = 5;
 
-        var min: number, max: number;
+        let min: number, max: number;
         function maxFrom2Cities(entry: climatediff.MonthRecord) {
-            var max1: number = entry.city1 ? entry.city1[maxProp] : 0;
-            var max2: number = entry.city2 ? entry.city2[maxProp] : 0;
+            let max1: number = entry.city1 ? entry.city1[maxProp] : 0;
+            let max2: number = entry.city2 ? entry.city2[maxProp] : 0;
             return Math.max(max1, max2);
         }
         function minFrom2Cities(entry: climatediff.MonthRecord) {
-            var min1: number = entry.city1 ? entry.city1[minProp] : 0;
-            var min2: number = entry.city2 ? entry.city2[minProp] : 0;
+            let min1: number = entry.city1 ? entry.city1[minProp] : 0;
+            let min2: number = entry.city2 ? entry.city2[minProp] : 0;
             return Math.min(min1, min2);
         }
         if (data.length !== 0) {
@@ -232,7 +232,7 @@ angular.module('cdApp').directive('cdChart', [ 'usSpinnerService', 'Months', fun
 
         // Remove previous chart, if any
         const $chartElem: JQuery = $(element).find('.chart');
-        var chartDomNode: Node = $chartElem[0];
+        const chartDomNode: Node = $chartElem[0];
         d3.select(chartDomNode)
             .select('g').remove();
 

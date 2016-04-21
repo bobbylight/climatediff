@@ -13,9 +13,18 @@ declare module climatediff {
         url: string;
     }
 
+    export interface CityTemperatureInfo {
+        min: number;
+        minCount: number;
+        median: number;
+        medianCount: number;
+        max: number;
+        maxCount: number;
+    }
+
     export interface MonthRecord {
-        city1: any;
-        city2: any;
+        city1: CityTemperatureInfo;
+        city2: CityTemperatureInfo;
     }
 
     export interface TemperatureResponse {

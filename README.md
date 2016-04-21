@@ -24,5 +24,7 @@ better development experience as well:
     curl -sS https://getcomposer.org/installer | php
     php composer.phar install
 
-The development version of the application lives in `src/`.  You can build the
-production version of it into `dist/` by running `gulp`.
+The development version of the application lives in `src/`.  Running `gulp watch` will set up watches and
+`livereload` for real-time development and debugging.
+
+You can build the production version of it into `dist/` by running `gulp`.

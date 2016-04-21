@@ -22,6 +22,12 @@ h1 {
   border-radius: 0;
   /* Remove 4-pixel radius in bootstrap default */
 }
+.navbar .banner-item {
+  font-size: 28px;
+}
+.navbar .banner-item a {
+  padding: 11px;
+}
 .city-form {
   text-align: center;
 }
@@ -37,11 +43,11 @@ h1 {
   position: absolute;
   bottom: 0;
   width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 60px;
+  border-radius: 0;
+  /* Remove 4-pixel radius in bootstrap default */
   background-color: #f5f5f5;
   color: #9d9d9d;
-  padding-top: 10px;
+  padding: 1rem 0;
   text-align: center;
 }
 .footer a {
@@ -131,4 +137,54 @@ y {
 .legend rect {
   fill: white;
   stroke: #ddd;
+}
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+  pointer-events: none;
+  /* Creates a small triangle extender for the tooltip */
+  /* Northward tooltips */
+  /* Eastward tooltips */
+  /* Southward tooltips */
+  /* Westward tooltips */
+}
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  pointer-events: none;
+}
+.d3-tip.n:after {
+  content: "\25BC";
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+  text-align: center;
+}
+.d3-tip.e:after {
+  content: "\25C0";
+  margin: -4px 0 0 0;
+  top: 50%;
+  left: -8px;
+}
+.d3-tip.s:after {
+  content: "\25B2";
+  margin: 0 0 1px 0;
+  top: -8px;
+  left: 0;
+  text-align: center;
+}
+.d3-tip.w:after {
+  content: "\25B6";
+  margin: -4px 0 0 -1px;
+  top: 50%;
+  left: 100%;
 }
