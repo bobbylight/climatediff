@@ -2,6 +2,6 @@
 
 # NCDC/NOAA web service token (http://www.ncdc.noaa.gov/cdo-web/token)
 global $token;
-$token = 'xxx';
+$token = 'put-token-value-here';
 
 ?>

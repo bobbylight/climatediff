@@ -14,17 +14,22 @@ module climatediff {
         dataLoaded: boolean;
         minProp: string;
         maxProp: string;
+        selectedUnits: string;
 
         static $inject: string[] = [ '$scope' ];
 
         constructor($scope: ng.IScope) {
 
+            this.selectedUnits = this.chartConfig.units[0].label;
+
+            // TODO: This should not be a deep watch; we should watch on the entire object, then just on data.data
+            // for subsequent updates via the units buttons
             $scope.$watch(() => { return this.data; }, (newValue: any, oldValue: any) => {
                 if (newValue === oldValue) {
                     return; // First time through
                 }
                 this.createChart();
-            });
+            }, true);
 
         }
     }
@@ -50,7 +55,7 @@ angular.module('cdApp').directive('cdChart', [ 'usSpinnerService', 'Months', (us
         };
     }
 
-    function createEmptyArea(xScale: any, yScale: Function) {
+    function createEmptyArea(xScale: d3.scale.Ordinal<any, any>, yScale: d3.scale.Linear<number, number>) {
         return d3.svg.area()
             .x(function(d: any, i: number) { return xScale(i); })
             .y0(function(d: any) { return yScale(0); })
@@ -59,7 +64,8 @@ angular.module('cdApp').directive('cdChart', [ 'usSpinnerService', 'Months', (us
     }
 
     function appendCityArea(chart: d3.Selection<any>, controller: climatediff.ChartController, index: number,
-                            xScale: any, yScale: Function, maxField: string, minField ?: string) {
+                            xScale: d3.scale.Ordinal<any, any>, yScale: d3.scale.Linear<number, number>,
+                            maxField: string, minField ?: string) {
 
         const data: any = controller.data;
         if (!data || !data.data || data.data.length === 0) {
@@ -110,7 +116,8 @@ angular.module('cdApp').directive('cdChart', [ 'usSpinnerService', 'Months', (us
     }
 
     function appendCityAreaPoints(chart: d3.Selection<any>, controller: climatediff.ChartController, index: number,
-                                  xScale: any, yScale: Function, maxVar: string, minVar ?: string) {
+                                xScale: d3.scale.Ordinal<any, any>, yScale: d3.scale.Linear<number, number>,
+                                  maxVar: string, minVar ?: string) {
 
         const data: climatediff.TemperatureResponse = controller.data;
         if (!data || !data.data || data.data.length === 0) {
@@ -194,7 +201,7 @@ angular.module('cdApp').directive('cdChart', [ 'usSpinnerService', 'Months', (us
 
         const barPad: number = 0.1;
         const xScale: d3.scale.Ordinal<string, any> = (<any>d3.scale.ordinal()) // <any> to work around d3 typings issue?
-            .domain([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ])
+            .domain([ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ])
             .rangeRoundPoints([ 0, chartWidth ], barPad); //barPad, barOuterPad);
 
         const data: climatediff.MonthRecord[] = controller.data.data;
@@ -258,7 +265,7 @@ angular.module('cdApp').directive('cdChart', [ 'usSpinnerService', 'Months', (us
         const yAxis: d3.svg.Axis = d3.svg.axis()
             .scale(yScale)
             .orient('left')
-            .tickFormat(function(d: any) { return d + controller.chartConfig.unit; }); // e.g. '"' or "deg. F"
+            .tickFormat(function(d: any) { return d + controller.chartConfig.units[0].axisSuffix; }); // e.g. '"' or "deg. F"
         chart.append('g')
             .classed({ 'y': true, 'axis': true })
             .call(yAxis);

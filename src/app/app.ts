@@ -1,7 +1,8 @@
 const app: ng.IModule = angular.module('cdApp',
     [ 'ui.bootstrap', 'angularSpinner', 'ui.router' ]);
 
-app.config(['$stateProvider', ($stateProvider: ng.ui.IStateProvider) => {
+app.config(['$stateProvider', '$urlRouterProvider', ($stateProvider: ng.ui.IStateProvider,
+                                                     $urlRouterProvider: ng.ui.IUrlRouterProvider) => {
     'use strict';
 
     $stateProvider.state('main', {
@@ -10,4 +11,5 @@ app.config(['$stateProvider', ($stateProvider: ng.ui.IStateProvider) => {
         controller:  'MainPageCtrl as vm'
     });
 
+    $urlRouterProvider.otherwise('/');
 }]);

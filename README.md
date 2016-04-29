@@ -7,24 +7,35 @@ of day-to-day weather differences between where you are now and your new city.
 ## Hacking
 First, install the tools we use for developing and building using `npm`, if you do not already have them:
 
-    npm install -g gulp-cli
-    npm install -g bower
-    npm install -g typings
+```bash
+npm install -g gulp-cli
+npm install -g bower
+npm install -g typings
+```
 
 Next, check out the project.  Install gulp and the project's JS and PHP dependencies with
 `npm`, `bower` and `composer`.  Install TypeScript definition files via `typings` for a
 better development experience as well:
 
-    git clone https://github.com/bobbylight/climatediff.git
-    cd climatediff
-    npm install
-    bower install
-    typings install
-    # On Windows, use Composer's installer; otherwise, just use curl
-    curl -sS https://getcomposer.org/installer | php
-    php composer.phar install
+```bash
+git clone https://github.com/bobbylight/climatediff.git
+cd climatediff
+npm install
+bower install
+typings install
+# On Windows, use Composer's installer; otherwise, just use curl
+curl -sS https://getcomposer.org/installer | php
+php composer.phar install
+```
+
+Then, [get a token to access the NCDC CDO web services](http://www.ncdc.noaa.gov/cdo-web/token). Create a new file named `src/init.php` from
+`src/init.php.orig` with your token inserted appropriately.  This is necessary for the application to fetch historical data from the NOAA.
 
 The development version of the application lives in `src/`.  Running `gulp watch` will set up watches and
 `livereload` for real-time development and debugging.
 
 You can build the production version of it into `dist/` by running `gulp`.
+
+Non-Font-Awesome icons were grabbed from:
+
+* http://www.clipartbest.com/free-printable-weather-symbols

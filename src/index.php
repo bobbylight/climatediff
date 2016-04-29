@@ -12,7 +12,7 @@
 <body>
 <div id='wrapper'>
 
-    <span us-spinner="{radius:30, width:8, length: 16, top: '90%' }" spinner-key='spinner-99'></span>
+    <span us-spinner="{ radius:30, width:8, length: 16, top: '90%' }" spinner-key='spinner-99'></span>
 
     <cd-banner></cd-banner>
 

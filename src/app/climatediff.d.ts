@@ -1,7 +1,7 @@
 declare module climatediff {
 
     export interface ChartConfig {
-        unit: string;
+        units: UnitConfig[];
     }
     
     /**
@@ -35,6 +35,16 @@ declare module climatediff {
         };
         metadata: any;
         queries: string[];
+    }
+
+    export interface UnitConfig {
+        axisSuffix: string;
+        label: string;
+        convert: UnitConversionFunction;
+    }
+
+    export interface UnitConversionFunction {
+        (data: MonthRecord[]): MonthRecord[];
     }
 }
 

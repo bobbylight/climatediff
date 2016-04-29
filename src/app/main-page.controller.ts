@@ -6,8 +6,8 @@ module climatediff {
         city1: string;
         city2: string;
         typeaheadWaitMillis: number;
-        tempChartConfig: any;
-        precipChartConfig: any;
+        tempChartConfig: ChartConfig;
+        precipChartConfig: ChartConfig;
         showCharts: boolean;
         maskTempResults: boolean;
         maskPrecipResults: boolean;
@@ -24,15 +24,21 @@ module climatediff {
             this.typeaheadWaitMillis = 500;
 
             this.tempChartConfig = {
-                unit: '\u00b0 F'
+                units: [
+                    { axisSuffix: '\u00b0 F', label: '\u00b0 F', convert: this.celsiusToFahrenheit },
+                    { axisSuffix: '\u00b0 C', label: '\u00b0 C', convert: this.fahrenheitToCelsius }
+                ]
             };
             this.precipChartConfig = {
-                unit: '"'
+                units: [
+                    { axisSuffix: '"', label: 'in', convert: angular.identity },
+                    { axisSuffix: 'cm', label: 'cm', convert: angular.identity }
+                ]
             };
         }
 
-        private celsiusToFahrenheit(data: any) {
-            return data.map((elem: any) => {
+        private celsiusToFahrenheit(data: MonthRecord[]): MonthRecord[] {
+            return data.map((elem: MonthRecord) => {
                 if (elem.city1) {
                     elem.city1.min = this.Utils.celsiusToFahrenheit(elem.city1.min);
                     elem.city1.median = this.Utils.celsiusToFahrenheit(elem.city1.median);
@@ -47,8 +53,8 @@ module climatediff {
             });
         }
 
-        private fahrenheitToCelsius(data: any) {
-            return data.map((elem: any) => {
+        private fahrenheitToCelsius(data: MonthRecord[]): MonthRecord[] {
+            return data.map((elem: MonthRecord) => {
                 if (elem.city1) {
                     elem.city1.min = this.Utils.fahrenheitToCelsius(elem.city1.min);
                     elem.city1.median = this.Utils.fahrenheitToCelsius(elem.city1.median);
@@ -90,16 +96,9 @@ module climatediff {
              */
         }
 
-        setUnits(units: string) {
-            console.log(' --- ' + units);
-            let temp: any = this.tempData.data;
-            if (units === 'fahrenheit') {
-                temp = this.celsiusToFahrenheit(temp);
-            }
-            else if (units === 'celsius') {
-                temp = this.fahrenheitToCelsius(temp);
-            }
-            this.tempData.data = temp;
+        setUnits(unitConfig: UnitConfig) {
+            // NOTE: This assumes exactly 2 unit choices, not > 2
+            this.tempData.data = unitConfig.convert.call(this, this.tempData.data);
         }
 
         updateClimateDiff() {
