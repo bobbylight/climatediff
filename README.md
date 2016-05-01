@@ -4,6 +4,10 @@ A simple web application that shows the climate difference between two cities.
 If you're considering moving, this application will give you an idea
 of day-to-day weather differences between where you are now and your new city.
 
+I originally started writing this many moons ago to learn Angular, but set if aside unfinished.
+Recently I decided to modernize it, and host it here for posterity, but there is still a lot of
+cleanup to do and features to add.
+
 ## Hacking
 First, install the tools we use for developing and building using `npm`, if you do not already have them:
 

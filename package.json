@@ -16,6 +16,7 @@
     "gulp-less": "^3.0.5",
     "gulp-livereload": "^3.8.1",
     "gulp-minify-html": "~1.0.4",
+    "gulp-replace": "^0.5.4",
     "gulp-rev": "~6.0.1",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-tslint": "^4.3.4",

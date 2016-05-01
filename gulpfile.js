@@ -7,6 +7,7 @@ var less = require('gulp-less');
 var runSequence = require('run-sequence');
 var usemin = require('gulp-usemin');
 var uglify = require('gulp-uglify');
+var replace = require('gulp-replace');
 //var minifyHtml = require('gulp-minify-html');
 var concatCss = require('gulp-concat-css');
 var cssnano = require('gulp-cssnano');
@@ -21,9 +22,7 @@ var merge = require('merge2');
 var livereload = require('gulp-livereload');
 
 gulp.task('clean', function() {
-    return del([
-        './dist'
-    ]);
+    return del([ './dist' ]);
 });
 
 gulp.task('less', function() {
@@ -45,10 +44,12 @@ gulp.task('usemin', function() {
         .pipe(gulp.dest('dist/'));
 });
 
-gulp.task('cssmin', function() {
+gulp.task('cssnano', function() {
     gulp.src('src/css/all.css')
         .pipe(concatCss('all.css'))
         .pipe(cssnano())
+        .pipe(replace(/url\(\.\.\/\.\.\/bower_components\/bootstrap\/dist\/fonts\//g, 'url(../fonts/'))
+        .pipe(replace(/url\(\.\.\/\.\.\/bower_components\/font-awesome\/fonts\//g, 'url(../fonts/'))
         .pipe(gulp.dest('dist/css/'));
 });
 
@@ -81,22 +82,32 @@ gulp.task('-jshint-without-failing', function() {
         .pipe(jshint.reporter(stylish));
 });
 
-gulp.task('copy-non-minified-files', function() {
-    return gulp.src([ 'src/**', 'src/.htaccess', '!src/css/**', '!src/js/**', '!src/index.php' ])
-        .pipe(gulp.dest('dist/'))
-        .pipe(livereload({ quiet: true }));
-});
-
 gulp.task('-watch-ts-sequential-actions', function() {
     runSequence('tslint', 'compile-ts', '-jshint-without-failing');
+});
+gulp.task('-live-reload-markup', function() {
+    gulp.src([ 'src/*.php', 'src/**/*.html' ])
+        .pipe(livereload());
 });
 gulp.task('watch', [ 'less', '-watch-ts-sequential-actions' ], function() {
     livereload.listen();
     gulp.watch('src/app/**/*.ts', [ '-watch-ts-sequential-actions' ]);
     gulp.watch('src/css/*.less', [ 'less' ]);
-    gulp.watch([ 'src/*.php', 'src/**/*.html' ], [ 'copy-non-minified-files' ]);
+    gulp.watch([ 'src/*.php', 'src/**/*.html' ], [ '-live-reload-markup' ]);
+});
+
+gulp.task('copy-non-minified-files', function() {
+
+    var mostFiles = gulp.src([ 'src/**', 'src/.htaccess', '!src/css/**', '!src/js/**', '!src/index.php' ])
+        .pipe(gulp.dest('dist/'));
+
+    // See corresponding URL rewritings in CSS in cssnano task
+    var fontsInBowerComponents = gulp.src([ 'bower_components/bootstrap/dist/fonts/*', 'bower_components/font-awesome/fonts/*' ])
+        .pipe(gulp.dest('dist/fonts/'));
+
+    return merge([ mostFiles, fontsInBowerComponents ]);
 });
 
 gulp.task('default', function() {
-    runSequence('less', 'tslint', 'clean', 'compile-ts', 'jshint', 'usemin', 'cssmin', 'copy-non-minified-files');
+    runSequence('less', 'tslint', 'clean', 'compile-ts', 'jshint', 'usemin', 'cssnano', 'copy-non-minified-files');
 });
