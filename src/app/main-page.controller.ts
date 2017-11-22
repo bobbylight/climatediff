@@ -76,7 +76,7 @@ module climatediff {
                     input: val,
                     limit: 10
                 }
-            }).then((response: ng.IHttpPromiseCallbackArg<any>) => {
+            }).then((response: ng.IHttpResponse<any>) => {
                 this.$log.log(JSON.stringify(response));
                 return response.data.map(function(item: any) {
                     return item.city_name;
@@ -118,20 +118,20 @@ module climatediff {
 
             const updatePrecipChart: Function = () => {
                 return this.$http.get('api/precipitation/' + this.city1 + '/' + this.city2)
-                    .then((result: ng.IHttpPromiseCallbackArg<any>) => {
+                    .then((result: ng.IHttpResponse<any>) => {
                         this.$log.log(JSON.stringify(result.data));
                         //result.data.data = celsiusToFahrenheit(result.data.data);
                         this.maskPrecipResults = false;
                         this.$timeout(() => { this.precipData = result.data; }, 0);
                     })
-                    .catch((result: ng.IHttpPromiseCallbackArg<any>) => {
+                    .catch((result: ng.IHttpResponse<any>) => {
                         alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
                         this.maskPrecipResults = false;
                     });
             };
 
             return this.$http.get('api/temperature/' + this.city1 + '/' + this.city2)
-                .then((result: ng.IHttpPromiseCallbackArg<any>) => {
+                .then((result: ng.IHttpResponse<any>) => {
                     result.data.data = this.celsiusToFahrenheit(result.data.data);
                     // this.tempMetadata = data.metadata;
                     // this.tempData = data.data;
@@ -139,7 +139,7 @@ module climatediff {
                     this.$timeout(() => { this.tempData = result.data; }, 0);
                     updatePrecipChart();
                 })
-                .catch((result: ng.IHttpPromiseCallbackArg<any>) => {
+                .catch((result: ng.IHttpResponse<any>) => {
                     alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
                     this.maskTempResults = false;
                     updatePrecipChart();

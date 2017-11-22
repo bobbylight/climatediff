@@ -56,16 +56,17 @@ angular.module('cdApp').directive('cdChart',
         };
     }
 
-    function createEmptyArea(xScale: d3.scale.Ordinal<any, any>, yScale: d3.scale.Linear<number, number>) {
-        return d3.svg.area()
+    function createEmptyArea(xScale: d3.ScaleOrdinal<any, any>, yScale: d3.ScaleLinear<number, number>) {
+        return d3.area()
             .x(function(d: any, i: number) { return xScale(i); })
             .y0(function(d: any) { return yScale(0); })
             .y1(function(d: any) { return yScale(0); })
-            .interpolate('cardinal');
+            //.interpolate('cardinal');
+            .curve(d3.curveCardinal);
     }
 
     function appendCityArea(chart: d3.Selection<any>, controller: climatediff.ChartController, index: number,
-                            xScale: d3.scale.Ordinal<any, any>, yScale: d3.scale.Linear<number, number>,
+                            xScale: d3.ScaleOrdinal<any, any>, yScale: d3.ScaleLinear<number, number>,
                             maxField: string, minField ?: string) {
 
         const data: any = controller.data;
@@ -79,11 +80,12 @@ angular.module('cdApp').directive('cdChart',
             return;
         }
 
-        const area: d3.svg.Area<[number, number]> = d3.svg.area()
+        const area: d3.Area<[number, number]> = d3.area()
             .x(function(d: any, i: number) { return xScale(i); })
             .y0(function(d: any) { const index2: number = d[city][minField] || 0; return yScale(index2); })
             .y1(function(d: any) { return yScale(d[city][maxField]); })
-            .interpolate('cardinal');
+            //.interpolate('cardinal');
+            .curve(d3.curveCardinal);
         chart.append('path')
             .datum(data.data)
             .attr('class', 'area' + (index + 1))
@@ -93,20 +95,22 @@ angular.module('cdApp').directive('cdChart',
             .attr('d', area);
 
         if (minField) {
-            const minLine: d3.svg.Line<[number, number]> = d3.svg.line()
+            const minLine: d3.Line<[number, number]> = d3.line()
                 .x(function(d: any, i: number) { return xScale(i); })
                 .y(function(d: any) { return yScale(d[city][minField]); })
-                .interpolate('cardinal');
+                //.interpolate('cardinal');
+                .curve(d3.curveCardinal);
             chart.append('path')
                 .datum(data.data)
                 .attr('class', 'line' + (index + 1))
                 .attr('d', minLine);
         }
 
-        const maxLine: d3.svg.Line<[number, number]> = d3.svg.line()
+        const maxLine: d3.Line<[number, number]> = d3.line()
             .x(function(d: any, i: number) { return xScale(i); })
             .y(function(d: any) { return yScale(d[city][maxField]); })
-            .interpolate('cardinal');
+            //.interpolate('cardinal');
+            .curve(d3.curveCardinal);
         chart.append('path')
             .datum(data.data)
             .attr('class', 'line' + (index + 1))
@@ -117,7 +121,7 @@ angular.module('cdApp').directive('cdChart',
     }
 
     function appendCityAreaPoints(chart: d3.Selection<any>, controller: climatediff.ChartController, index: number,
-                                xScale: d3.scale.Ordinal<any, any>, yScale: d3.scale.Linear<number, number>,
+                                xScale: d3.ScaleOrdinal<any, any>, yScale: d3.ScaleLinear<number, number>,
                                   maxVar: string, minVar ?: string) {
 
         const data: climatediff.TemperatureResponse = controller.data;
@@ -183,7 +187,7 @@ angular.module('cdApp').directive('cdChart',
         const chartMargin: any = { top: 0, right: 0, bottom: 60, left: 40 };
 
         // Height of actual chart content area.
-        const $chartWrapper: JQuery = $(element).find('.chart-content');
+        const $chartWrapper: JQuery = element.find('.chart-content');
         const chartW: number = $chartWrapper.width();
         const chartH: number = $chartWrapper.height();
         let chartWidth: number = chartW - chartMargin.left - chartMargin.right;
@@ -197,40 +201,49 @@ angular.module('cdApp').directive('cdChart',
         //     element.find('svg').get(0).setAttribute('viewBox', '0 0 ' + chartW + ' ' + chartH);
         // })
 
-        const yScale: d3.scale.Linear<number, number> = d3.scale.linear()
+        const yScale: d3.ScaleLinear<number, number> = d3.scaleLinear()
             .range([ chartHeight, 0 ]);
 
         const barPad: number = 0.1;
-        const xScale: d3.scale.Ordinal<string, any> = (<any>d3.scale.ordinal()) // <any> to work around d3 typings issue?
-            .domain([ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ])
-            .rangeRoundPoints([ 0, chartWidth ], barPad); //barPad, barOuterPad);
+        //const xScale: d3.ScaleOrdinal<string, any> = d3.scaleOrdinal() // <any> to work around @types issue?
+        const xScale: d3.ScalePoint<string, any> = d3.scalePoint()
+            //.domain([ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ])
+            //.domain([ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ])
+            .domain([ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11' ])
+            //.rangeRoundPoints([ 0, chartWidth ], barPad); //barPad, barOuterPad);
+            .range([ 0, chartWidth ])
+            .padding(barPad);
 
         const data: climatediff.MonthRecord[] = controller.data.data;
 
         const topPadding: number = 5;
 
         let min: number, max: number;
-        function maxFrom2Cities(entry: climatediff.MonthRecord) {
+        function maxFrom2Cities(entry: climatediff.MonthRecord): number {
             let max1: number = entry.city1 ? entry.city1[maxProp] : 0;
             let max2: number = entry.city2 ? entry.city2[maxProp] : 0;
             return Math.max(max1, max2);
         }
-        function minFrom2Cities(entry: climatediff.MonthRecord) {
+        function minFrom2Cities(entry: climatediff.MonthRecord): number {
             let min1: number = entry.city1 ? entry.city1[minProp] : 0;
             let min2: number = entry.city2 ? entry.city2[minProp] : 0;
             return Math.min(min1, min2);
         }
         if (data.length !== 0) {
             if (minProp) { // Chart is form min - max
-                min = d3.min(data, function (entry: climatediff.MonthRecord) {
+                // Not sure why the cast is needed, appears to be @types issue
+                min = d3.min<climatediff.MonthRecord, number>(data, (entry: climatediff.MonthRecord): number => {
                     return minFrom2Cities(entry);
-                });
+                }) as number;
                 min = Math.min(min, 0);
             }
             else { // Chart is from 0 - value
                 min = 0;
             }
-            max = d3.max(data, function(entry: climatediff.MonthRecord) { return maxFrom2Cities(entry); });
+            // Not sure why the cast is needed, appears to be @types issue
+            max = d3.max(data, (entry: climatediff.MonthRecord): number => {
+                return maxFrom2Cities(entry);
+            }) as number;
         }
         else {
             min = 0;
@@ -239,7 +252,7 @@ angular.module('cdApp').directive('cdChart',
         yScale.domain([min, max + topPadding]);
 
         // Remove previous chart, if any
-        const $chartElem: JQuery = $(element).find('.chart');
+        const $chartElem: JQuery = element.find('.chart');
         const chartDomNode: Node = $chartElem[0];
         d3.select(chartDomNode)
             .select('g').remove();
@@ -248,12 +261,13 @@ angular.module('cdApp').directive('cdChart',
             .append('g')
             .attr('transform', 'translate(' + chartMargin.left + ', ' + chartMargin.top + ')');
 
-        const xAxis: d3.svg.Axis = d3.svg.axis()
-            .scale(xScale)
-            .orient('bottom')
-            .tickFormat(<any>function(d: any, i: number) { return Months.get(i); }); // <any> cast to work around bad typings definition
+        const xAxis: d3.Axis = d3.axisBottom(xScale)
+            // .scale(xScale)
+            // .orient('bottom')
+            .tickFormat(<any>function(d: any, i: number) { return Months.get(i); });
         chart.append('g')
-            .classed({ 'x': true, 'axis': true })
+            .classed('x', true)
+            .classed('axis', true)
             .attr('transform', 'translate(0,' + chartHeight + ')')
             .call(xAxis)
             // Rotate text on x-axis
@@ -263,12 +277,13 @@ angular.module('cdApp').directive('cdChart',
             .attr('dy', '.15em')
             .attr('transform', function(d: any) { return 'rotate(-65)'; });
 
-        const yAxis: d3.svg.Axis = d3.svg.axis()
-            .scale(yScale)
-            .orient('left')
+        const yAxis: d3.Axis = d3.axisLeft(yScale)
+            // .scale(yScale)
+            // .orient('left')
             .tickFormat(function(d: any) { return d + controller.chartConfig.units[0].axisSuffix; }); // e.g. '"' or "deg. F"
         chart.append('g')
-            .classed({ 'y': true, 'axis': true })
+            .classed('y', true)
+            .classed('axis', true)
             .call(yAxis);
 
         appendCityArea(chart, controller, 0, xScale, yScale, maxProp, minProp);

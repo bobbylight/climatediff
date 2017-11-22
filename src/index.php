@@ -29,8 +29,8 @@
     <!-- build:js js/climatediff.min.js -->
     <script src="../bower_components/jquery/jquery.js"></script>
     <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="../bower_components/d3/d3.js"></script>
-    <script src="../bower_components/d3-tip/index.js"></script>
+    <script src="../node_modules/d3/build/d3.js"></script>
+    <script src="../node_modules/d3-tip/index.js"></script>
     <script src='../bower_components/angular/angular.js'></script>
     <script src="../bower_components/angular-resource/angular-resource.js"></script>
     <script src="../bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js"></script>

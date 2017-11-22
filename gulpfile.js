@@ -57,7 +57,7 @@ gulp.task('cssnano', function() {
 
 gulp.task('compile-ts', function() {
 
-    var tsResult = gulp.src([ 'src/app/**/*.ts', 'typings/browser.d.ts' ])
+    var tsResult = gulp.src([ 'src/app/**/*.ts' ])
     //var tsResult = tsconfig.src()
     //.pipe(cache('ts-files')) // Prevent 'watch' task from recompiling all files for any 1 file change, helps with 'watch-test' performance
         .pipe(sourcemaps.init())

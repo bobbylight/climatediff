@@ -17,17 +17,12 @@
   "dependencies": {
     "jquery": "1.10.2",
     "bootstrap": "~3",
-    "d3": "~3.5",
     "angular": "~1",
     "angular-route": "~1",
     "angular-resource": "~1",
     "angular-ui-bootstrap-bower": "~1",
     "angular-spinner": "0.8.1",
     "font-awesome": "~4",
-    "d3-tip": "~0.6.7",
     "angular-ui-router": "~0.2.18"
-  },
-  "resolutions": {
-    "d3": "3.5"
   }
 }

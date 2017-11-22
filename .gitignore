@@ -6,7 +6,6 @@ init.php
 bower_components
 dist
 node_modules
-typings
 js
 composer.lock
 composer.phar

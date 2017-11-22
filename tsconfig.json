@@ -24,8 +24,6 @@
   },
   "exclude": [
     "node_modules",
-    "src/js",
-    "typings/browser",
-    "typings/browser.d.ts"
+    "src/js"
   ]
 }

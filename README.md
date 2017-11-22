@@ -4,7 +4,7 @@ A simple web application that shows the climate difference between two cities.
 If you're considering moving, this application will give you an idea
 of day-to-day weather differences between where you are now and your new city.
 
-I originally started writing this many moons ago to learn Angular, but set if aside unfinished.
+I originally started writing this many moons ago to learn Angular, but set it aside unfinished.
 Recently I decided to modernize it, and host it here for posterity, but there is still a lot of
 cleanup to do and features to add.
 
@@ -14,19 +14,16 @@ First, install the tools we use for developing and building using `npm`, if you 
 ```bash
 npm install -g gulp-cli
 npm install -g bower
-npm install -g typings
 ```
 
 Next, check out the project.  Install gulp and the project's JS and PHP dependencies with
-`npm`, `bower` and `composer`.  Install TypeScript definition files via `typings` for a
-better development experience as well:
+`npm`, `bower` and `composer`:
 
 ```bash
 git clone https://github.com/bobbylight/climatediff.git
 cd climatediff
 npm install
 bower install
-typings install
 # On Windows, use Composer's installer; otherwise, just use curl
 curl -sS https://getcomposer.org/installer | php
 php composer.phar install
