@@ -13,17 +13,15 @@ First, install the tools we use for developing and building using `npm`, if you 
 
 ```bash
 npm install -g gulp-cli
-npm install -g bower
 ```
 
 Next, check out the project.  Install gulp and the project's JS and PHP dependencies with
-`npm`, `bower` and `composer`:
+`npm` and `composer`:
 
 ```bash
 git clone https://github.com/bobbylight/climatediff.git
 cd climatediff
 npm install
-bower install
 # On Windows, use Composer's installer; otherwise, just use curl
 curl -sS https://getcomposer.org/installer | php
 php composer.phar install

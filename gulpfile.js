@@ -50,8 +50,8 @@ gulp.task('cssnano', function() {
     gulp.src('src/css/all.css')
         .pipe(concatCss('all.css'))
         .pipe(cssnano())
-        .pipe(replace(/url\(\.\.\/\.\.\/bower_components\/bootstrap\/dist\/fonts\//g, 'url(../fonts/'))
-        .pipe(replace(/url\(\.\.\/\.\.\/bower_components\/font-awesome\/fonts\//g, 'url(../fonts/'))
+        .pipe(replace(/url\(\.\.\/\.\.\/node_modules\/bootstrap\/dist\/fonts\//g, 'url(../fonts/'))
+        .pipe(replace(/url\(\.\.\/\.\.\/node_modules\/font-awesome\/fonts\//g, 'url(../fonts/'))
         .pipe(gulp.dest('dist/css/'));
 });
 
@@ -125,10 +125,10 @@ gulp.task('copy-non-minified-files', function() {
         .pipe(gulp.dest('dist/'));
 
     // See corresponding URL rewritings in CSS in cssnano task
-    var fontsInBowerComponents = gulp.src([ 'bower_components/bootstrap/dist/fonts/*', 'bower_components/font-awesome/fonts/*' ])
+    var fontsInNodeModules = gulp.src([ 'node_modules/bootstrap/dist/fonts/*', 'node_modules/font-awesome/fonts/*' ])
         .pipe(gulp.dest('dist/fonts/'));
 
-    return merge([ mostFiles, fontsInBowerComponents ]);
+    return merge([ mostFiles, fontsInNodeModules ]);
 });
 
 gulp.task('default', function() {

@@ -18,13 +18,16 @@ module climatediff {
 
         static $inject: string[] = [ '$scope' ];
 
-        constructor($scope: ng.IScope) {
+        constructor(private $scope: ng.IScope) {
+        }
+
+        $onInit() {
 
             this.selectedUnits = this.chartConfig.units[0].label;
 
             // TODO: This should not be a deep watch; we should watch on the entire object, then just on data.data
             // for subsequent updates via the units buttons
-            $scope.$watch(() => { return this.data; }, (newValue: any, oldValue: any) => {
+            this.$scope.$watch(() => { return this.data; }, (newValue: any, oldValue: any) => {
                 if (newValue === oldValue) {
                     return; // First time through
                 }
