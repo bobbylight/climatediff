@@ -15,11 +15,13 @@ var rev = require('gulp-rev');
 var tsc = require('gulp-typescript');
 var tsconfig = tsc.createProject('tsconfig.json');
 var sourcemaps = require('gulp-sourcemaps');
-var tslint = require('gulp-tslint');
+var tslint = require('tslint');
+var gulpTslint = require('gulp-tslint');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
 var merge = require('merge2');
 var livereload = require('gulp-livereload');
+var ngAnnotate = require('gulp-ng-annotate');
 
 gulp.task('clean', function() {
     return del([ './dist' ]);
@@ -54,20 +56,41 @@ gulp.task('cssnano', function() {
 });
 
 gulp.task('compile-ts', function() {
+
     var tsResult = gulp.src([ 'src/app/**/*.ts', 'typings/browser.d.ts' ])
+    //var tsResult = tsconfig.src()
+    //.pipe(cache('ts-files')) // Prevent 'watch' task from recompiling all files for any 1 file change, helps with 'watch-test' performance
         .pipe(sourcemaps.init())
-        .pipe(tsc(tsconfig));
+        .pipe(tsconfig());
+
+    // All we care about is the .js and map files, not the *.d.ts files
+    //tsResult.dts.pipe(gulp.dest('src/main/resources/public/scripts/'));
     return merge([
         tsResult.dts.pipe(gulp.dest('src/js/')),
         tsResult.js
+            .pipe(ngAnnotate()).on('error', function (error) {
+                // ng-annotate will fail on compilation errors, and cause gulp to exit; we need to catch this and
+                // print out the error and then call the task callback instead
+                console.log('*** Compilation error ***\n' + error);
+
+                // need to call the callback, or else this jswatch task will not get called again for some reason;
+                // the error must cause the task to get removed from watch notifications; calling the callback seems to work
+                cb();
+            })
             .pipe(sourcemaps.write('.'))
             .pipe(gulp.dest('src/js/'))
-    ]).pipe(livereload({ quiet: true }));
+        ]).pipe(livereload({ quiet: true }));
 });
 gulp.task('tslint', function() {
+
+    var program = tslint.Linter.createProgram('./tsconfig.json');
+
     return gulp.src([ 'src/app/**/*.ts' ])
-        .pipe(tslint())
-        .pipe(tslint.report('prose'));
+        .pipe(gulpTslint({
+            program: program,
+            formatter: 'prose'
+        }))
+        .pipe(gulpTslint.report());
 });
 
 gulp.task('jshint', function() {

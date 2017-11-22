@@ -3,7 +3,7 @@ declare module climatediff {
     export interface ChartConfig {
         units: UnitConfig[];
     }
-    
+
     /**
      * Debug information about the remote call for city info we made server-side.  This is essentially
      * debug information from curl.
@@ -58,5 +58,5 @@ interface Window {
 declare namespace d3 {
 
     export function tip(): any;
-    export var legend: any;
+    export let legend: any;
 }

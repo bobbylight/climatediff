@@ -35,7 +35,8 @@ module climatediff {
     }
 }
 
-angular.module('cdApp').directive('cdChart', [ 'usSpinnerService', 'Months', (usSpinnerService: any, Months: climatediff.MonthService) => {
+angular.module('cdApp').directive('cdChart',
+    [ 'usSpinnerService', '$log', 'Months', (usSpinnerService: any, $log: ng.ILogService, Months: climatediff.MonthService) => {
     'use strict';
 
     const TRANSITION_DURATION_MILLIS: number = 300;
@@ -74,7 +75,7 @@ angular.module('cdApp').directive('cdChart', [ 'usSpinnerService', 'Months', (us
 
         const city: string = 'city' + (index + 1);
         if (!data.data[0][city]) {
-            console.log('Note: No data in response for city: "' + city + '"');
+            $log.log('Note: No data in response for city: "' + city + '"');
             return;
         }
 
@@ -126,7 +127,7 @@ angular.module('cdApp').directive('cdChart', [ 'usSpinnerService', 'Months', (us
 
         const city: string = 'city' + (index + 1);
         if (!data.data[0][city]) {
-            console.log('Note: No data in response for city: "' + city + '"');
+            $log.log('Note: No data in response for city: "' + city + '"');
             return;
         }
 
@@ -135,7 +136,7 @@ angular.module('cdApp').directive('cdChart', [ 'usSpinnerService', 'Months', (us
         });
         chart.call(tip);
         tip.offset([ -10, 0 ]);
-        let points: d3.Selection<climatediff.MonthRecord> = chart.selectAll('.point')
+        chart.selectAll('.point')
             .data(data.data)
             .enter().append('svg:circle')
             .attr('class', 'point' + (index + 1))
@@ -152,7 +153,7 @@ angular.module('cdApp').directive('cdChart', [ 'usSpinnerService', 'Months', (us
             });
             chart.call(tip);
             tip.offset([ -10, 0 ]);
-            points = chart.selectAll('.point')
+            chart.selectAll('.point')
                 .data(data.data)
                 .enter().append('svg:circle')
                 .attr('class', 'point' + (index + 1))
@@ -170,7 +171,7 @@ angular.module('cdApp').directive('cdChart', [ 'usSpinnerService', 'Months', (us
         const mainChartDiv: JQuery = element.find('.chart-content'); // Flex fill layout
         const width: number = mainChartDiv.width();
         const height: number = mainChartDiv.height();
-        console.log(width + ', ' + height);
+        $log.log(width + ', ' + height);
         if (width > 0 && height > 0) {
             mainChartDiv.find('.chart').get(0).setAttribute('viewBox', '0 0 ' + width + ' ' + height);
         }

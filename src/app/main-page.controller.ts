@@ -15,9 +15,10 @@ module climatediff {
         tempData: any;
         precipData: any;
 
-        static $inject: string[] = [ '$scope', '$http', '$timeout', 'Utils' ];
+        static $inject: string[] = [ '$scope', '$http', '$timeout', '$log', 'Utils' ];
 
-        constructor($scope: ng.IScope, private $http: ng.IHttpService, private $timeout: ng.ITimeoutService, private Utils: UtilService) {
+        constructor($scope: ng.IScope, private $http: ng.IHttpService, private $timeout: ng.ITimeoutService,
+                    private $log: ng.ILogService, private Utils: UtilService) {
 
             this.city1 = 'Raleigh, NC US';
             this.city2 = 'Lexington, KY US';
@@ -75,8 +76,8 @@ module climatediff {
                     input: val,
                     limit: 10
                 }
-            }).then(function(response: any) {
-                console.log(JSON.stringify(response));
+            }).then((response: ng.IHttpPromiseCallbackArg<any>) => {
+                this.$log.log(JSON.stringify(response));
                 return response.data.map(function(item: any) {
                     return item.city_name;
                 });
@@ -117,28 +118,28 @@ module climatediff {
 
             const updatePrecipChart: Function = () => {
                 return this.$http.get('api/precipitation/' + this.city1 + '/' + this.city2)
-                    .success((data: any, status: number, headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) => {
-                        console.log(JSON.stringify(data));
-                        //data.data = celsiusToFahrenheit(data.data);
+                    .then((result: ng.IHttpPromiseCallbackArg<any>) => {
+                        this.$log.log(JSON.stringify(result.data));
+                        //result.data.data = celsiusToFahrenheit(result.data.data);
                         this.maskPrecipResults = false;
-                        this.$timeout(() => { this.precipData = data; }, 0);
+                        this.$timeout(() => { this.precipData = result.data; }, 0);
                     })
-                    .error(function(data: any, status: number, headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) {
+                    .catch((result: ng.IHttpPromiseCallbackArg<any>) => {
                         alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
                         this.maskPrecipResults = false;
                     });
             };
 
             return this.$http.get('api/temperature/' + this.city1 + '/' + this.city2)
-                .success((data: TemperatureResponse, status: number, headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) => {
-                    data.data = this.celsiusToFahrenheit(data.data);
+                .then((result: ng.IHttpPromiseCallbackArg<any>) => {
+                    result.data.data = this.celsiusToFahrenheit(result.data.data);
                     // this.tempMetadata = data.metadata;
                     // this.tempData = data.data;
                     this.maskTempResults = false;
-                    this.$timeout(() => { this.tempData = data; }, 0);
+                    this.$timeout(() => { this.tempData = result.data; }, 0);
                     updatePrecipChart();
                 })
-                .error((data: any, status: number, headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) => {
+                .catch((result: ng.IHttpPromiseCallbackArg<any>) => {
                     alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
                     this.maskTempResults = false;
                     updatePrecipChart();

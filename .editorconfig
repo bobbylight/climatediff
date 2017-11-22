@@ -1,0 +1,19 @@
+# A minimal configuration for some of the formatting basics enforced by tslint.
+# If using IntelliJ, these settings should magically just work; if you're using some other editor,
+# please check whether you need a plugin for this config file to be honored:
+# http://editorconfig.org/
+
+# This is the top-most EditorConfig file
+root = true
+
+[*.{ts,less,htm,html,php}]
+indent_style=space
+indent_size=4
+trim_trailing_whitespace=true
+charset=utf-8
+insert_final_newline=true
+
+[*.json]
+indent_style=space
+indent_size=2
+charset=utf-8

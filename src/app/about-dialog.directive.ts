@@ -1,6 +1,6 @@
 module climatediff {
     'use strict';
-    
+
     export interface AboutDialogScope extends ng.IScope {
         showAbout: boolean;
     }
@@ -8,9 +8,9 @@ module climatediff {
 
 angular.module('cdApp').directive('cdAbout', [() => {
     'use strict';
-    
+
     const link: Function = function(scope: climatediff.AboutDialogScope, element: JQuery, attrs: ng.IAttributes) {
-        
+
         scope.$watch('showAbout', (newValue: boolean, oldValue: boolean) => {
             if (newValue) {
 
@@ -25,7 +25,7 @@ angular.module('cdApp').directive('cdAbout', [() => {
             }
         });
     };
-    
+
     return {
         restrict: 'E',
         scope: {

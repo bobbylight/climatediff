@@ -13,3 +13,4 @@ composer.phar
 vendor
 *.zip
 interesting-datatypes.txt
+cacert.pem

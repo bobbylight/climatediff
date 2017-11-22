@@ -1,10 +1,23 @@
 {
   "compilerOptions": {
-    "target": "es5",
+
+    "allowJs": false,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
     "declaration": false,
-    "noImplicitAny": false,
-    "removeComments": false,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": false,//true,
+    "noImplicitReturns": true,
+    "noImplicitThis": false,//true,
+    "noUnusedLocals": true,
+    //"noUnusedParameters": true,
     "preserveConstEnums": true,
+    "removeComments": false,
+    //"strict": true,
+
+    "target": "es5",
+    //"module": "amd",
+
     "outDir": "src/js",
     "rootDir": "src/app",
     "sourceMap": true
