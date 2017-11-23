@@ -5,7 +5,6 @@ init.php
 .tmp
 dist
 node_modules
-js
 composer.lock
 composer.phar
 vendor
