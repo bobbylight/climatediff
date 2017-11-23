@@ -4,6 +4,7 @@
     "allowJs": false,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
+    "alwaysStrict": true,
     "declaration": false,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,//true,
@@ -16,7 +17,7 @@
     //"strict": true,
 
     "target": "es5",
-    //"module": "amd",
+    "module": "amd",
 
     "outDir": "src/js",
     "rootDir": "src/app",

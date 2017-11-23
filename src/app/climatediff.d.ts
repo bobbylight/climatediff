@@ -1,62 +1,61 @@
-declare module climatediff {
+import { IAngularStatic } from 'angular';
 
-    export interface ChartConfig {
-        units: UnitConfig[];
-    }
+declare global {
 
     /**
-     * Debug information about the remote call for city info we made server-side.  This is essentially
-     * debug information from curl.
+     * Work around @types/angular* not using "global" typings like the typings tool did.
+     * https://stackoverflow.com/questions/40664298/angular-1-x-with-typescript-2-x-types-and-systemjs-using-global-typings
      */
-    export interface CityDebugInfo {
-        total_time: number;
-        url: string;
-    }
+    const angular: IAngularStatic;
+}
 
-    export interface CityTemperatureInfo {
-        min: number;
-        minCount: number;
-        median: number;
-        medianCount: number;
-        max: number;
-        maxCount: number;
-    }
+export interface ChartConfig {
+    units: UnitConfig[];
+}
 
-    export interface MonthRecord {
-        city1: CityTemperatureInfo;
-        city2: CityTemperatureInfo;
-    }
+/**
+ * Debug information about the remote call for city info we made server-side.  This is essentially
+ * debug information from curl.
+ */
+export interface CityDebugInfo {
+    total_time: number;
+    url: string;
+}
 
-    export interface TemperatureResponse {
-        data: MonthRecord[];
-        debug: { // TODO: Make not arrays!!
-            city1: CityDebugInfo[],
-            city2: CityDebugInfo[]
-        };
-        metadata: any;
-        queries: string[];
-    }
+export interface CityTemperatureInfo {
+    min: number;
+    minCount: number;
+    median: number;
+    medianCount: number;
+    max: number;
+    maxCount: number;
+}
 
-    export interface UnitConfig {
-        axisSuffix: string;
-        label: string;
-        convert: UnitConversionFunction;
-    }
+export interface MonthRecord {
+    city1: CityTemperatureInfo;
+    city2: CityTemperatureInfo;
+}
 
-    export interface UnitConversionFunction {
-        (data: MonthRecord[]): MonthRecord[];
-    }
+export interface TemperatureResponse {
+    data: MonthRecord[];
+    debug: { // TODO: Make not arrays!!
+        city1: CityDebugInfo[],
+        city2: CityDebugInfo[]
+    };
+    metadata: any;
+    queries: string[];
+}
+
+export interface UnitConfig {
+    axisSuffix: string;
+    label: string;
+    convert: UnitConversionFunction;
+}
+
+export interface UnitConversionFunction {
+    (data: MonthRecord[]): MonthRecord[];
 }
 
 interface Window {
     d3: any;
-}
-
-/**
- * d3-tip library does not have typings defined
- */
-declare namespace d3 {
-
-    export function tip(): any;
-    export let legend: any;
 }

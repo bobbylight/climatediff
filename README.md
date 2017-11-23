@@ -9,13 +9,7 @@ Recently I decided to modernize it, and host it here for posterity, but there is
 cleanup to do and features to add.
 
 ## Hacking
-First, install the tools we use for developing and building using `npm`, if you do not already have them:
-
-```bash
-npm install -g gulp-cli
-```
-
-Next, check out the project.  Install gulp and the project's JS and PHP dependencies with
+First, check out the project.  Install the project's JS and PHP dependencies with
 `npm` and `composer`:
 
 ```bash
@@ -30,11 +24,19 @@ php composer.phar install
 Then, [get a token to access the NCDC CDO web services](http://www.ncdc.noaa.gov/cdo-web/token). Create a new file named `src/init.php` from
 `src/init.php.orig` with your token inserted appropriately.  This is necessary for the application to fetch historical data from the NOAA.
 
-The development version of the application lives in `src/`.  Running `gulp watch` will set up watches and
+The development version of the application lives in `src/`.  Running `npm run watch` will set up watches and
 `livereload` for real-time development and debugging.
 
-You can build the production version of it into `dist/` by running `gulp`.
+You can build the production version of it into `dist/` by running `npm run build`.
 
+### npm Scripts
+* _npm run clean_ - Delete the `dist/` and `coverage/` (for unit tests) folders
+* _npm run build_ - Run a webpack build, output in `dist/`
+* _npm run watch_ - Runs webpack and listens for changes, output in `dist/`
+* _npm run test_ - Run unit tests (nothing yet)
+* _npm run coverage_ - Run unit tests, generate coverage report (nothing yet)
+
+## Miscellaneous
 Non-Font-Awesome icons were grabbed from:
 
 * http://www.clipartbest.com/free-printable-weather-symbols

@@ -1,65 +1,64 @@
-module climatediff {
-    'use strict';
+import { ChartConfig, MonthRecord, TemperatureResponse } from './climatediff';
+import * as d3 from 'd3';
+import MonthService from './month.service';
+import { BaseType } from 'd3';
 
-    export class ChartController {
+export class ChartController {
 
-        spinnerIndex: number;
-        chartTitle: string;
-        chartConfig: ChartConfig;
-        setUnits: Function;
-        data: TemperatureResponse;
-        foo: MonthService;
-        mask: any;
-        createChart: () => void;
-        dataLoaded: boolean;
-        minProp: string;
-        maxProp: string;
-        selectedUnits: string;
+    spinnerIndex: number;
+    chartTitle: string;
+    chartConfig: ChartConfig;
+    setUnits: Function;
+    data: TemperatureResponse;
+    foo: MonthService;
+    mask: any;
+    createChart: () => void;
+    dataLoaded: boolean;
+    minProp: string;
+    maxProp: string;
+    selectedUnits: string;
 
-        static $inject: string[] = [ '$scope' ];
+    static $inject: string[] = [ '$scope' ];
 
-        constructor(private $scope: ng.IScope) {
-        }
+    constructor(private $scope: ng.IScope) {
+    }
 
-        $onInit() {
+    $onInit() {
 
-            this.selectedUnits = this.chartConfig.units[0].label;
+        this.selectedUnits = this.chartConfig.units[0].label;
 
-            // TODO: This should not be a deep watch; we should watch on the entire object, then just on data.data
-            // for subsequent updates via the units buttons
-            this.$scope.$watch(() => { return this.data; }, (newValue: any, oldValue: any) => {
-                if (newValue === oldValue) {
-                    return; // First time through
-                }
-                this.createChart();
-            }, true);
+        // TODO: This should not be a deep watch; we should watch on the entire object, then just on data.data
+        // for subsequent updates via the units buttons
+        this.$scope.$watch(() => { return this.data; }, (newValue: any, oldValue: any) => {
+            if (newValue === oldValue) {
+                return; // First time through
+            }
+            this.createChart();
+        }, true);
 
-        }
     }
 }
 
-angular.module('cdApp').directive('cdChart',
-    [ 'usSpinnerService', '$log', 'Months', (usSpinnerService: any, $log: ng.ILogService, Months: climatediff.MonthService) => {
-    'use strict';
+export default (usSpinnerService: any, $log: ng.ILogService, Months: MonthService) => {
 
     const TRANSITION_DURATION_MILLIS: number = 300;
 
-    function expandPoint(tipCallback: Function): (e: climatediff.MonthRecord) => void {
-        return function(e: climatediff.MonthRecord) {
-            tipCallback(e);
-            d3.select(this).transition()
-                .attr('r', 6);
-        };
-    }
-    function collapsePoint(tipCallback: Function): (e: climatediff.MonthRecord) => void {
-        return function(e: climatediff.MonthRecord) {
-            tipCallback(e);
-            d3.select(this).transition()
-                .attr('r', 3);
-        };
-    }
+    // function expandPoint(tipCallback: Function): (e: MonthRecord) => void {
+    //     return function(e: MonthRecord) {
+    //         tipCallback(e);
+    //         d3.select(this).transition()
+    //             .attr('r', 6);
+    //     };
+    // }
+    // function collapsePoint(tipCallback: Function): (e: MonthRecord) => void {
+    //     return function(e: MonthRecord) {
+    //         tipCallback(e);
+    //         d3.select(this).transition()
+    //             .attr('r', 3);
+    //     };
+    // }
 
-    function createEmptyArea(xScale: d3.ScaleOrdinal<any, any>, yScale: d3.ScaleLinear<number, number>) {
+    function createEmptyArea(xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>) {
         return d3.area()
             .x(function(d: any, i: number) { return xScale(i); })
             .y0(function(d: any) { return yScale(0); })
@@ -68,8 +67,8 @@ angular.module('cdApp').directive('cdChart',
             .curve(d3.curveCardinal);
     }
 
-    function appendCityArea(chart: d3.Selection<any>, controller: climatediff.ChartController, index: number,
-                            xScale: d3.ScaleOrdinal<any, any>, yScale: d3.ScaleLinear<number, number>,
+    function appendCityArea(chart: d3.Selection<BaseType, {}, null, undefined>, controller: ChartController, index: number,
+                            xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>,
                             maxField: string, minField ?: string) {
 
         const data: any = controller.data;
@@ -123,11 +122,11 @@ angular.module('cdApp').directive('cdChart',
 
     }
 
-    function appendCityAreaPoints(chart: d3.Selection<any>, controller: climatediff.ChartController, index: number,
-                                xScale: d3.ScaleOrdinal<any, any>, yScale: d3.ScaleLinear<number, number>,
+    function appendCityAreaPoints(chart: d3.Selection<BaseType, {}, null, undefined>, controller: ChartController, index: number,
+                                xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>,
                                   maxVar: string, minVar ?: string) {
 
-        const data: climatediff.TemperatureResponse = controller.data;
+        const data: TemperatureResponse = controller.data;
         if (!data || !data.data || data.data.length === 0) {
             return;
         }
@@ -138,11 +137,11 @@ angular.module('cdApp').directive('cdChart',
             return;
         }
 
-        let tip: any = d3.tip().attr('class', 'd3-tip').html((d: any) => {
-            return d[city][maxVar];
-        });
-        chart.call(tip);
-        tip.offset([ -10, 0 ]);
+        // let tip: any = d3.tip().attr('class', 'd3-tip').html((d: any) => {
+        //     return d[city][maxVar];
+        // });
+        // chart.call(tip);
+        // tip.offset([ -10, 0 ]);
         chart.selectAll('.point')
             .data(data.data)
             .enter().append('svg:circle')
@@ -151,15 +150,16 @@ angular.module('cdApp').directive('cdChart',
             .attr('cy', function(d: any, i: number) { return yScale(d[city][maxVar]); })
             .attr('r', function(d: any, i: number) { return 3; })
             .attr('pointer-events', 'all')
-            .on('mouseover', expandPoint(tip.show))
-            .on('mouseout', collapsePoint(tip.hide));
+            // .on('mouseover', expandPoint(tip.show))
+            // .on('mouseout', collapsePoint(tip.hide));
+            ;
 
         if (minVar) {
-            tip = d3.tip().attr('class', 'd3-tip').html(function(d: climatediff.MonthRecord) {
-                return d[city][minVar];
-            });
-            chart.call(tip);
-            tip.offset([ -10, 0 ]);
+            // tip = d3.tip().attr('class', 'd3-tip').html(function(d: MonthRecord) {
+            //     return d[city][minVar];
+            // });
+            // chart.call(tip);
+            // tip.offset([ -10, 0 ]);
             chart.selectAll('.point')
                 .data(data.data)
                 .enter().append('svg:circle')
@@ -168,8 +168,9 @@ angular.module('cdApp').directive('cdChart',
                 .attr('cy', function(d: any, i: number) { return yScale(d[city][minVar]); })
                 .attr('r', function(d: any, i: number) { return 3; })
                 .attr('pointer-events', 'all')
-                .on('mouseover', expandPoint(tip.show))
-                .on('mouseout', collapsePoint(tip.hide));
+                // .on('mouseover', expandPoint(tip.show))
+                // .on('mouseout', collapsePoint(tip.hide));
+                ;
         }
 
     }
@@ -184,7 +185,7 @@ angular.module('cdApp').directive('cdChart',
         }
     }
 
-    function createChart($scope: ng.IScope, element: JQuery, controller: climatediff.ChartController) {
+    function createChart($scope: ng.IScope, element: JQuery, controller: ChartController) {
 
         // Margins for axes.  Could also be used for spacing, titles, etc.
         const chartMargin: any = { top: 0, right: 0, bottom: 60, left: 40 };
@@ -209,7 +210,7 @@ angular.module('cdApp').directive('cdChart',
 
         const barPad: number = 0.1;
         //const xScale: d3.ScaleOrdinal<string, any> = d3.scaleOrdinal() // <any> to work around @types issue?
-        const xScale: d3.ScalePoint<string, any> = d3.scalePoint()
+        const xScale: d3.ScalePoint<string> = d3.scalePoint()
             //.domain([ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ])
             //.domain([ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ])
             .domain([ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11' ])
@@ -217,36 +218,35 @@ angular.module('cdApp').directive('cdChart',
             .range([ 0, chartWidth ])
             .padding(barPad);
 
-        const data: climatediff.MonthRecord[] = controller.data.data;
+        const data: MonthRecord[] = controller.data.data;
 
         const topPadding: number = 5;
 
         let min: number, max: number;
-        function maxFrom2Cities(entry: climatediff.MonthRecord): number {
+        function maxFrom2Cities(entry: MonthRecord): number {
             let max1: number = entry.city1 ? entry.city1[maxProp] : 0;
             let max2: number = entry.city2 ? entry.city2[maxProp] : 0;
             return Math.max(max1, max2);
         }
-        function minFrom2Cities(entry: climatediff.MonthRecord): number {
+        function minFrom2Cities(entry: MonthRecord): number {
             let min1: number = entry.city1 ? entry.city1[minProp] : 0;
             let min2: number = entry.city2 ? entry.city2[minProp] : 0;
             return Math.min(min1, min2);
         }
         if (data.length !== 0) {
             if (minProp) { // Chart is form min - max
-                // Not sure why the cast is needed, appears to be @types issue
-                min = d3.min<climatediff.MonthRecord, number>(data, (entry: climatediff.MonthRecord): number => {
+                min = d3.min<MonthRecord, number>(data, (entry: MonthRecord): number => {
                     return minFrom2Cities(entry);
-                }) as number;
+                });
                 min = Math.min(min, 0);
             }
             else { // Chart is from 0 - value
                 min = 0;
             }
-            // Not sure why the cast is needed, appears to be @types issue
-            max = d3.max(data, (entry: climatediff.MonthRecord): number => {
+            // Intellij expects a type assertion here but tsc doesn't
+            max = d3.max<MonthRecord, number>(data, (entry: MonthRecord): number => {
                 return maxFrom2Cities(entry);
-            }) as number;
+            });
         }
         else {
             min = 0;
@@ -256,15 +256,15 @@ angular.module('cdApp').directive('cdChart',
 
         // Remove previous chart, if any
         const $chartElem: JQuery = element.find('.chart');
-        const chartDomNode: Node = $chartElem[0];
+        const chartDomNode: Element = $chartElem[0] as Element;
         d3.select(chartDomNode)
             .select('g').remove();
 
-        const chart: d3.Selection<any> = d3.select(chartDomNode)
+        const chart: d3.Selection<BaseType, {}, null, undefined> = d3.select(chartDomNode)
             .append('g')
             .attr('transform', 'translate(' + chartMargin.left + ', ' + chartMargin.top + ')');
 
-        const xAxis: d3.Axis = d3.axisBottom(xScale)
+        const xAxis: d3.Axis<any> = d3.axisBottom(xScale)
             // .scale(xScale)
             // .orient('bottom')
             .tickFormat(<any>function(d: any, i: number) { return Months.get(i); });
@@ -280,7 +280,7 @@ angular.module('cdApp').directive('cdChart',
             .attr('dy', '.15em')
             .attr('transform', function(d: any) { return 'rotate(-65)'; });
 
-        const yAxis: d3.Axis = d3.axisLeft(yScale)
+        const yAxis: d3.Axis<any> = d3.axisLeft(yScale)
             // .scale(yScale)
             // .orient('left')
             .tickFormat(function(d: any) { return d + controller.chartConfig.units[0].axisSuffix; }); // e.g. '"' or "deg. F"
@@ -301,7 +301,7 @@ angular.module('cdApp').directive('cdChart',
             .attr('class', 'legend')
             .attr('transform', 'translate(50, 30)')
             .style('font-size', '12px')
-            .call(d3.legend);
+            ; //.call(d3.legend);
 
     }
 
@@ -317,10 +317,10 @@ angular.module('cdApp').directive('cdChart',
             maxProp: '=',
             minProp: '='
         },
-        controller: climatediff.ChartController,
+        controller: ChartController,
         controllerAs: 'vm',
         bindToController: true,
-        link: function(scope: ng.IScope, element: JQuery, attrs: ng.IAttributes, controller: climatediff.ChartController) {
+        link: function(scope: ng.IScope, element: JQuery, attrs: ng.IAttributes, controller: ChartController) {
 
             controller.createChart = () => { createChart(scope, element, controller); };
 
@@ -342,4 +342,4 @@ angular.module('cdApp').directive('cdChart',
         templateUrl: 'directives/chart.html'
     };
 
-}]);
+};

@@ -1,30 +1,25 @@
-module climatediff {
-    'use strict';
+class BannerController {
 
-    export class BannerController {
+    showAbout: boolean;
 
-        showAbout: boolean;
+    static $inject: string[] = [ '$window' ];
 
-        static $inject: string[] = [ '$window' ];
+    constructor(private $window: ng.IWindowService) {
+        this.showAbout = false;
+    }
 
-        constructor(private $window: ng.IWindowService) {
-            this.showAbout = false;
-        }
-
-        viewOnGitHub() {
-            this.$window.open('https://github.com/bobbylight/climatediff', '_blank');
-        }
+    viewOnGitHub() {
+        this.$window.open('https://github.com/bobbylight/climatediff', '_blank');
     }
 }
 
-angular.module('cdApp').directive('cdBanner', [() => {
-    'use strict';
+export default () => {
 
     return {
         restrict: 'E',
-        controller: climatediff.BannerController,
+        controller: BannerController,
         controllerAs: 'vm',
         bindToController: true,
         templateUrl: 'directives/banner.html'
     };
-}]);
+};

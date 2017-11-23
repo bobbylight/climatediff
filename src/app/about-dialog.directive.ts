@@ -1,20 +1,15 @@
-module climatediff {
-    'use strict';
-
-    export interface AboutDialogScope extends ng.IScope {
-        showAbout: boolean;
-    }
+export interface AboutDialogScope extends ng.IScope {
+    showAbout: boolean;
 }
 
-angular.module('cdApp').directive('cdAbout', [() => {
-    'use strict';
+export default () => {
 
     return {
         restrict: 'E',
         scope: {
             showAbout: '='
         },
-        link: (scope: climatediff.AboutDialogScope, element: JQuery, attrs: ng.IAttributes) => {
+        link: (scope: AboutDialogScope, element: JQuery, attrs: ng.IAttributes) => {
 
             scope.$watch('showAbout', (newValue: boolean, oldValue: boolean) => {
                 if (newValue) {
@@ -32,4 +27,4 @@ angular.module('cdApp').directive('cdAbout', [() => {
         },
         templateUrl: 'directives/about.html'
     };
-}]);
+};
