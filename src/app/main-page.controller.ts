@@ -147,5 +147,3 @@ export default class MainPageController {
             });
     }
 }
-
-//angular.module('cdApp').controller('MainPageCtrl', MainPageController);

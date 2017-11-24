@@ -1,0 +1,30 @@
+<!doctype html>
+<html ng-app='cdApp'>
+
+<head>
+    <title>ClimateDiff - Quickly compare climates between cities</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+<div id='wrapper'>
+
+    <span us-spinner="{ radius:30, width:8, length: 16, top: '90%' }" spinner-key='spinner-99'></span>
+
+    <cd-banner></cd-banner>
+
+    <div class='main-view' ui-view></div>
+
+    <footer class='footer navbar-inverse'>
+        <div class='container'>
+            <div class='row'>
+                &copy; 2017 Climatediff
+            </div>
+        </div>
+    </footer>
+
+</div>
+</body>
+
+</html>

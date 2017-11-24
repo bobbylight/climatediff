@@ -4,7 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 
-const devBuild = true;//process.env.NODE_ENV === 'dev';
+const devBuild = process.env.NODE_ENV === 'dev';
 
 // Loaders specific to compiling
 loaders.push({
@@ -46,7 +46,7 @@ module.exports = [{
             { from: 'src/init.php', to: '.' }
         ]),
         new HtmlWebpackPlugin({
-            template: './src/index.php',
+            template: './src/index.html',
             inject: 'body',
             hash: true
         }),
@@ -57,7 +57,7 @@ module.exports = [{
         })
     ],
     module: {
-        rules: loaders//loaders: loaders
+        rules: loaders
     }
 }];
 

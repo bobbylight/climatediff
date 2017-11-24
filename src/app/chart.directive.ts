@@ -2,6 +2,7 @@ import { ChartConfig, MonthRecord, TemperatureResponse } from './climatediff';
 import * as d3 from 'd3';
 import MonthService from './month.service';
 import { BaseType } from 'd3';
+import D3ToolTip from './d3-tool-tip.directive';
 
 export class ChartController {
 
@@ -39,31 +40,36 @@ export class ChartController {
     }
 }
 
-export default (usSpinnerService: any, $log: ng.ILogService, Months: MonthService) => {
+interface PointMouseEvent {
+    (tipCallback: Function): (e: MonthRecord) => void;
+}
+
+export default [ 'usSpinnerService', '$log', 'Months', (usSpinnerService: any, $log: ng.ILogService, Months: MonthService) => {
 
     const TRANSITION_DURATION_MILLIS: number = 300;
 
-    // function expandPoint(tipCallback: Function): (e: MonthRecord) => void {
-    //     return function(e: MonthRecord) {
-    //         tipCallback(e);
-    //         d3.select(this).transition()
-    //             .attr('r', 6);
-    //     };
-    // }
-    // function collapsePoint(tipCallback: Function): (e: MonthRecord) => void {
-    //     return function(e: MonthRecord) {
-    //         tipCallback(e);
-    //         d3.select(this).transition()
-    //             .attr('r', 3);
-    //     };
-    // }
+    const expandPoint: PointMouseEvent = (tipCallback: Function) => {
+        // function scope important so 'this' refers to the mouseover'd DOM node
+        return function(e: MonthRecord) {
+            tipCallback(e);
+            d3.select(this).transition()
+                .attr('r', 6);
+        };
+    };
+    const collapsePoint: PointMouseEvent = (tipCallback: Function) =>  {
+        // function scope important so 'this' refers to the mouseover'd DOM node
+        return function(e: MonthRecord) {
+            tipCallback(e);
+            d3.select(this).transition()
+                .attr('r', 3);
+        };
+    };
 
     function createEmptyArea(xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>) {
         return d3.area()
             .x(function(d: any, i: number) { return xScale(i); })
             .y0(function(d: any) { return yScale(0); })
             .y1(function(d: any) { return yScale(0); })
-            //.interpolate('cardinal');
             .curve(d3.curveCardinal);
     }
 
@@ -78,7 +84,7 @@ export default (usSpinnerService: any, $log: ng.ILogService, Months: MonthServic
 
         const city: string = 'city' + (index + 1);
         if (!data.data[0][city]) {
-            $log.log('Note: No data in response for city: "' + city + '"');
+            $log.log(`Note: No data in response for city: "${city}"`);
             return;
         }
 
@@ -86,11 +92,10 @@ export default (usSpinnerService: any, $log: ng.ILogService, Months: MonthServic
             .x(function(d: any, i: number) { return xScale(i); })
             .y0(function(d: any) { const index2: number = d[city][minField] || 0; return yScale(index2); })
             .y1(function(d: any) { return yScale(d[city][maxField]); })
-            //.interpolate('cardinal');
             .curve(d3.curveCardinal);
         chart.append('path')
             .datum(data.data)
-            .attr('class', 'area' + (index + 1))
+            .attr('class', `area${index + 1}`)
             .attr('d', createEmptyArea(xScale, yScale))
             .transition()
             .duration(TRANSITION_DURATION_MILLIS)
@@ -100,22 +105,20 @@ export default (usSpinnerService: any, $log: ng.ILogService, Months: MonthServic
             const minLine: d3.Line<[number, number]> = d3.line()
                 .x(function(d: any, i: number) { return xScale(i); })
                 .y(function(d: any) { return yScale(d[city][minField]); })
-                //.interpolate('cardinal');
                 .curve(d3.curveCardinal);
             chart.append('path')
                 .datum(data.data)
-                .attr('class', 'line' + (index + 1))
+                .attr('class', `line${index + 1}`)
                 .attr('d', minLine);
         }
 
         const maxLine: d3.Line<[number, number]> = d3.line()
             .x(function(d: any, i: number) { return xScale(i); })
             .y(function(d: any) { return yScale(d[city][maxField]); })
-            //.interpolate('cardinal');
             .curve(d3.curveCardinal);
         chart.append('path')
             .datum(data.data)
-            .attr('class', 'line' + (index + 1))
+            .attr('class', `line${index + 1}`)
             .attr('d', maxLine)
             .attr('data-legend', (d: any) => { return data.metadata[index].city_name; })
             .attr('data-legend-pos', index);
@@ -133,15 +136,17 @@ export default (usSpinnerService: any, $log: ng.ILogService, Months: MonthServic
 
         const city: string = 'city' + (index + 1);
         if (!data.data[0][city]) {
-            $log.log('Note: No data in response for city: "' + city + '"');
+            $log.log(`Note: No data in response for city: "${city}"`);
             return;
         }
 
-        // let tip: any = d3.tip().attr('class', 'd3-tip').html((d: any) => {
-        //     return d[city][maxVar];
-        // });
-        // chart.call(tip);
-        // tip.offset([ -10, 0 ]);
+        let tip: D3ToolTip = new D3ToolTip()
+            .attr('class', 'd3-tip')
+            .html((d: any) => {
+                return d[city][maxVar].toString();
+            });
+        chart.call(tip.init);
+        tip.offset([ -10, 0 ]);
         chart.selectAll('.point')
             .data(data.data)
             .enter().append('svg:circle')
@@ -150,16 +155,17 @@ export default (usSpinnerService: any, $log: ng.ILogService, Months: MonthServic
             .attr('cy', function(d: any, i: number) { return yScale(d[city][maxVar]); })
             .attr('r', function(d: any, i: number) { return 3; })
             .attr('pointer-events', 'all')
-            // .on('mouseover', expandPoint(tip.show))
-            // .on('mouseout', collapsePoint(tip.hide));
-            ;
+            .on('mouseover', expandPoint(tip.show))
+            .on('mouseout', collapsePoint(tip.hide));
 
         if (minVar) {
-            // tip = d3.tip().attr('class', 'd3-tip').html(function(d: MonthRecord) {
-            //     return d[city][minVar];
-            // });
-            // chart.call(tip);
-            // tip.offset([ -10, 0 ]);
+            tip = new D3ToolTip()
+                .attr('class', 'd3-tip')
+                .html((d: MonthRecord) => {
+                    return d[city][minVar].toString();
+                });
+            chart.call(tip.init);
+            tip.offset([ -10, 0 ]);
             chart.selectAll('.point')
                 .data(data.data)
                 .enter().append('svg:circle')
@@ -168,9 +174,8 @@ export default (usSpinnerService: any, $log: ng.ILogService, Months: MonthServic
                 .attr('cy', function(d: any, i: number) { return yScale(d[city][minVar]); })
                 .attr('r', function(d: any, i: number) { return 3; })
                 .attr('pointer-events', 'all')
-                // .on('mouseover', expandPoint(tip.show))
-                // .on('mouseout', collapsePoint(tip.hide));
-                ;
+                .on('mouseover', expandPoint(tip.show))
+                .on('mouseout', collapsePoint(tip.hide));
         }
 
     }
@@ -181,7 +186,7 @@ export default (usSpinnerService: any, $log: ng.ILogService, Months: MonthServic
         const height: number = mainChartDiv.height();
         $log.log(width + ', ' + height);
         if (width > 0 && height > 0) {
-            mainChartDiv.find('.chart').get(0).setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+            mainChartDiv.find('.chart').get(0).setAttribute('viewBox', `0 0 ${width} ${height}`);
         }
     }
 
@@ -342,4 +347,4 @@ export default (usSpinnerService: any, $log: ng.ILogService, Months: MonthServic
         templateUrl: 'directives/chart.html'
     };
 
-};
+}];
