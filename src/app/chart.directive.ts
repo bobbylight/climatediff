@@ -2,7 +2,8 @@ import { ChartConfig, MonthRecord, TemperatureResponse } from './climatediff';
 import * as d3 from 'd3';
 import MonthService from './month.service';
 import { BaseType } from 'd3';
-import D3ToolTip from './d3-tool-tip.directive';
+import D3ToolTip from './d3-tool-tip';
+import D3Legend from './d3-legend';
 
 export class ChartController {
 
@@ -27,6 +28,7 @@ export class ChartController {
     $onInit() {
 
         this.selectedUnits = this.chartConfig.units[0].label;
+        (console as any).log('... ' + this.chartTitle);
 
         // TODO: This should not be a deep watch; we should watch on the entire object, then just on data.data
         // for subsequent updates via the units buttons
@@ -67,9 +69,9 @@ export default [ 'usSpinnerService', '$log', 'Months', (usSpinnerService: any, $
 
     function createEmptyArea(xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>) {
         return d3.area()
-            .x(function(d: any, i: number) { return xScale(i); })
-            .y0(function(d: any) { return yScale(0); })
-            .y1(function(d: any) { return yScale(0); })
+            .x((d: any, i: number) => { return xScale(i); })
+            .y0((d: any) => { return yScale(0); })
+            .y1((d: any) => { return yScale(0); })
             .curve(d3.curveCardinal);
     }
 
@@ -89,9 +91,9 @@ export default [ 'usSpinnerService', '$log', 'Months', (usSpinnerService: any, $
         }
 
         const area: d3.Area<[number, number]> = d3.area()
-            .x(function(d: any, i: number) { return xScale(i); })
-            .y0(function(d: any) { const index2: number = d[city][minField] || 0; return yScale(index2); })
-            .y1(function(d: any) { return yScale(d[city][maxField]); })
+            .x((d: any, i: number) => { return xScale(i); })
+            .y0((d: any) => { const index2: number = d[city][minField] || 0; return yScale(index2); })
+            .y1((d: any) => { return yScale(d[city][maxField]); })
             .curve(d3.curveCardinal);
         chart.append('path')
             .datum(data.data)
@@ -103,8 +105,8 @@ export default [ 'usSpinnerService', '$log', 'Months', (usSpinnerService: any, $
 
         if (minField) {
             const minLine: d3.Line<[number, number]> = d3.line()
-                .x(function(d: any, i: number) { return xScale(i); })
-                .y(function(d: any) { return yScale(d[city][minField]); })
+                .x((d: any, i: number) => { return xScale(i); })
+                .y((d: any) => { return yScale(d[city][minField]); })
                 .curve(d3.curveCardinal);
             chart.append('path')
                 .datum(data.data)
@@ -113,14 +115,16 @@ export default [ 'usSpinnerService', '$log', 'Months', (usSpinnerService: any, $
         }
 
         const maxLine: d3.Line<[number, number]> = d3.line()
-            .x(function(d: any, i: number) { return xScale(i); })
-            .y(function(d: any) { return yScale(d[city][maxField]); })
+            .x((d: any, i: number) => { return xScale(i); })
+            .y((d: any) => { return yScale(d[city][maxField]); })
             .curve(d3.curveCardinal);
         chart.append('path')
             .datum(data.data)
             .attr('class', `line${index + 1}`)
             .attr('d', maxLine)
-            .attr('data-legend', (d: any) => { return data.metadata[index].city_name; })
+            .attr('data-legend', (d: any) => {
+                return data.metadata[index].city_name;
+            })
             .attr('data-legend-pos', index);
 
     }
@@ -143,7 +147,7 @@ export default [ 'usSpinnerService', '$log', 'Months', (usSpinnerService: any, $
         let tip: D3ToolTip = new D3ToolTip()
             .attr('class', 'd3-tip')
             .html((d: any) => {
-                return d[city][maxVar].toString();
+                return Math.round(d[city][maxVar]);
             });
         chart.call(tip.init);
         tip.offset([ -10, 0 ]);
@@ -151,9 +155,9 @@ export default [ 'usSpinnerService', '$log', 'Months', (usSpinnerService: any, $
             .data(data.data)
             .enter().append('svg:circle')
             .attr('class', 'point' + (index + 1))
-            .attr('cx', function(d: any, i: number) { return xScale(i); })
-            .attr('cy', function(d: any, i: number) { return yScale(d[city][maxVar]); })
-            .attr('r', function(d: any, i: number) { return 3; })
+            .attr('cx', (d: any, i: number) => { return xScale(i); })
+            .attr('cy', (d: any, i: number) => { return yScale(d[city][maxVar]); })
+            .attr('r', (d: any, i: number) => { return 3; })
             .attr('pointer-events', 'all')
             .on('mouseover', expandPoint(tip.show))
             .on('mouseout', collapsePoint(tip.hide));
@@ -162,7 +166,7 @@ export default [ 'usSpinnerService', '$log', 'Months', (usSpinnerService: any, $
             tip = new D3ToolTip()
                 .attr('class', 'd3-tip')
                 .html((d: MonthRecord) => {
-                    return d[city][minVar].toString();
+                    return Math.round(d[city][minVar]);
                 });
             chart.call(tip.init);
             tip.offset([ -10, 0 ]);
@@ -170,9 +174,9 @@ export default [ 'usSpinnerService', '$log', 'Months', (usSpinnerService: any, $
                 .data(data.data)
                 .enter().append('svg:circle')
                 .attr('class', 'point' + (index + 1))
-                .attr('cx', function(d: any, i: number) { return xScale(i); })
-                .attr('cy', function(d: any, i: number) { return yScale(d[city][minVar]); })
-                .attr('r', function(d: any, i: number) { return 3; })
+                .attr('cx', (d: any, i: number) => { return xScale(i); })
+                .attr('cy', (d: any, i: number) => { return yScale(d[city][minVar]); })
+                .attr('r', (d: any, i: number) => { return 3; })
                 .attr('pointer-events', 'all')
                 .on('mouseover', expandPoint(tip.show))
                 .on('mouseout', collapsePoint(tip.hide));
@@ -272,7 +276,7 @@ export default [ 'usSpinnerService', '$log', 'Months', (usSpinnerService: any, $
         const xAxis: d3.Axis<any> = d3.axisBottom(xScale)
             // .scale(xScale)
             // .orient('bottom')
-            .tickFormat(<any>function(d: any, i: number) { return Months.get(i); });
+            .tickFormat((d: any, i: number) => { return Months.get(i); });
         chart.append('g')
             .classed('x', true)
             .classed('axis', true)
@@ -283,12 +287,12 @@ export default [ 'usSpinnerService', '$log', 'Months', (usSpinnerService: any, $
             .style('text-anchor', 'end')
             .attr('dx', '-.8em')
             .attr('dy', '.15em')
-            .attr('transform', function(d: any) { return 'rotate(-65)'; });
+            .attr('transform', (d: any) => { return 'rotate(-65)'; });
 
         const yAxis: d3.Axis<any> = d3.axisLeft(yScale)
             // .scale(yScale)
             // .orient('left')
-            .tickFormat(function(d: any) { return d + controller.chartConfig.units[0].axisSuffix; }); // e.g. '"' or "deg. F"
+            .tickFormat((d: any) => { return d + controller.chartConfig.units[0].axisSuffix; }); // e.g. '"' or "deg. F"
         chart.append('g')
             .classed('y', true)
             .classed('axis', true)
@@ -299,22 +303,22 @@ export default [ 'usSpinnerService', '$log', 'Months', (usSpinnerService: any, $
         appendCityAreaPoints(chart, controller, 0, xScale, yScale, maxProp, minProp);
         appendCityAreaPoints(chart, controller, 1, xScale, yScale, maxProp, minProp);
 
-        fixViewBox(element);
-//      $scope.resultsLoaded = true;
-
+        const legend: D3Legend = new D3Legend();
         chart.append('g')
             .attr('class', 'legend')
-            .attr('transform', 'translate(50, 30)')
+            .attr('transform', 'translate(50, 35)')
             .style('font-size', '12px')
-            ; //.call(d3.legend);
+            .call(legend.init);
 
+        fixViewBox(element);
+//      $scope.resultsLoaded = true;
     }
 
     return {
         restrict: 'E',
         scope: {
             spinnerIndex: '@spinnerIndex',
-            chartTitle: '@title',
+            chartTitle: '@',
             chartConfig: '=',
             setUnits: '&',
             data: '=',

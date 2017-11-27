@@ -30,13 +30,13 @@
     </form>
 
     <div id='results' ng-show='vm.showCharts'>
-        <cd-chart spinner-index='1'
+        <cd-chart chart-title='Temperature' spinner-index='1'
                               data='vm.tempData'
                               chart-config='vm.tempChartConfig'
                               set-units='vm.setUnits(unitConfig)'
                               mask='vm.maskTempResults'
                               min-prop="'min'" max-prop="'max'"></cd-chart>
-        <cd-chart spinner-index='2'
+        <cd-chart chart-title='Precipitation' spinner-index='2'
                               data='vm.precipData'
                               chart-config='vm.precipChartConfig'
                               set-units='vm.setUnits(unitConfig)'
