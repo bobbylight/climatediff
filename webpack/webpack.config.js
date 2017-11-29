@@ -19,7 +19,7 @@ loaders.push({
 
 module.exports = [{
     entry: {
-        main: [ path.resolve('./src/app/app.ts') ]
+        main: [ path.resolve('./src/app/app.js') ]
     },
     output: {
         publicPath: './',

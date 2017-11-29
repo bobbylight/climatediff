@@ -16,8 +16,11 @@
     "removeComments": false,
     //"strict": true,
 
+    // Some of these are required to get vue working
+    "allowSyntheticDefaultImports": true,
     "target": "es5",
-    "module": "amd",
+    "module": "es2015",
+    "moduleResolution": "node",
 
     "outDir": "src/js",
     "rootDir": "src/app",
