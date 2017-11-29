@@ -11,7 +11,7 @@ import ChartDirective from './chart.directive';
 import MonthService from './month.service';
 
 import Vue from 'vue';
-import Vueapp from './Vueapp.vue';
+import Main from './main';
 
 import '../../node_modules/bootstrap/dist/css/bootstrap.css';
 import '../../node_modules/bootstrap/dist/css/bootstrap-theme.css';
@@ -41,7 +41,7 @@ app.config(['$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterP
 new Vue({
     el: '#app',
     render: (h) => {
-        return h(Vueapp);
+        return h(Main);
     }
 });
 

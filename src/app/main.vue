@@ -31,18 +31,23 @@
             </div>
         </nav>
 
+        <AboutDialog :show="showAbout" @hidden="hideAboutDialog"></AboutDialog>
 
-        <AboutDialog :show="showAbout"></AboutDialog>
+        <div class='main-view' ui-view></div>
+
+        <Footer></Footer>
     </div>
 </template>
 
 <script>
 import AboutDialog from './about-dialog';
+import Footer from './footer';
 
 export default {
 
     components: {
-        AboutDialog
+        AboutDialog,
+        Footer
     },
 
     data: function() {
@@ -52,6 +57,10 @@ export default {
     },
 
     methods: {
+
+        hideAboutDialog() {
+            this.showAbout = false;
+        },
 
         showAboutDialog() {
             this.showAbout = true;

@@ -43,14 +43,29 @@ export default {
         }
     },
 
+    data: function() {
+        return {
+            instantiated: false
+        };
+    },
+
     watch: {
         show(newValue) {
+
             console.log('New value: ' + newValue);
+            const $modal = $('#aboutModal');
+
             if (newValue) {
-                $('#aboutModal').modal('show');
+                $modal.modal('show');
+                if (!this.instantiated) {
+                    $modal.on('hidden.bs.modal', (e) => {
+                        this.$emit('hidden');
+                    });
+                    this.instantiated = true;
+                }
             }
             else {
-                $('#aboutModal').modal('hide');
+                $modal.modal('hide');
             }
         }
     }
