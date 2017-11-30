@@ -3,7 +3,7 @@ export interface ChartConfig {
 }
 
 /**
- * Debug information about the remote call for city info we made server-side.  This is essentially
+ * Debug information about the remote call for cty info we made server-side.  This is essentially
  * debug information from curl.
  */
 export interface CityDebugInfo {

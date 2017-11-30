@@ -33,8 +33,8 @@ export default {
 
         this.tempChartConfig = {
             units: [
-                { axisSuffix: '\u00b0 F', label: '\u00b0 F', convert: this.celsiusToFahrenheit },
-                { axisSuffix: '\u00b0 C', label: '\u00b0 C', convert: this.fahrenheitToCelsius }
+                {axisSuffix: '\u00b0 F', label: '\u00b0 F', convert: this.celsiusToFahrenheit},
+                {axisSuffix: '\u00b0 C', label: '\u00b0 C', convert: this.fahrenheitToCelsius}
             ]
         };
         const identity: (data: any) => any = (data: any) => {
@@ -42,10 +42,32 @@ export default {
         };
         this.precipChartConfig = {
             units: [
-                { axisSuffix: '"', label: 'in', convert: identity },
-                { axisSuffix: 'cm', label: 'cm', convert: identity }
+                {axisSuffix: '"', label: 'in', convert: identity},
+                {axisSuffix: 'cm', label: 'cm', convert: identity}
             ]
         };
+    },
+
+    mounted() {
+
+        // TODO: Roll this into a vue component
+        const typeaheadOptions: TypeaheadOptions = {
+            source: (query: string, process: Function) => {
+                return $.get('api/locations', {
+                        input: query,
+                        limit: 10
+                    },
+                    (data: any[]) => {
+                        data = data.map((record: any) => {
+                            return { id: record.city_id, name: record.city_name };
+                        });
+                        return process(data);
+                    });
+            }
+        };
+
+        $('#city1').typeahead(typeaheadOptions);
+        $('#city2').typeahead(typeaheadOptions);
     },
 
     methods: {

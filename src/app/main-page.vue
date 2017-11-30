@@ -7,16 +7,12 @@
 
                 <span id='city1-span' class='col-md-3 col-md-offset-2 city-info'>
                     <label for='city1'>City 1:</label>
-                    <input id='city1' type='text' v-model='city1' class='form-control' placeholder='City name' autofocus
-                        typeahead-wait-ms='vm.typeaheadWaitMillis'
-                        uib-typeahead="loc for loc in vm.getLocationCompletions($viewValue)" typeahead-loading="vm.loadingLocations1">
+                    <input id="city1" type="text" v-model="city1" class="form-control" autocomplete="off" placeholder="City name" autofocus>
                 </span>
 
                 <span id='city2-span' class='col-md-3 city-info'>
                     <label for='city2'>City 2:</label>
-                    <input id='city2' type='text' v-model='city2' class='form-control' placeholder='City name'
-                        typeahead-wait-ms='vm.typeaheadWaitMillis'
-                        uib-typeahead="loc for loc in vm.getLocationCompletions($viewValue)" typeahead-loading="vm.loadingLocations2">
+                    <input id="city2" type="text" v-model="city2" class="form-control" autocomplete="off" placeholder="City name">
                 </span>
 
                 <span id='submit-span' class='col-md-2'>
