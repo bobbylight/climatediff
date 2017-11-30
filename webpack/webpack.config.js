@@ -6,16 +6,16 @@ const webpack = require('webpack');
 
 const devBuild = process.env.NODE_ENV === 'dev';
 
-// Loaders specific to compiling
-loaders.push({
-    test: /\.tsx?$/,
-    enforce: 'pre',
-    loader: 'tslint-loader',
-    exclude: /node_modules/,
-    options: {
-        typeCheck: true
-    }
-});
+// // Loaders specific to compiling
+// loaders.push({
+//     test: /\.tsx?$/,
+//     enforce: 'pre',
+//     loader: 'tslint-loader',
+//     exclude: /node_modules/,
+//     options: {
+//         typeCheck: true
+//     }
+// });
 
 module.exports = [{
     entry: {
@@ -39,8 +39,6 @@ module.exports = [{
         new CopyWebpackPlugin([
             { from: 'src/api', to: 'api' },
             { from: 'src/img', to: 'img' },
-            { from: 'src/directives', to: 'directives' },
-            { from: 'src/partials', to: 'partials' },
             { from: 'src/all-locations.db', to: '.' },
             { from: 'src/.htaccess', to: '.' },
             { from: 'src/init.php', to: '.' }

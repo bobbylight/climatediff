@@ -1,14 +1,3 @@
-import { IAngularStatic } from 'angular';
-
-declare global {
-
-    /**
-     * Work around @types/angular* not using "global" typings like the typings tool did.
-     * https://stackoverflow.com/questions/40664298/angular-1-x-with-typescript-2-x-types-and-systemjs-using-global-typings
-     */
-    const angular: IAngularStatic;
-}
-
 export interface ChartConfig {
     units: UnitConfig[];
 }

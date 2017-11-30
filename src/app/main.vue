@@ -33,21 +33,23 @@
 
         <AboutDialog :show="showAbout" @hidden="hideAboutDialog"></AboutDialog>
 
-        <div class='main-view' ui-view></div>
+        <MainPage></MainPage>
 
-        <Footer></Footer>
+        <AppFooter></AppFooter>
     </div>
 </template>
 
 <script>
 import AboutDialog from './about-dialog';
-import Footer from './footer';
+import MainPage from './main-page.vue';
+import AppFooter from './app-footer';
 
 export default {
 
     components: {
         AboutDialog,
-        Footer
+        MainPage,
+        AppFooter
     },
 
     data: function() {
@@ -74,5 +76,15 @@ export default {
 </script>
 
 <style lang="less">
+.navbar {
+    border-radius: 0; /* Remove 4-pixel radius in bootstrap default */
 
+    .banner-item {
+        font-size: 28px; //@font-size-large;
+
+        a {
+            padding: 11px; // Just right so icons are centered without navbar getting taller
+        }
+    }
+}
 </style>

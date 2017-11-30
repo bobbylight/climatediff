@@ -72,5 +72,36 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
+.about-dialog-content {
+
+    .modal-content {
+
+        width: 640px;
+
+        .modal-body {
+
+            padding: 30px;
+
+            .modal-top-content {
+                display: table;
+
+                span {
+                    display: table-cell;
+                    vertical-align: middle;
+
+                    .about-image {
+                        width: 133px; // 50% of actual size
+                        height: 134px; // 50% of actual size
+                        padding-right: 30px;
+                    }
+                }
+            }
+
+            h4 {
+                margin-top: 3rem;
+            }
+        }
+    }
+}
 </style>

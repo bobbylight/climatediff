@@ -3,6 +3,10 @@ module.exports = [
         test: /\.tsx?$/,
         exclude: /node_modules/,
         loader: 'ts-loader'
+        // options: {
+        //     // Needed for <script lang="ts"> to work in *.vue files; see https://github.com/vuejs/vue-loader/issues/109
+        //     appendTsSuffixTo: [ /\.vue$/ ]
+        // }
     }, {
         test: /\.vue$/,
         loader: 'vue-loader',
