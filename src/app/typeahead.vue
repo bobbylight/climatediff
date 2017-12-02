@@ -1,13 +1,15 @@
 <template>
-    <span :id="createSpanId" :class="classes">
+    <span :id="spanId" :class="classes">
         <label v-if="label" :for="id">{{label}}</label>
         <input :id="id" ref="inputField" type="text" class="form-control"
-               v-model="value" @input="fireUpdateEvent()"
+               :value="value" @input="fireUpdateEvent($event.target.value)"
                autocomplete="off" :placeholder="placeholder">
     </span>
 </template>
 
 <script>
+import debounce from 'debounce';
+
 export default {
 
     props: {
@@ -48,20 +50,18 @@ export default {
             type: Boolean | String,
             required: false
         },
+        debounceMillis: {
+            type: Number,
+            'default': 300
+        },
         classes: {
             type: String,
             required: false
         }
     },
 
-    data() {
-        return {
-            value: null
-        };
-    },
-
     computed: {
-        createSpanId() {
+        spanId() {
             return `${this.id}-span`;
         }
     },
@@ -73,7 +73,7 @@ export default {
             /**
              * Returns a promise for the typeahead data.
              */
-            source: (query, process) => {
+            source: debounce((query, process) => {
 
                 const queryParams = $.extend(true, {}, this.queryParams);
                 queryParams[this.filterParamName] = query;
@@ -84,7 +84,7 @@ export default {
                     }
                     return process(data);
                 });
-            },
+            }, this.debounceMillis),
 
             /**
              * Called when an item is selected from the typeahead dropdown.  Here we manually update our model to
@@ -93,8 +93,7 @@ export default {
              * @param newValue The newly-selected value.
              */
             afterSelect: (newValue) => {
-                this.value = newValue.name;
-                this.fireUpdateEvent();
+                this.fireUpdateEvent(newValue.name);
             }
         };
 
@@ -111,8 +110,8 @@ export default {
         /**
          * Fires an "input" event stating our value has changed.  Part of implementing v-model for this component.
          */
-        fireUpdateEvent() {
-            this.$emit('input', this.value);
+        fireUpdateEvent(newValue) {
+            this.$emit('input', newValue);
         }
     }
 }
