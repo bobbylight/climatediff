@@ -9,7 +9,6 @@
         </div>
         <div class='chart-content' ref="chartContent" style='padding: 10px'> <!-- todo: some kind of fade in/out of bg while loading -->
             <vue-simple-spinner v-if="mask"></vue-simple-spinner>
-            <!--<span us-spinner="{radius:30, width:8, length: 16 }" spinner-key='spinner-{{spinnerIndex}}'></span>-->
             <svg v-show='dataLoaded' :id='chartId' class='chart' preserveAspectRatio="none"></svg>
         </div>
     </div>

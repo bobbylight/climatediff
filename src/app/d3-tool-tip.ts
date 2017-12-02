@@ -117,6 +117,14 @@ export default class D3ToolTip {
         document.body.appendChild(this.node);
     }
 
+    destroy(): D3ToolTip {
+        if (this.node) {
+            this.getNodeEl().remove();
+            this.node = null;
+        }
+        return this;
+    }
+
     show(): D3ToolTip {
 
         const args: any = Array.prototype.slice.call(arguments);
@@ -191,14 +199,6 @@ export default class D3ToolTip {
 
     html(markup: string | Function): D3ToolTip {
         this.content = markup ? this.functor(markup) : null;
-        return this;
-    }
-
-    destroy(): D3ToolTip {
-        if (this.node) {
-            this.getNodeEl().remove();
-            this.node = null;
-        }
         return this;
     }
 

@@ -7,6 +7,7 @@ import MonthUtil from './month-util';
 import VueSimpleSpinner from 'vue-simple-spinner';
 
 const TRANSITION_DURATION_MILLIS: number = 300;
+const MAX_CITY_COUNT: number = 2;
 
 export default {
 
@@ -51,14 +52,17 @@ export default {
 
     data: function() {
         return {
-            selectedUnits: null //string;
+            selectedUnits: null, //string,
+            tips: [] // D3ToolTip[]
         };
     },
 
     created() {
-
         this.selectedUnits = this.chartConfig.units[0].label;
-        (console as any).log('... ' + this.chartTitle);
+        for (let i: number = 0; i < MAX_CITY_COUNT; i++) {
+            this.tips.push(null);
+            this.tips.push(null);
+        }
     },
 
     methods: {
@@ -158,13 +162,7 @@ export default {
                 return;
             }
 
-            let tip: D3ToolTip = new D3ToolTip()
-                .attr('class', 'd3-tip')
-                .html((d: any) => {
-                    return Math.round(d[city][maxVar]);
-                });
-            chart.call(tip.init);
-            tip.offset([ -10, 0 ]);
+            let tip: D3ToolTip = this.createNewTip(chart, index * 2, city, maxVar);
             chart.selectAll('.point')
                 .data(data.data)
                 .enter().append('svg:circle')
@@ -177,13 +175,7 @@ export default {
                 .on('mouseout', this.collapsePoint(tip.hide));
 
             if (minVar) {
-                tip = new D3ToolTip()
-                    .attr('class', 'd3-tip')
-                    .html((d: MonthRecord) => {
-                        return Math.round(d[city][minVar]);
-                    });
-                chart.call(tip.init);
-                tip.offset([ -10, 0 ]);
+                tip = this.createNewTip(chart, index * 2 + 1, city, minVar);
                 chart.selectAll('.point')
                     .data(data.data)
                     .enter().append('svg:circle')
@@ -207,7 +199,6 @@ export default {
                 mainChartDiv.find('.chart').get(0).setAttribute('viewBox', `0 0 ${width} ${height}`);
             }
         },
-
 
         createChart() {
 
@@ -284,6 +275,11 @@ export default {
             d3.select(chartDomNode)
                 .select('g').remove();
 
+            // If there's no data, bail now
+            if (!data.length) {
+                return;
+            }
+
             const chart: d3.Selection<BaseType, {}, null, undefined> = d3.select(chartDomNode)
                 .append('g')
                 .attr('transform', 'translate(' + chartMargin.left + ', ' + chartMargin.top + ')');
@@ -327,6 +323,28 @@ export default {
 
             this.fixViewBox($(this.$el)); //element);
         //      $scope.resultsLoaded = true;
+        },
+
+        /**
+         * We must create a new tool tip for every set of data points unfortunately.  Delete the prior one and
+         * add a replacement.
+         */
+        createNewTip(chart: any, index: number, city: string, dataVar: string): D3ToolTip {
+
+            let tip: D3ToolTip = this.tips[index];
+            if (tip) {
+                tip.destroy();
+            }
+
+            this.tips[index] = tip = new D3ToolTip()
+                .attr('class', 'd3-tip')
+                .html((d: any) => {
+                    return Math.round(d[city][dataVar] * 10) / 10;
+                });
+
+            chart.call(tip.init);
+            tip.offset([ -10, 0 ]);
+            return tip;
         },
 
         setUnits(unitConfig: UnitConfig) {
