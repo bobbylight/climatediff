@@ -3,21 +3,20 @@
 
         <form @submit="updateClimateDiff" id='cityForm' role='form' class='form-inline'>
 
-            <div class='row'>
+            <div class="row">
 
-                <span id='city1-span' class='col-md-3 col-md-offset-2 city-info'>
-                    <label for='city1'>City 1:</label>
-                    <input id="city1" type="text" v-model="city1" class="form-control" autocomplete="off" placeholder="City name" autofocus>
-                </span>
+                <Typeahead url="api/locations" v-model="city1" filter-param-name="input" :data-map-function="locationMapper"
+                           :query-params="locationQueryParams" id="city1" label="City 1:" placeholder="City name"
+                           classes="col-md-3 col-md-offset-2 city-info" autofocus="true"></Typeahead>
 
-                <span id='city2-span' class='col-md-3 city-info'>
-                    <label for='city2'>City 2:</label>
-                    <input id="city2" type="text" v-model="city2" class="form-control" autocomplete="off" placeholder="City name">
-                </span>
+                <Typeahead url="api/locations" v-model="city2" filter-param-name="input" :data-map-function="locationMapper"
+                           :query-params="locationQueryParams" id="city2" label="City 2:" placeholder="City name"
+                           classes="col-md-3 city-info"></Typeahead>
 
                 <span id='submit-span' class='col-md-2'>
                     <button type='submit' class='form-control btn btn-primary'>Compare!</button>
                 </span>
+
             </div>
 
             <div class='row'>

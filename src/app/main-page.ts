@@ -2,11 +2,13 @@ import { /*ChartConfig, */ MonthRecord, UnitConfig } from './climatediff';
 import Utils from './Utils';
 import jqXHR = JQuery.jqXHR;
 import Chart from './chart.vue';
+import Typeahead from './typeahead.vue';
 
 export default {
 
     components: {
-        Chart
+        Chart,
+        Typeahead
     },
 
     data: function() {
@@ -21,7 +23,10 @@ export default {
             maskPrecipResults: false,
             resultsTitle: null,
             tempData: null,
-            precipData: null
+            precipData: null,
+            locationQueryParams: {
+                limit: 10
+            }
         };
     },
 
@@ -46,28 +51,6 @@ export default {
                 {axisSuffix: 'cm', label: 'cm', convert: identity}
             ]
         };
-    },
-
-    mounted() {
-
-        // TODO: Roll this into a vue component
-        const typeaheadOptions: TypeaheadOptions = {
-            source: (query: string, process: Function) => {
-                return $.get('api/locations', {
-                        input: query,
-                        limit: 10
-                    },
-                    (data: any[]) => {
-                        data = data.map((record: any) => {
-                            return { id: record.city_id, name: record.city_name };
-                        });
-                        return process(data);
-                    });
-            }
-        };
-
-        $('#city1').typeahead(typeaheadOptions);
-        $('#city2').typeahead(typeaheadOptions);
     },
 
     methods: {
@@ -130,6 +113,13 @@ export default {
              });
              });
              */
+        },
+
+        locationMapper: (record: any) => {
+            return {
+                id: record.city_id,
+                name: record.city_name
+            };
         },
 
         setUnits(unitConfig: UnitConfig) {
