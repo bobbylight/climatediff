@@ -18,7 +18,7 @@ const devBuild = process.env.NODE_ENV === 'dev';
 //     }
 // });
 
-module.exports = [{
+const config = {
     entry: {
         main: [ path.resolve('./src/app/app.js') ]
     },
@@ -35,7 +35,7 @@ module.exports = [{
             'vue$': 'vue/dist/vue.esm.js'
         }
     },
-    devtool: 'source-map', //devBuild ? 'cheap-eval-source-map' : 'source-map',
+    devtool: devBuild ? 'cheap-eval-source-map' : 'source-map',
     plugins: [
         new CopyWebpackPlugin([
             { from: 'src/api', to: 'api' },
@@ -54,9 +54,29 @@ module.exports = [{
             jQuery: "jquery",
             "window.jQuery": "jquery"
         }),
-        new UglifyJsPlugin() // Uglifies generated output if process.env.NODE_ENV === 'production'
+        // http://vuejs.github.io/vue-loader/en/workflow/production.html
+        new webpack.DefinePlugin({
+            'process.env': { // Short-circuits all vue.js warning code in "production" builds
+                NODE_ENV: JSON.stringify(process.env.NODE_ENV)
+            }
+        })
     ],
     module: {
         rules: loaders
     }
-}];
+};
+
+if (process.env.NODE_ENV === 'production') {
+    config.plugins.push(
+        new UglifyJsPlugin({
+            uglifyOptions: {
+                compress: {
+                    warnings: false
+                }
+            },
+            parallel: true
+        })
+    );
+}
+
+module.exports = config;

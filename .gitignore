@@ -11,3 +11,5 @@ vendor
 *.zip
 interesting-datatypes.txt
 cacert.pem
+size-info.json
+size-info.txt
