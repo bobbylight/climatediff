@@ -2,6 +2,7 @@ const loaders = require('./loaders');
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
 
 const devBuild = process.env.NODE_ENV === 'dev';
@@ -52,13 +53,10 @@ module.exports = [{
             $: "jquery",
             jQuery: "jquery",
             "window.jQuery": "jquery"
-        })
+        }),
+        new UglifyJsPlugin() // Uglifies generated output if process.env.NODE_ENV === 'production'
     ],
     module: {
         rules: loaders
     }
 }];
-
-if (!devBuild) {
-    module.exports[0].plugins.push(new webpack.optimize.UglifyJsPlugin({minimize: true}));
-}

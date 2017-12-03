@@ -1,7 +1,7 @@
 <template>
     <div class='container'>
 
-        <form @submit="updateClimateDiff" id='cityForm' role='form' class='form-inline'>
+        <form @submit.prevent="updateClimateDiff" id='cityForm' role='form' class='form-inline'>
 
             <div class="row">
 

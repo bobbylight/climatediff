@@ -87,34 +87,6 @@ export default {
             });
         },
 
-        getLocationCompletions(val: any) {
-            $.get('api/locations',
-                {
-                    input: val,
-                    limit: 10
-                },
-                (response: any) => {
-                    console.log(JSON.stringify(response));
-                    return response.map(function (item: any) {
-                        return item.city_name;
-                    });
-                }
-            );
-            /*
-             * Google API example, cool but does not match our service's addresses.
-             return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
-             params: {
-             address: val,
-             sensor: false
-             }
-             }).then(function(response) {
-             return response.data.results.map(function(item) {
-             return item.formatted_address;
-             });
-             });
-             */
-        },
-
         locationMapper: (record: any) => {
             return {
                 id: record.city_id,
@@ -142,7 +114,7 @@ export default {
                 metadata: [ { 'city_name': this.city1 }, { 'city_name': this.city2 } ] };
 
             const updatePrecipChart: Function = () => {
-                return $.ajax('api/precipitation/' + this.city1 + '/' + this.city2,
+                return $.ajax(`api/precipitation/${this.city1}/${this.city2}`,
                     {
                         success: (result: any) => {
                             console.log(JSON.stringify(result));
@@ -160,7 +132,7 @@ export default {
                 );
             };
 
-            return $.ajax('api/temperature/' + this.city1 + '/' + this.city2,
+            $.ajax(`api/temperature/${this.city1}/${this.city2}`,
                 {
                     success: (result: any) => {
                         result.data = this.celsiusToFahrenheit(result.data);
