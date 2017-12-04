@@ -28,7 +28,7 @@ function _doCurl($url, $headers, $debug) {
    return $result;
 }
 
-function _fetchCityClimate($loc, &$response, $index) {
+function _fetchCityClimate($loc, &$response, $index, $debug) {
 
    global $token;
 
@@ -46,7 +46,6 @@ function _fetchCityClimate($loc, &$response, $index) {
    $DATA_SET_ID="GHCNDMS";
    $DATA_TYPES="TPCP";
    $decimalCount = 2;
-   $debug = true;
 
    # If you're having trouble locally, check this out:
    # https://stackoverflow.com/questions/4372710/php-curl-https
@@ -128,6 +127,10 @@ $inches = ($data[$month][$id]['precip'] / 10) * 0.03937007874;
 // Raleigh, NC: CITY:US370017
 // FIPS:54081
 
+if (!isset($debug)) {
+    $debug = false;
+}
+
 # This is the easiest way to return HTTP 500 if e.g. curl_exec times out.
 # PHP by default still returns 200 OK for fatal errors (!)
 http_response_code(500);
@@ -140,12 +143,14 @@ for ($i=0; $i < 12; $i++) {
    }
    array_push($data, $monthData);
 }
-$response = array( 'data' => $data, 'metadata' => array(), 'debug' => array(),
-   'queries' => array() );
+$response = array( 'data' => $data, 'metadata' => array(), 'queries' => array() );
+if ($debug) {
+    $response['debug'] = array();
+}
 
-_fetchCityClimate($loc1, $response, 1);
+_fetchCityClimate($loc1, $response, 1, $debug);
 if (isset($loc2)) {# && !isset($response['metadata'][0]['error'])) {
-   _fetchCityClimate($loc2, $response, 2);
+   _fetchCityClimate($loc2, $response, 2, $debug);
 }
 
 http_response_code(200);

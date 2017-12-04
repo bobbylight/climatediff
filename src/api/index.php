@@ -3,9 +3,9 @@
  * A RESTful API for the climatediff application  See
  * http://www.ietf.org/rfc/rfc2616.txt for more information.
  * Note that this surely isn't a shining example of a REST API, so don't take it as such!
- * 
+ *
  * Error conditions aren't quite handled yet, so be careful.
- * 
+ *
  * API:
  *    GET http://wherever.com/api/hello/:name
  *       * Returns { "text": "Hello, <name>!" }
@@ -31,13 +31,15 @@ $app->get('/locations', function () use ($app) {
 });
 
 $app->get('/temperature/:locId1(/:locId2)', function ($locId1, $locId2 = null) use ($app) {
+    $debug = isset($_GET['debug']);
     $app->response->headers->set('Content-Type', 'application/json');
-    $app->render('temperature.php', array('loc1' => $locId1, 'loc2' => $locId2));
+    $app->render('temperature.php', array('loc1' => $locId1, 'loc2' => $locId2, 'debug' => $debug));
 });
 
 $app->get('/precipitation/:locId1(/:locId2)', function ($locId1, $locId2 = null) use ($app) {
+    $debug = isset($_GET['debug']);
     $app->response->headers->set('Content-Type', 'application/json');
-    $app->render('precipitation.php', array('loc1' => $locId1, 'loc2' => $locId2));
+    $app->render('precipitation.php', array('loc1' => $locId1, 'loc2' => $locId2, 'debug' => $debug));
 });
 
 $app->error(function(Exception $e) use ($app) {
