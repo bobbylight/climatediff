@@ -3,6 +3,7 @@ import Utils from './Utils';
 import jqXHR = JQuery.jqXHR;
 import Chart from './chart.vue';
 import Typeahead from './typeahead.vue';
+import { Route } from 'vue-router';
 
 export default {
 
@@ -30,16 +31,18 @@ export default {
         };
     },
 
+    /**
+     * Called when the component is first created.
+     */
     created() {
 
-        this.city1 = 'Raleigh, NC US';
-        this.city2 = 'Lexington, KY US';
+        this.setCitiesFromRoute(this.$route);
         this.typeaheadWaitMillis = 500;
 
         this.tempChartConfig = {
             units: [
-                {axisSuffix: '\u00b0 F', label: '\u00b0 F', convert: this.celsiusToFahrenheit},
-                {axisSuffix: '\u00b0 C', label: '\u00b0 C', convert: this.fahrenheitToCelsius}
+                { axisSuffix: '\u00b0 F', label: '\u00b0 F', convert: this.celsiusToFahrenheit },
+                { axisSuffix: '\u00b0 C', label: '\u00b0 C', convert: this.fahrenheitToCelsius }
             ]
         };
         const identity: (data: any) => any = (data: any) => {
@@ -47,10 +50,32 @@ export default {
         };
         this.precipChartConfig = {
             units: [
-                {axisSuffix: '"', label: 'in', convert: identity},
-                {axisSuffix: 'cm', label: 'cm', convert: identity}
+                { axisSuffix: '"', label: 'in', convert: identity },
+                { axisSuffix: 'cm', label: 'cm', convert: identity }
             ]
         };
+    },
+
+    /**
+     * Called when the route changes.  Update the UI to reflect our new cities.
+     *
+     * @param {Route} to The route we're going to.
+     * @param {Route} from The route we're coming from.
+     * @param next Callback.
+     */
+    beforeRouteUpdate(to: Route, from: Route, next) {
+        this.setCitiesFromRoute(to);
+        next();
+    },
+
+    /**
+     * Called when the component is initially displayed.
+     */
+    mounted() {
+        // If cities were initially passed in, go ahead and run the comparison.
+        if (this.$route.params.city1 && this.$route.params.city2) {
+            this.updateClimateDiff();
+        }
     },
 
     methods: {
@@ -94,12 +119,19 @@ export default {
             };
         },
 
+        setCitiesFromRoute(route: Route) {
+            this.city1 = route.params.city1 || 'Raleigh, NC US';
+            this.city2 = route.params.city2 || (route.params.city1 ? '' : 'Lexington, KY US');
+        },
+
         setUnits(unitConfig: UnitConfig) {
             // NOTE: This assumes exactly 2 unit choices, not > 2
             this.tempData.data = unitConfig.convert.call(this, this.tempData.data);
         },
 
         updateClimateDiff() {
+
+            this.$router.push({ name: 'compare', params: { city1: this.city1, city2: this.city2 } });
 
             this.showCharts = true;
             this.maskTempResults = true;
@@ -113,8 +145,13 @@ export default {
             this.precipData = { data: [],
                 metadata: [ { 'city_name': this.city1 }, { 'city_name': this.city2 } ] };
 
+            let urlCityArgs: string = `${this.city1}`;
+            if (this.city2) {
+                urlCityArgs += `/${this.city2}`;
+            }
+
             const updatePrecipChart: Function = () => {
-                return $.ajax(`api/precipitation/${this.city1}/${this.city2}`,
+                return $.ajax(`api/precipitation/${urlCityArgs}`,
                     {
                         success: (result: any) => {
                             console.log(JSON.stringify(result));
@@ -132,7 +169,7 @@ export default {
                 );
             };
 
-            $.ajax(`api/temperature/${this.city1}/${this.city2}`,
+            $.ajax(`api/temperature/${urlCityArgs}`,
                 {
                     success: (result: any) => {
                         result.data = this.celsiusToFahrenheit(result.data);

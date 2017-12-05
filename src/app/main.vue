@@ -33,7 +33,7 @@
 
         <AboutDialog :show="showAbout" @hidden="hideAboutDialog"></AboutDialog>
 
-        <MainPage></MainPage>
+        <router-view></router-view>
 
         <AppFooter></AppFooter>
     </div>
