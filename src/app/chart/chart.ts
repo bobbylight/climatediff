@@ -1,10 +1,11 @@
-import { /*ChartConfig, */ MonthRecord, TemperatureResponse, UnitConfig } from './climatediff';
+import { /*ChartConfig, */ MonthRecord, TemperatureResponse, UnitConfig } from '../climatediff';
 import * as d3 from 'd3';
 import { BaseType } from 'd3';
-import D3ToolTip from './d3-tool-tip';
-import D3Legend from './d3-legend';
-import MonthUtil from './month-util';
+import D3ToolTip from '../d3-tool-tip';
+import D3Legend from '../d3-legend';
+import MonthUtil from '../month-util';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import ChartLegend from './chart-legend.vue';
 
 const TRANSITION_DURATION_MILLIS: number = 300;
 const MAX_CITY_COUNT: number = 2;
@@ -12,7 +13,8 @@ const MAX_CITY_COUNT: number = 2;
 export default {
 
     components: {
-        VueSimpleSpinner
+        VueSimpleSpinner,
+        ChartLegend
     },
 
     props: {
@@ -115,7 +117,7 @@ export default {
                 .curve(d3.curveCardinal);
             chart.append('path')
                 .datum(data.data)
-                .attr('class', `area${index + 1}`)
+                .attr('class', `area area${index + 1}`)
                 .attr('d', this.createEmptyArea(xScale, yScale))
                 .transition()
                 .duration(TRANSITION_DURATION_MILLIS)
@@ -128,7 +130,7 @@ export default {
                     .curve(d3.curveCardinal);
                 chart.append('path')
                     .datum(data.data)
-                    .attr('class', `line${index + 1}`)
+                    .attr('class', `line line${index + 1}`)
                     .attr('d', minLine);
             }
 
@@ -138,7 +140,7 @@ export default {
                 .curve(d3.curveCardinal);
             chart.append('path')
                 .datum(data.data)
-                .attr('class', `line${index + 1}`)
+                .attr('class', `line line${index + 1}`)
                 .attr('d', maxLine)
                 .attr('data-legend', (d: any) => {
                     return data.metadata[index].city_name;
@@ -166,7 +168,7 @@ export default {
             chart.selectAll('.point')
                 .data(data.data)
                 .enter().append('svg:circle')
-                .attr('class', 'point' + (index + 1))
+                .attr('class', `chartPoint point${index + 1}`)
                 .attr('cx', (d: any, i: number) => { return xScale(i); })
                 .attr('cy', (d: any, i: number) => { return yScale(d[city][maxVar]); })
                 .attr('r', (d: any, i: number) => { return 3; })
@@ -179,7 +181,7 @@ export default {
                 chart.selectAll('.point')
                     .data(data.data)
                     .enter().append('svg:circle')
-                    .attr('class', 'point' + (index + 1))
+                    .attr('class', `chartPoint point${index + 1}`)
                     .attr('cx', (d: any, i: number) => { return xScale(i); })
                     .attr('cy', (d: any, i: number) => { return yScale(d[city][minVar]); })
                     .attr('r', (d: any, i: number) => { return 3; })
@@ -347,6 +349,22 @@ export default {
             return tip;
         },
 
+        onArmedCityChanged(index: number | null) {
+
+            let unfocused1: boolean = false;
+            let unfocused2: boolean = false;
+
+            if (index === 1) {
+                unfocused2 = true;
+            }
+            else if (index === 2) {
+                unfocused1 = true;
+            }
+
+            d3.selectAll('.area.area1, .line.line1, .chartPoint.point1').classed('unfocused', unfocused1);
+            d3.selectAll('.area.area2, .line.line2, .chartPoint.point2').classed('unfocused', unfocused2);
+        },
+
         setUnits(unitConfig: UnitConfig) {
             this.selectedUnits = unitConfig;
             this.setUnitsCallback(unitConfig);
@@ -370,27 +388,4 @@ export default {
             this.createChart();
         }
     }
-
-    //     link: function(scope: ng.IScope, element: JQuery, attrs: ng.IAttributes, controller: ChartController) {
-	//
-    //         controller.createChart = () => { createChart(scope, element, controller); };
-	//
-    //         const spinnerId: string = 'spinner-' + controller.spinnerIndex;
-    //         scope.$watch(() => { return controller.mask; }, (newValue: boolean, oldValue: boolean) => {
-    //             if (newValue === oldValue) {
-    //                 return; // First time through
-    //             }
-    //             controller.dataLoaded = !newValue;
-    //             if (newValue) {
-    //                 usSpinnerService.spin(spinnerId);
-    //             }
-    //             else {
-    //                 usSpinnerService.stop(spinnerId);
-    //             }
-    //         });
-	//
-    //     },
-    //     templateUrl: 'directives/chart.html'
-    // };
-
 };

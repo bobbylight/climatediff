@@ -1,7 +1,7 @@
 import { /*ChartConfig, */ MonthRecord, UnitConfig } from './climatediff';
 import Utils from './Utils';
 import jqXHR = JQuery.jqXHR;
-import Chart from './chart.vue';
+import Chart from './chart/chart.vue';
 import Typeahead from './typeahead.vue';
 import { Route } from 'vue-router';
 

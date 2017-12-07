@@ -11,6 +11,12 @@ export interface CityDebugInfo {
     url: string;
 }
 
+export interface CityMetadataInfo {
+    city_id: string;
+    city_name: string;
+    total_time: number[];
+}
+
 export interface CityTemperatureInfo {
     min: number;
     minCount: number;
@@ -31,7 +37,7 @@ export interface TemperatureResponse {
         city1: CityDebugInfo[],
         city2: CityDebugInfo[]
     };
-    metadata: any;
+    metadata: CityMetadataInfo[];
     queries: string[];
 }
 
