@@ -31,10 +31,19 @@ You can build the production version of it into `dist/` by running `npm run buil
 
 ### npm Scripts
 * _npm run clean_ - Delete the `dist/` and `coverage/` (for unit tests) folders
-* _npm run build_ - Run a webpack build, output in `dist/`
-* _npm run watch_ - Runs webpack and listens for changes, output in `dist/`
+* _npm run build_ - Run a minified webpack build, output in `dist/`
+* _npm run watch_ - Runs a dev webpack build and listens for changes, output in `dist/`
+* _npm run livereload_ - Runs a livereload server for hot-deploying changes (run with _npm run watch_)
 * _npm run test_ - Run unit tests (nothing yet)
 * _npm run coverage_ - Run unit tests, generate coverage report (nothing yet)
+
+## To-Do
+* Convert backend from PHP to node
+* Replace bootstrap with vuetify
+* Multiple cities, not just 2
+* Current weather
+* Fix mobile layout
+* All other items in the issue tracker
 
 ## Miscellaneous
 Non-Font-Awesome icons were grabbed from:
