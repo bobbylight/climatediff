@@ -1,9 +1,8 @@
 <template>
     <span :id="spanId" :class="classes">
-        <label v-if="label" :for="id">{{label}}</label>
-        <input :id="id" ref="inputField" type="text" class="form-control"
-               :value="value" @input="fireUpdateEvent($event.target.value)"
-               autocomplete="off" :placeholder="placeholder">
+        <v-text-field ref="inputField" :value="value" @input="fireUpdateEvent($event.target.value)"
+                      :id="id" autocomplete="off" :placeholder="placeholder"
+                      :label="label"></v-text-field>
     </span>
 </template>
 

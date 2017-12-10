@@ -1,11 +1,11 @@
 <template>
-    <footer class='footer navbar-inverse'>
+    <v-footer dark class="app-footer">
         <div class='container'>
             <div class='row'>
                 &copy; 2017 Climatediff
             </div>
         </div>
-    </footer>
+    </v-footer>
 </template>
 
 <script>
@@ -14,15 +14,10 @@ export default {
 </script>
 
 <style lang="less">
-.footer {
+.app-footer {
 
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    border-radius: 0; /* Remove 4-pixel radius in bootstrap default */
-    background-color: #f5f5f5;
-    color: #9d9d9d;
-    padding: 1rem 0;
+    //background-image: linear-gradient(to bottom, #3c3c3c 0%, #222 100%);
+    color: white;
     text-align: center;
 
     a {

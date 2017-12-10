@@ -365,6 +365,10 @@ export default {
             d3.selectAll('.area.area2, .line.line2, .chartPoint.point2').classed('unfocused', unfocused2);
         },
 
+        onUnitChange() {
+            console.log('Units changed!');
+        },
+
         setUnits(unitConfig: UnitConfig) {
             this.selectedUnits = unitConfig;
             this.setUnitsCallback(unitConfig);
@@ -377,6 +381,12 @@ export default {
         },
         chartId: function() {
             return `chart-${this.spinnerIndex}`;
+        },
+        unitLabels: function() {
+            return {
+                checked: this.chartConfig.units[0].label,
+                unchecked: this.chartConfig.units[1].label
+            };
         }
     },
 
