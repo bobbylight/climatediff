@@ -1,7 +1,6 @@
 <template>
     <v-app>
         <v-toolbar app dark color="primary" style="padding: 0 3rem">
-            <!--<nav class="navbar navbar-inverse" role="navigation">-->
 
             <v-toolbar-title class="white--text">
                 <i class="fa fa-cloud"></i> ClimateDiff
@@ -9,18 +8,13 @@
 
             <v-spacer></v-spacer>
 
-            <ul class='nav navbar-nav navbar-right'>
-                <li class="banner-item"><a href="#/" v-on:click="viewOnGitHub()">
-                    <i class="banner-item-icon fa fa-github" title="View on GitHub"></i>
-                    <span class="banner-item-label visible-xs-inline">View on GitHub</span>
-                </a></li>
-                <li class="banner-item"><a href='#/' v-on:click="showAboutDialog()">
-                    <i class="banner-item-icon fa fa-question-circle" title="About"></i>
-                    <span class="banner-item-label visible-xs-inline">About</span>
-                </a></li>
-            </ul>
-
-            <!--</nav>-->
+            <v-btn icon @click="viewOnGitHub">
+                <i class="banner-item fa fa-github" title="View on GitHub"></i>
+                <span class="banner-item-label visible-xs-inline">View on GitHub</span>
+            </v-btn>
+            <v-btn icon @click="showAboutDialog">
+                <v-icon>help</v-icon>
+            </v-btn>
         </v-toolbar>
 
         <v-content>
@@ -70,15 +64,11 @@ export default {
 </script>
 
 <style lang="less">
-.navbar {
-    border-radius: 0; /* Remove 4-pixel radius in bootstrap default */
+.banner-item {
+    font-size: 24px; //@font-size-large;
 
-    .banner-item {
-        font-size: 28px; //@font-size-large;
-
-        a {
-            padding: 11px; // Just right so icons are centered without navbar getting taller
-        }
+    a {
+        padding: 11px; // Just right so icons are centered without navbar getting taller
     }
 }
 </style>
