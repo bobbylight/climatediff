@@ -1,6 +1,6 @@
 {
   "name": "climatediff",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "MIT",
   "scripts": {
     "clean": "rimraf dist coverage",
@@ -46,12 +46,9 @@
   },
   "dependencies": {
     "bootstrap": "3.3.7",
-    "bootstrap-3-typeahead": "4.0.2",
     "d3": "4.12.0",
-    "debounce": "1.1.0",
     "font-awesome": "4.7.0",
     "jquery": "3.2.1",
-    "typeahead.js-bootstrap-css": "1.2.1",
     "vue": "2.5.9",
     "vue-js-toggle-button": "1.2.0",
     "vue-router": "3.0.1",

@@ -1,14 +1,27 @@
 <template>
     <span :id="spanId" :class="classes">
-        <v-text-field ref="inputField" :value="value" @input="fireUpdateEvent($event.target.value)"
-                      :id="id" autocomplete="off" :placeholder="placeholder"
-                      :label="label"></v-text-field>
+        <v-select
+            ref="select"
+            :id="id"
+            :label="label"
+            :placeholder="placeholder"
+            :loading="loading"
+            :prepend-icon="icon"
+            autocomplete
+            browser-autocomplete="off"
+            required
+            :debounce-search="debounceMillis"
+            :items="items"
+            :item-text="responseLabelField"
+            :item-value="responseValueField"
+            :search-input.sync="search"
+            :value="curValue"
+            @input="fireUpdateEvent($event)"
+            ></v-select>
     </span>
 </template>
 
 <script>
-import debounce from 'debounce';
-
 export default {
 
     props: {
@@ -25,9 +38,11 @@ export default {
             type: String,
             required: true
         },
-        dataMapFunction: {
-            type: Function, // map to { id: string, name: string }
-            required: false
+        responseLabelField: {
+            type: String
+        },
+        responseValueField: {
+            type: String
         },
         queryParams: {
             type: Object,
@@ -36,6 +51,9 @@ export default {
         id: {
             type: String,
             required: true
+        },
+        icon: {
+            type: String
         },
         label: {
             type: String,
@@ -65,52 +83,59 @@ export default {
         }
     },
 
-    mounted() {
-
-        const typeaheadOptions = {
-
-            /**
-             * Returns a promise for the typeahead data.
-             */
-            source: debounce((query, process) => {
-
-                const queryParams = $.extend(true, {}, this.queryParams);
-                queryParams[this.filterParamName] = query;
-
-                return $.get(this.url, queryParams, (data) => {
-                    if (this.dataMapFunction) {
-                        data = data.map(this.dataMapFunction);
-                    }
-                    return process(data);
-                });
-            }, this.debounceMillis),
-
-            /**
-             * Called when an item is selected from the typeahead dropdown.  Here we manually update our model to
-             * stay in sync.
-             *
-             * @param newValue The newly-selected value.
-             */
-            afterSelect: (newValue) => {
-                this.fireUpdateEvent(newValue.name);
-            }
+    data: function() {
+        const items = [];
+        if (this.value) {
+            const item = {};
+            item[this.responseLabelField] = this.value;
+            item[this.responseValueField] = this.value;
+            items.push(item);
+        }
+        return {
+            curValue: this.value,
+            items: items,
+            loading: false,
+            search: null
         };
+    },
 
-        const $input = $(this.$el).find(`#${this.id}`);
-        $input.typeahead(typeaheadOptions);
-
+    mounted() {
         if (this.focus === 'true' || !!this.focus) {
-            $input.focus();
+            select.focus();
+        }
+    },
+
+    watch: {
+        search(val) {
+            val && this.runQuery(val);
         }
     },
 
     methods: {
 
+        clone(obj) {
+            return JSON.parse(JSON.stringify(obj));
+        },
+
         /**
          * Fires an "input" event stating our value has changed.  Part of implementing v-model for this component.
          */
         fireUpdateEvent(newValue) {
+            console.log(`New value: ${newValue}`);
             this.$emit('input', newValue);
+        },
+
+        runQuery(query) {
+
+            this.loading = true;
+
+            const queryParams = this.clone(this.queryParams);
+            queryParams[this.filterParamName] = query;
+
+            $.get(this.url, queryParams, (data) => {
+                this.items = data;
+                this.loading = false;
+            });
         }
     }
 }

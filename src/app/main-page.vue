@@ -4,39 +4,8 @@
         <v-layout row wrap justify-center>
 
             <v-flex xs12 style="background: white">
-
-                <v-container>
-                    <v-layout row wrap justify-center>
-                        <h1>Cities to compare:</h1>
-                    </v-layout>
-                </v-container>
-
-                <form @submit.prevent="updateClimateDiff" id='cityForm' role='form' class='city-form'>
-
-                    <v-container>
-                        <v-layout row wrap justify-center>
-
-                            <v-flex xs3>
-                                <Typeahead url="api/locations" v-model="city1" filter-param-name="input" :data-map-function="locationMapper"
-                                           :query-params="locationQueryParams" id="city1" label="City 1:" placeholder="City name"
-                                           classes="city-info" autofocus="true"></Typeahead>
-                            </v-flex>
-                            <v-flex xs3 offset-xs1>
-                                <Typeahead url="api/locations" v-model="city2" filter-param-name="input" :data-map-function="locationMapper"
-                                           :query-params="locationQueryParams" id="city2" label="City 2:" placeholder="City name"
-                                           classes="city-info"></Typeahead>
-                            </v-flex>
-
-                        </v-layout>
-                    </v-container>
-
-                    <v-container>
-                        <v-layout row-wrap justify-center>
-                            <v-btn type='submit' color="primary">Compare!</v-btn>
-                        </v-layout>
-                    </v-container>
-
-                </form>
+                <CityForm :initial-city1="city1" :initial-city2="city2"
+                          :submit-callback="updateClimateDiff"></CityForm>
             </v-flex>
 
             <v-flex xs12>
@@ -45,13 +14,13 @@
 
             <v-flex xs8 id='results' v-if='showCharts'>
 
-                <Chart chart-title='Temperature' spinner-index='1'
+                <Chart chart-title='Temperature' index="1"
                        :data='tempData'
                        :chart-config='tempChartConfig'
                        :set-units-callback='setUnits'
                        :mask='maskTempResults'
                        min-prop="min" max-prop="max"></Chart>
-                <Chart chart-title='Precipitation' spinner-index='2'
+                <Chart chart-title='Precipitation' index="2"
                        :data='precipData'
                        :chart-config='precipChartConfig'
                        :set-units-callback='setUnits'

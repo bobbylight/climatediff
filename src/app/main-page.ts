@@ -2,21 +2,20 @@ import { /*ChartConfig, */ MonthRecord, UnitConfig } from './climatediff';
 import Utils from './Utils';
 import jqXHR = JQuery.jqXHR;
 import Chart from './chart/chart.vue';
-import Typeahead from './typeahead.vue';
+import CityForm from './city-form.vue';
 import { Route } from 'vue-router';
 
 export default {
 
     components: {
-        Chart,
-        Typeahead
+        CityForm,
+        Chart
     },
 
     data: function() {
         return {
             city1: null,
             city2: null,
-            typeaheadWaitMillis: 500,
             tempChartConfig: null, // ChartConfig
             precipChartConfig: null, // ChartConfig
             showCharts: false,
@@ -24,10 +23,7 @@ export default {
             maskPrecipResults: false,
             resultsTitle: null,
             tempData: null,
-            precipData: null,
-            locationQueryParams: {
-                limit: 10
-            }
+            precipData: null
         };
     },
 
@@ -74,7 +70,7 @@ export default {
     mounted() {
         // If cities were initially passed in, go ahead and run the comparison.
         if (this.$route.params.city1 && this.$route.params.city2) {
-            this.updateClimateDiff();
+            this.updateClimateDiff(this.$route.params.city1, this.$route.params.city2);
         }
     },
 
@@ -112,13 +108,6 @@ export default {
             });
         },
 
-        locationMapper: (record: any) => {
-            return {
-                id: record.city_id,
-                name: record.city_name
-            };
-        },
-
         setCitiesFromRoute(route: Route) {
             this.city1 = route.params.city1 || 'Raleigh, NC US';
             this.city2 = route.params.city2 || (route.params.city1 ? '' : 'Lexington, KY US');
@@ -129,8 +118,10 @@ export default {
             this.tempData.data = unitConfig.convert.call(this, this.tempData.data);
         },
 
-        updateClimateDiff() {
+        updateClimateDiff(city1: string, city2: string) {
 
+            this.city1 = city1;
+            this.city2 = city2;
             this.$router.push({ name: 'compare', params: { city1: this.city1, city2: this.city2 } });
 
             this.showCharts = true;

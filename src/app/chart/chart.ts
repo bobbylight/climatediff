@@ -18,7 +18,7 @@ export default {
     },
 
     props: {
-        spinnerIndex: {
+        index: {
             type: String,
             required: true
         },
@@ -380,7 +380,7 @@ export default {
             return !this.mask;
         },
         chartId: function() {
-            return `chart-${this.spinnerIndex}`;
+            return `chart-${this.index}`;
         },
         unitLabels: function() {
             return {

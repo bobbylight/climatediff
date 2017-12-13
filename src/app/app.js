@@ -1,5 +1,4 @@
 import 'bootstrap/js/modal';
-import 'bootstrap-3-typeahead';
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';
@@ -14,7 +13,6 @@ import '../../node_modules/bootstrap/dist/css/bootstrap-theme.css';
 import '../../node_modules/vuetify/dist/vuetify.min.css';
 import '../../node_modules/font-awesome/css/font-awesome.css';
 import '../css/app.less';
-import '../../node_modules/typeahead.js-bootstrap-css/typeaheadjs.css';
 
 Vue.use(VueRouter);
 Vue.use(Vuetify);
