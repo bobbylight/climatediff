@@ -70,7 +70,9 @@ export default {
     mounted() {
         // If cities were initially passed in, go ahead and run the comparison.
         if (this.$route.params.city1 && this.$route.params.city2) {
-            this.updateClimateDiff(this.$route.params.city1, this.$route.params.city2);
+            const city1: string = Utils.cityRouteFormToReadableForm(this.$route.params.city1);
+            const city2: string = Utils.cityRouteFormToReadableForm(this.$route.params.city2);
+            this.updateClimateDiff(city1, city2);
         }
     },
 
@@ -122,7 +124,11 @@ export default {
 
             this.city1 = city1;
             this.city2 = city2;
-            this.$router.push({ name: 'compare', params: { city1: this.city1, city2: this.city2 } });
+            this.$router.push({ name: 'compare', params: {
+                    city1: Utils.cityReadableFormToRouteForm(this.city1),
+                    city2: Utils.cityReadableFormToRouteForm(this.city2)
+                }
+            });
 
             this.showCharts = true;
             this.maskTempResults = true;
@@ -148,9 +154,7 @@ export default {
                             console.log(JSON.stringify(result));
                             //result.data.data = celsiusToFahrenheit(result.data.data);
                             this.maskPrecipResults = false;
-                            setTimeout(() => {
-                                this.precipData = result;
-                            }, 0);
+                            this.precipData = result;
                         },
                         error: (result: jqXHR) => {
                             alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
@@ -167,9 +171,7 @@ export default {
                         // this.tempMetadata = data.metadata;
                         // this.tempData = data.data;
                         this.maskTempResults = false;
-                        setTimeout(() => {
-                            this.tempData = result;
-                        }, 0);
+                        this.tempData = result;
                         updatePrecipChart();
                     },
                     error: (result: jqXHR) => {
