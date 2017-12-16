@@ -39,10 +39,10 @@ You can build the production version of it into `dist/` by running `npm run buil
 
 ## To-Do
 * Convert backend from PHP to node
-* Replace bootstrap with vuetify
 * Multiple cities, not just 2
 * Current weather
-* Fix mobile layout
+* Toggle between Fahrenheit and Celsius
+* Toggle between inches and cm
 * All other items in the issue tracker
 
 ## Miscellaneous

@@ -2,7 +2,6 @@ import { /*ChartConfig, */ MonthRecord, TemperatureResponse, UnitConfig } from '
 import * as d3 from 'd3';
 import { BaseType } from 'd3';
 import D3ToolTip from '../d3-tool-tip';
-import D3Legend from '../d3-legend';
 import MonthUtil from '../month-util';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import ChartLegend from './chart-legend.vue';
@@ -296,12 +295,12 @@ export default {
                 .attr('transform', 'translate(0,' + chartHeight + ')')
                 .call(xAxis)
                 // Rotate text on x-axis
-                .selectAll('text')
-                .style('text-anchor', 'end')
-                .attr('dx', '-.8em')
-                .attr('dy', '.15em')
-                .attr('transform', (d: any) => { return 'rotate(-65)'; });
-
+                // .selectAll('text')
+                // .style('text-anchor', 'end')
+                // .attr('dx', '-.8em')
+                // .attr('dy', '.15em')
+                // .attr('transform', (d: any) => { return 'rotate(-65)'; });
+;
             const yAxis: d3.Axis<any> = d3.axisLeft(yScale)
             // .scale(yScale)
             // .orient('left')
@@ -315,13 +314,6 @@ export default {
             this.appendCityArea(chart, 1, xScale, yScale, maxProp, minProp);
             this.appendCityAreaPoints(chart, 0, xScale, yScale, maxProp, minProp);
             this.appendCityAreaPoints(chart, 1, xScale, yScale, maxProp, minProp);
-
-            const legend: D3Legend = new D3Legend();
-            chart.append('g')
-                .attr('class', 'legend')
-                .attr('transform', 'translate(50, 35)')
-                .style('font-size', '12px')
-                .call(legend.init);
 
             this.fixViewBox($(this.$el)); //element);
         //      $scope.resultsLoaded = true;

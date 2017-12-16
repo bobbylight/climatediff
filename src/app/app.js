@@ -1,15 +1,11 @@
-import 'bootstrap/js/modal';
-
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Vuetify from 'vuetify';
 import ToggleButton from 'vue-js-toggle-button';
 import App from './app.vue';
 import MainPage from './main-page.vue';
+import About from './about.vue';
 
-// TODO: Remove bootstrap dependencies
-import '../../node_modules/bootstrap/dist/css/bootstrap.css';
-import '../../node_modules/bootstrap/dist/css/bootstrap-theme.css';
 import '../../node_modules/vuetify/dist/vuetify.min.css';
 import '../../node_modules/font-awesome/css/font-awesome.css';
 import '../css/app.less';
@@ -21,7 +17,8 @@ Vue.use(ToggleButton);
 const router = new VueRouter({
     routes: [
         { path: '/', redirect: '/compare' },
-        { name: 'compare', path: '/compare/:city1?/:city2?', component: MainPage }
+        { name: 'compare', path: '/compare/:city1?/:city2?', component: MainPage },
+        { name: 'about', path: '/about', component: About }
     ]
 });
 

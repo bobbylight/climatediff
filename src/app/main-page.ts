@@ -67,7 +67,7 @@ export default {
     /**
      * Called when the component is initially displayed.
      */
-    mounted() {
+    beforeMount() {
         // If cities were initially passed in, go ahead and run the comparison.
         if (this.$route.params.city1 && this.$route.params.city2) {
             const city1: string = Utils.cityRouteFormToReadableForm(this.$route.params.city1);
@@ -122,14 +122,15 @@ export default {
 
         updateClimateDiff(city1: string, city2: string) {
 
-            this.city1 = city1;
-            this.city2 = city2;
             this.$router.push({ name: 'compare', params: {
-                    city1: Utils.cityReadableFormToRouteForm(this.city1),
-                    city2: Utils.cityReadableFormToRouteForm(this.city2)
+                    city1: Utils.cityReadableFormToRouteForm(city1),
+                    city2: Utils.cityReadableFormToRouteForm(city2)
                 }
             });
 
+            // Route params seem to be auto-bound to properties here?  So set our cities last to avoid '_'s in them.
+            this.city1 = city1;
+            this.city2 = city2;
             this.showCharts = true;
             this.maskTempResults = true;
             this.maskPrecipResults = true;

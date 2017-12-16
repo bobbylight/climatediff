@@ -21,6 +21,8 @@
 <style lang="less">
 @import '../../css/variables.less';
 
+@chart-axis-color: #888888;
+
 .main-chart-div {
     margin-bottom: 2em;
     height: 450px;
@@ -59,16 +61,14 @@
     /*height: 450px;*/
 }
 
-.axis text {
-    fill: black;
-    font: 10px sans-serif;
-}
+.axis {
 
-.axis path,
-.axis line {
-    fill: none;
-    stroke: #000;
     shape-rendering: crispEdges;
+    font: 10px "Roboto", sans-serif;
+
+    text {
+        fill: @chart-axis-color;
+    }
 }
 
 y {
@@ -79,7 +79,7 @@ y {
 .axis path,
 .axis line {
     fill: none;
-    stroke: #000;
+    stroke: @chart-axis-color;
     shape-rendering: crispEdges;
 }
 
@@ -135,11 +135,5 @@ y {
     &.unfocused {
         fill-opacity: @chart-unfocused-opacity;
     }
-}
-
-.axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
 }
 </style>

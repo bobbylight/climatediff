@@ -39,7 +39,6 @@
 .main-container {
 
     padding: 0;
-
     .city-form {
         box-shadow: 0 2px 1px -1px rgba(0,0,0,.2);
     }

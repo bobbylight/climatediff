@@ -8,52 +8,42 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn icon @click="viewOnGitHub">
-                <i class="banner-item fa fa-github" title="View on GitHub"></i>
-                <span class="banner-item-label visible-xs-inline">View on GitHub</span>
+            <v-btn icon @click="viewOnGitHub" title="View on GitHub">
+                <i class="banner-item fa fa-github"></i>
             </v-btn>
-            <v-btn icon @click="showAboutDialog">
+            <v-btn icon @click="showAboutDialog" title="About ClimateDiff">
                 <v-icon>help</v-icon>
             </v-btn>
         </v-toolbar>
 
         <v-content>
-            <MainPage></MainPage>
+            <transition name="page" mode="out-in">
+                <router-view></router-view>
+            </transition>
         </v-content>
 
         <AppFooter app></AppFooter>
-
-        <AboutDialog :show="showAbout" @hidden="hideAboutDialog"></AboutDialog>
     </v-app>
 </template>
 
 <script>
-import AboutDialog from './about-dialog';
-import MainPage from './main-page.vue';
 import AppFooter from './app-footer';
 
 export default {
 
     components: {
-        AboutDialog,
-        MainPage,
         AppFooter
     },
 
     data: function() {
         return {
-            showAbout: false
         };
     },
 
     methods: {
 
-        hideAboutDialog() {
-            this.showAbout = false;
-        },
-
         showAboutDialog() {
-            this.showAbout = true;
+            this.$router.push({ name: 'about' });
         },
 
         viewOnGitHub() {
