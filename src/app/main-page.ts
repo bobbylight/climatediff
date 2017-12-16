@@ -1,6 +1,5 @@
-import { /*ChartConfig, */ MonthRecord, UnitConfig } from './climatediff';
+import { /*ChartConfig, */ MonthRecord, TemperatureResponse, UnitConfig } from './climatediff';
 import Utils from './Utils';
-import jqXHR = JQuery.jqXHR;
 import Chart from './chart/chart.vue';
 import CityForm from './city-form.vue';
 import { Route } from 'vue-router';
@@ -22,8 +21,8 @@ export default {
             maskTempResults: false,
             maskPrecipResults: false,
             resultsTitle: null,
-            tempData: null,
-            precipData: null
+            tempData: null, // TemperatureResponse
+            precipData: null // TemperatureResponse
         };
     },
 
@@ -149,39 +148,45 @@ export default {
             }
 
             const updatePrecipChart: Function = () => {
-                return $.ajax(`api/precipitation/${urlCityArgs}`,
-                    {
-                        success: (result: any) => {
-                            console.log(JSON.stringify(result));
-                            //result.data.data = celsiusToFahrenheit(result.data.data);
-                            this.maskPrecipResults = false;
-                            this.precipData = result;
-                        },
-                        error: (result: jqXHR) => {
-                            alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
-                            this.maskPrecipResults = false;
-                        }
-                    }
-                );
+
+                const request: XMLHttpRequest = new XMLHttpRequest();
+                request.onload = (e: Event) => {
+                    console.log(JSON.stringify(request.response));
+                    //result.data.data = celsiusToFahrenheit(result.data.data);
+                    this.maskPrecipResults = false;
+                    this.precipData = request.response;
+                };
+                request.onerror = (e: Event) => {
+                    alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
+                    this.maskPrecipResults = false;
+                };
+
+                request.open('GET', `api/precipitation/${urlCityArgs}`);
+                request.responseType = 'json';
+                request.send();
             };
 
-            $.ajax(`api/temperature/${urlCityArgs}`,
-                {
-                    success: (result: any) => {
-                        result.data = this.celsiusToFahrenheit(result.data);
-                        // this.tempMetadata = data.metadata;
-                        // this.tempData = data.data;
-                        this.maskTempResults = false;
-                        this.tempData = result;
-                        updatePrecipChart();
-                    },
-                    error: (result: jqXHR) => {
-                        alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
-                        this.maskTempResults = false;
-                        updatePrecipChart();
-                    }
-                }
-            );
+            const request: XMLHttpRequest = new XMLHttpRequest();
+            request.onload = (e: Event) => {
+                // We must clone the response data since it is read-only and we want to mutate it
+                const data: TemperatureResponse = {
+                    data: this.celsiusToFahrenheit(request.response.data),
+                    metadata: request.response.metadata,
+                    debug: request.response.debug,
+                    queries: request.response.queries
+                };
+                this.maskTempResults = false;
+                this.tempData = data;
+                updatePrecipChart();
+            };
+            request.onerror = (e: Event) => {
+                alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
+                this.maskTempResults = false;
+                updatePrecipChart();
+            };
+            request.open('GET', `api/temperature/${urlCityArgs}`);
+            request.responseType = 'json';
+            request.send();
         }
     }
 };

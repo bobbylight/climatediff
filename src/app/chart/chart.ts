@@ -191,13 +191,13 @@ export default {
 
         },
 
-        fixViewBox(element: JQuery) {
-            const mainChartDiv: JQuery = element.find('.chart-content'); // Flex fill layout
-            const width: number = mainChartDiv.width();
-            const height: number = mainChartDiv.height();
+        fixViewBox(element: HTMLElement) {
+            const mainChartDiv: HTMLElement = element.querySelector('.chart-content'); // Flex fill layout
+            const width: number = mainChartDiv.offsetWidth;
+            const height: number = mainChartDiv.offsetHeight;
             console.log(width + ', ' + height);
             if (width > 0 && height > 0) {
-                mainChartDiv.find('.chart').get(0).setAttribute('viewBox', `0 0 ${width} ${height}`);
+                mainChartDiv.querySelector('.chart').setAttribute('viewBox', `0 0 ${width} ${height}`);
             }
         },
 
@@ -207,18 +207,18 @@ export default {
             const chartMargin: any = { top: 0, right: 0, bottom: 60, left: 40 };
 
             // Height of actual chart content area.
-            const $chartWrapper: JQuery = $(this.$refs.chartContent);// element.find('.chart-content');
-            const chartW: number = $chartWrapper.width();
-            const chartH: number = $chartWrapper.height();
+            const chartWrapper: HTMLElement = this.$refs.chartContent;
+            const chartW: number = chartWrapper.offsetWidth;
+            const chartH: number = chartWrapper.offsetHeight;
             let chartWidth: number = chartW - chartMargin.left - chartMargin.right;
             let chartHeight: number = chartH - chartMargin.top - chartMargin.bottom;
             const maxProp: string = this.maxProp;
             const minProp: string = this.minProp;
 
-            // $(window).on('resize', () => {
-            //     const chartW: number = $chartElem.width();
-            //     const chartH: number = $chartElem.height();
-            //     element.find('svg').get(0).setAttribute('viewBox', '0 0 ' + chartW + ' ' + chartH);
+            // window.onresize = () => {
+            //     const chartW: number = chartWrapper.offsetWidth;
+            //     const chartH: number = chartWrapper.offsetHeight;
+            //     this.$el.querySelector('svg').setAttribute('viewBox', '0 0 ' + chartW + ' ' + chartH);
             // })
 
             const yScale: d3.ScaleLinear<number, number> = d3.scaleLinear()
@@ -271,8 +271,7 @@ export default {
             yScale.domain([min, max + topPadding]);
 
             // Remove previous chart, if any
-            const $chartElem: JQuery = $chartWrapper.find('.chart');  //element.find('.chart');
-            const chartDomNode: Element = $chartElem[0] as Element;
+            const chartDomNode: Element = chartWrapper.querySelector('.chart');
             d3.select(chartDomNode)
                 .select('g').remove();
 
@@ -315,7 +314,7 @@ export default {
             this.appendCityAreaPoints(chart, 0, xScale, yScale, maxProp, minProp);
             this.appendCityAreaPoints(chart, 1, xScale, yScale, maxProp, minProp);
 
-            this.fixViewBox($(this.$el)); //element);
+            this.fixViewBox(this.$el);
         //      $scope.resultsLoaded = true;
         },
 

@@ -132,10 +132,21 @@ export default {
             const queryParams = this.clone(this.queryParams);
             queryParams[this.filterParamName] = query;
 
-            $.get(this.url, queryParams, (data) => {
-                this.items = data;
+            let url = this.url + '?' +
+                Object.keys(queryParams)
+                    .map((key) => { return `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`; })
+                    .join('&');
+            const request = new XMLHttpRequest();
+            request.onload = (e) => {
+                this.items = request.response;
                 this.loading = false;
-            });
+            };
+            request.onerror = (e) => {
+                this.loading = false;
+            };
+            request.open('GET', url);
+            request.responseType = 'json';
+            request.send();
         }
     }
 }
