@@ -28,6 +28,13 @@ function _doCurl($url, $headers, $debug) {
    return $result;
 }
 
+function _addError(&$response, $error) {
+    if (!isset($response['errors'])) {
+        $response['errors'] = array();
+    }
+    array_push($response['errors'], $error);
+}
+
 function _fetchCityClimate($loc, &$response, $index, $debug) {
 
    global $token;
@@ -73,6 +80,11 @@ function _fetchCityClimate($loc, &$response, $index, $debug) {
       $results = array_merge($results, (isset($decodedJson['results']) ? $decodedJson['results'] : array()));
       array_push($totalTimes, (microtime(true) - $start));
 
+      if (!isset($decodedJson['metadata'])) {
+          _addError($response, "No temperature data found for $loc");
+          return;
+      }
+
       $returnedOffs = intval($decodedJson['metadata']['resultset']['offset']);
       $returnedCount = intval($decodedJson['metadata']['resultset']['count']);
       $done = count($results) >= $returnedCount;#($returnedCount < $limit);
@@ -89,6 +101,7 @@ function _fetchCityClimate($loc, &$response, $index, $debug) {
          'total_time' => $totalTimes);
 
    for ($i = 0; $i < 12; $i++) {
+      $data[$i][$id] = array();
       $data[$i][$id]['min'] = 0;
       $data[$i][$id]['minCount'] = 0;
       $data[$i][$id]['median'] = 0;
@@ -119,10 +132,10 @@ function _fetchCityClimate($loc, &$response, $index, $debug) {
       if ($data[$month][$id]['minCount'] == 0 ||
             $data[$month][$id]['medianCount'] == 0 ||
             $data[$month][$id]['maxCount'] == 0) {
-         $cityMetadata['error'] = "No data found for this city for month $month (" .
+         _addError($response, "No data found for $loc for month $month (" .
                $data[$month][$id]['minCount'] . ', ' .
                $data[$month][$id]['medianCount'] . ', ' .
-               $data[$month][$id]['maxCount'] . ').';
+               $data[$month][$id]['maxCount'] . ').');
          $data = [];
          break;
       }
@@ -158,15 +171,7 @@ if (!isset($debug)) {
 # PHP by default still returns 200 OK for fatal errors (!)
 http_response_code(500);
 
-$data = array();
-for ($i=0; $i < 12; $i++) {
-   $monthData = array( 'city1' => array() );
-   if (isset($loc2)) {
-      $monthData['city2'] = array();
-   }
-   array_push($data, $monthData);
-}
-$response = array( 'data' => $data, 'metadata' => array(), 'queries' => array() );
+$response = array( 'data' => array(), 'metadata' => array(), 'queries' => array() );
 if ($debug) {
     $response['debug'] = array();
 }

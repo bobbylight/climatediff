@@ -37,6 +37,7 @@ export interface TemperatureResponse {
         city1: CityDebugInfo[],
         city2: CityDebugInfo[]
     };
+    errors?: string[];
     metadata: CityMetadataInfo[];
     queries: string[];
 }

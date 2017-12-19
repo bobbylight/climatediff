@@ -2,6 +2,7 @@ import { /*ChartConfig, */ MonthRecord, TemperatureResponse, UnitConfig } from '
 import Utils from './Utils';
 import Chart from './chart/chart.vue';
 import CityForm from './city-form.vue';
+import Ajax from './ajax';
 import { Route } from 'vue-router';
 
 export default {
@@ -79,12 +80,13 @@ export default {
 
         celsiusToFahrenheit(data: MonthRecord[]): MonthRecord[] {
             return data.map((elem: MonthRecord) => {
-                if (elem.city1) {
+                // Ensure 'min' is defined as empty city objects can be sent down on error
+                if (elem.city1 && typeof elem.city1.min === 'number') {
                     elem.city1.min = Utils.celsiusToFahrenheit(elem.city1.min);
                     elem.city1.median = Utils.celsiusToFahrenheit(elem.city1.median);
                     elem.city1.max = Utils.celsiusToFahrenheit(elem.city1.max);
                 }
-                if (elem.city2) {
+                if (elem.city2 && typeof elem.city2.min === 'number') {
                     elem.city2.min = Utils.celsiusToFahrenheit(elem.city2.min);
                     elem.city2.median = Utils.celsiusToFahrenheit(elem.city2.median);
                     elem.city2.max = Utils.celsiusToFahrenheit(elem.city2.max);
@@ -95,12 +97,13 @@ export default {
 
         fahrenheitToCelsius(data: MonthRecord[]): MonthRecord[] {
             return data.map((elem: MonthRecord) => {
-                if (elem.city1) {
+                // Ensure 'min' is defined as empty city objects can be sent down on error
+                if (elem.city1 && typeof elem.city1.min === 'number') {
                     elem.city1.min = Utils.fahrenheitToCelsius(elem.city1.min);
                     elem.city1.median = Utils.fahrenheitToCelsius(elem.city1.median);
                     elem.city1.max = Utils.fahrenheitToCelsius(elem.city1.max);
                 }
-                if (elem.city2) {
+                if (elem.city2 && typeof elem.city2.min === 'number') {
                     elem.city2.min = Utils.fahrenheitToCelsius(elem.city2.min);
                     elem.city2.median = Utils.fahrenheitToCelsius(elem.city2.median);
                     elem.city2.max = Utils.fahrenheitToCelsius(elem.city2.max);
@@ -149,44 +152,41 @@ export default {
 
             const updatePrecipChart: Function = () => {
 
-                const request: XMLHttpRequest = new XMLHttpRequest();
-                request.onload = (e: Event) => {
-                    console.log(JSON.stringify(request.response));
+                const precipSuccess: Function = (responseData: any) => {
+                    console.log(JSON.stringify(responseData));
                     //result.data.data = celsiusToFahrenheit(result.data.data);
                     this.maskPrecipResults = false;
-                    this.precipData = request.response;
+                    this.precipData = responseData;
                 };
-                request.onerror = (e: Event) => {
-                    alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
+                const precipFailure: Function = () => {
+                    alert('An error occurred fetching precipitation data!');
                     this.maskPrecipResults = false;
                 };
 
-                request.open('GET', `api/precipitation/${urlCityArgs}`);
-                request.responseType = 'json';
-                request.send();
+                Ajax.get(`api/precipitation/${urlCityArgs}`, null, precipSuccess, precipFailure);
             };
 
-            const request: XMLHttpRequest = new XMLHttpRequest();
-            request.onload = (e: Event) => {
+            const tempSuccess: Function = (responseData: TemperatureResponse) => {
                 // We must clone the response data since it is read-only and we want to mutate it
                 const data: TemperatureResponse = {
-                    data: this.celsiusToFahrenheit(request.response.data),
-                    metadata: request.response.metadata,
-                    debug: request.response.debug,
-                    queries: request.response.queries
+                    data: this.celsiusToFahrenheit(responseData.data),
+                    metadata: responseData.metadata,
+                    debug: responseData.debug,
+                    errors: responseData.errors,
+                    queries: responseData.queries
                 };
                 this.maskTempResults = false;
                 this.tempData = data;
                 updatePrecipChart();
             };
-            request.onerror = (e: Event) => {
-                alert('Sorry, something went wrong!\nThat\'s what happens with beta software.');
+
+            const tempFailure: Function = () => {
+                alert('An error occurred fetching temperature data.  Please try again!');
                 this.maskTempResults = false;
                 updatePrecipChart();
             };
-            request.open('GET', `api/temperature/${urlCityArgs}`);
-            request.responseType = 'json';
-            request.send();
+
+            Ajax.get(`api/temperature/${urlCityArgs}`, null, tempSuccess, tempFailure);
         }
     }
 };

@@ -28,6 +28,13 @@ function _doCurl($url, $headers, $debug) {
    return $result;
 }
 
+function _addError(&$response, $error) {
+    if (!isset($response['errors'])) {
+        $response['errors'] = array();
+    }
+    array_push($response['errors'], $error);
+}
+
 function _fetchCityClimate($loc, &$response, $index, $debug) {
 
    global $token;
@@ -88,6 +95,7 @@ function _fetchCityClimate($loc, &$response, $index, $debug) {
          'total_time' => $totalTimes);
 
    for ($i = 0; $i < 12; $i++) {
+      $data[$i][$id] = array();
       $data[$i][$id]['precip'] = 0;
       $data[$i][$id]['precipCount'] = 0;
    }
@@ -104,10 +112,9 @@ function _fetchCityClimate($loc, &$response, $index, $debug) {
 
    for ($month = 0; $month < 12; $month++) {
       if ($data[$month][$id]['precipCount'] == 0) {
-         $cityMetadata['error'] = "No data found for this city for month $month (" .
-               $data[$month][$id]['precipCount'] . ').';
-         $data = [];
-         break;
+         _addError($response, "No data available for $loc for month $month.");
+         //$data = [];
+         continue;
       }
       $data[$month][$id]['precip'] /= $data[$month][$id]['precipCount'];
 # TODO: Not yet sure of unit of measurement.  For now pretending it's tenths of mm (mm * 10)
@@ -135,15 +142,7 @@ if (!isset($debug)) {
 # PHP by default still returns 200 OK for fatal errors (!)
 http_response_code(500);
 
-$data = array();
-for ($i=0; $i < 12; $i++) {
-   $monthData = array( 'city1' => array() );
-   if (isset($loc2)) {
-      $monthData['city2'] = array();
-   }
-   array_push($data, $monthData);
-}
-$response = array( 'data' => $data, 'metadata' => array(), 'queries' => array() );
+$response = array( 'data' => array(), 'metadata' => array(), 'queries' => array() );
 if ($debug) {
     $response['debug'] = array();
 }

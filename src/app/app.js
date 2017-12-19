@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 
 // import Vuetify from 'vuetify';
 import Vuetify from 'vuetify/es5/components/Vuetify';
+import VAlert from 'vuetify/es5/components/VAlert';
 import VApp from 'vuetify/es5/components/VApp';
 import VBtn from 'vuetify/es5/components/VBtn';
 import VCard from 'vuetify/es5/components/VCard';
@@ -31,6 +32,7 @@ Vue.use(VueRouter);
 //Vue.use(Vuetify);
 Vue.use(Vuetify, {
     components: {
+        VAlert,
         VApp,
         VBtn,
         VCard,

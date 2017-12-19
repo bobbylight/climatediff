@@ -1,8 +1,13 @@
 <template>
-    <v-card>
+    <v-card class="chart-card">
         <v-toolbar color="primary" dark>
             <v-toolbar-title>{{chartTitle}}</v-toolbar-title>
         </v-toolbar>
+        <v-alert v-for="error in errors" v-model="showErrors"
+                 class="chart-errors" transition="slide-y-transition" dismissible
+                 color="error" icon="priority_high">
+            {{error}}
+        </v-alert>
         <div class='main-chart-div'>
             <div class='chart-content' ref="chartContent"> <!-- todo: some kind of fade in/out of bg while loading -->
                 <vue-simple-spinner v-if="mask"></vue-simple-spinner>
@@ -22,21 +27,30 @@
 @import '../../css/variables.less';
 
 @chart-axis-color: #888888;
+.chart-card {
 
-.main-chart-div {
     margin-bottom: 2em;
-    height: 450px;
-    display: flex;
-    flex-flow: column;
-    position: relative;
-    padding: 2rem;
 
-    .chart-content {
-        flex: 1 1 auto;
+    .main-chart-div {
+        height: 450px;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        flex-flow: column;
         position: relative;
+        padding: 2rem;
+
+        .chart-content {
+            flex: 1 1 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+    }
+
+    .chart-errors {
+        text-align: initial;
+        margin-top: 0;
+        margin-bottom: 0;
     }
 }
 

@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import Ajax from './ajax';
+
 export default {
 
     props: {
@@ -132,21 +134,16 @@ export default {
             const queryParams = this.clone(this.queryParams);
             queryParams[this.filterParamName] = query;
 
-            let url = this.url + '?' +
-                Object.keys(queryParams)
-                    .map((key) => { return `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`; })
-                    .join('&');
-            const request = new XMLHttpRequest();
-            request.onload = (e) => {
-                this.items = request.response;
-                this.loading = false;
-            };
-            request.onerror = (e) => {
-                this.loading = false;
-            };
-            request.open('GET', url);
-            request.responseType = 'json';
-            request.send();
+            Ajax.get(this.url, queryParams, this.ajaxSuccess, this.ajaxFailure);
+        },
+
+        ajaxSuccess(responseData) {
+            this.items = responseData;
+            this.loading = false;
+        },
+
+        ajaxFailure() {
+            this.loading = false;
         }
     }
 }

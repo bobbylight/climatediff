@@ -53,6 +53,8 @@ export default {
 
     data: function() {
         return {
+            errors: [], //string[],
+            showErrors: [], //boolean[],
             selectedUnits: null, //string,
             tips: [] // D3ToolTip[]
         };
@@ -104,7 +106,7 @@ export default {
             }
 
             const city: string = 'city' + (index + 1);
-            if (!data.data[0][city]) {
+            if (!data.data[0][city] || typeof data.data[0][city][maxField] === 'undefined') {
                 console.log(`Note: No data in response for city: "${city}"`);
                 return;
             }
@@ -140,11 +142,7 @@ export default {
             chart.append('path')
                 .datum(data.data)
                 .attr('class', `line line${index + 1}`)
-                .attr('d', maxLine)
-                .attr('data-legend', (d: any) => {
-                    return data.metadata[index].city_name;
-                })
-                .attr('data-legend-pos', index);
+                .attr('d', maxLine);
 
         },
 
@@ -158,7 +156,7 @@ export default {
             }
 
             const city: string = 'city' + (index + 1);
-            if (!data.data[0][city]) {
+            if (!data.data[0][city] || typeof data.data[0][city][maxVar] === 'undefined') {
                 console.log(`Note: No data in response for city: "${city}"`);
                 return;
             }
@@ -169,7 +167,9 @@ export default {
                 .enter().append('svg:circle')
                 .attr('class', `chartPoint point${index + 1}`)
                 .attr('cx', (d: any, i: number) => { return xScale(i); })
-                .attr('cy', (d: any, i: number) => { return yScale(d[city][maxVar]); })
+                .attr('cy', (d: any, i: number) => {
+                    return yScale(d[city][maxVar]);
+                })
                 .attr('r', (d: any, i: number) => { return 3; })
                 .attr('pointer-events', 'all')
                 .on('mouseover', this.expandPoint(tip.show))
@@ -385,6 +385,11 @@ export default {
         data(newValue, oldValue) {
             if (newValue === oldValue) {
                 return; // First time through
+            }
+            this.errors = newValue.errors || [];
+            this.showErrors = [];
+            for (let i: number = 0; i < this.errors.length; i++) {
+                this.showErrors.push(true);
             }
             this.createChart();
         }

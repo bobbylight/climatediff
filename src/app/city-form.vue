@@ -27,7 +27,7 @@
                 </v-layout>
             </v-container>
 
-            <v-container>
+            <v-container class="city-form-no-top-padding">
                 <v-layout row-wrap justify-center>
                     <v-btn type='submit' color="primary">Compare!</v-btn>
                 </v-layout>
@@ -81,3 +81,9 @@ export default {
     }
 }
 </script>
+
+<style lang="less">
+.city-form-no-top-padding {
+    padding-top: 0;
+}
+</style>
