@@ -63,6 +63,10 @@ function _fetchCityClimate($loc, &$response, $index, $debug) {
    $totalTimes = array();
    $curlInfos = array();
 
+   $metadata = &$response['metadata'];
+   $cityMetadata = array( 'city_id' => $locId, 'city_name' => $loc);
+   $metadata[] = &$cityMetadata;
+
    # We loop in case we ask for data with > 1000 rows
    # TODO: Prevent making > 5 requests per second!
    $done = false;
@@ -89,10 +93,7 @@ function _fetchCityClimate($loc, &$response, $index, $debug) {
    $data = &$response['data'];
    $id = "city$index";
 
-   $metadata = &$response['metadata'];
-   $cityMetadata = array( 'city_id' => $locId,
-         'city_name' => $loc,
-         'total_time' => $totalTimes);
+   $cityMetadata['total_time'] = $totalTimes;
 
    for ($i = 0; $i < 12; $i++) {
       $data[$i][$id] = array();
@@ -121,8 +122,6 @@ function _fetchCityClimate($loc, &$response, $index, $debug) {
 $inches = ($data[$month][$id]['precip'] / 10) * 0.03937007874;
       $data[$month][$id]['precip'] = round($inches, $decimalCount);
    }
-
-   array_push($metadata, $cityMetadata);
 
    if ($debug === true) {
       $debugData = &$response['debug'];
