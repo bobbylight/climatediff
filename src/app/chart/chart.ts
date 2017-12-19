@@ -55,13 +55,12 @@ export default {
         return {
             errors: [], //string[],
             showErrors: [], //boolean[],
-            selectedUnits: null, //string,
+            selectedUnits: this.chartConfig.units[0].label, //string,
             tips: [] // D3ToolTip[]
         };
     },
 
     created() {
-        this.selectedUnits = this.chartConfig.units[0].label;
         for (let i: number = 0; i < MAX_CITY_COUNT; i++) {
             this.tips.push(null);
             this.tips.push(null);
@@ -332,7 +331,10 @@ export default {
             this.tips[index] = tip = new D3ToolTip()
                 .attr('class', 'd3-tip')
                 .html((d: any) => {
-                    return Math.round(d[city][dataVar] * 10) / 10;
+                    const firstChar: string = this.selectedUnits.charAt(0);
+                    const firstIsLetter: boolean = firstChar >= 'a' && firstChar <= 'z';
+                    const suffix: string = firstIsLetter ? ` ${this.selectedUnits}` : this.selectedUnits;
+                    return (Math.round(d[city][dataVar] * 10) / 10) + suffix;
                 });
 
             chart.call(tip.init);
@@ -378,6 +380,10 @@ export default {
                 checked: this.chartConfig.units[0].label,
                 unchecked: this.chartConfig.units[1].label
             };
+        },
+        unitToggleState() {
+            console.log(this.selectedUnits + ', ' + this.chartConfig.units[0].label);
+            return this.selectedUnits === this.chartConfig.units[0].label;
         }
     },
 

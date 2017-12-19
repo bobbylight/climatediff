@@ -13,7 +13,8 @@
                 <vue-simple-spinner v-if="mask"></vue-simple-spinner>
                 <svg v-show='dataLoaded' :id='chartId' class='chart' preserveAspectRatio="none"></svg>
                 <div class="units-toggle">
-                    <toggle-button @change="onUnitChange" :labels="unitLabels"></toggle-button>
+                    <toggle-button @change="onUnitChange" :labels="unitLabels"
+                            :value="unitToggleState"></toggle-button>
                 </div>
             </div>
             <ChartLegend :city-metadata="data.metadata" @armedCity="onArmedCityChanged"></ChartLegend>
