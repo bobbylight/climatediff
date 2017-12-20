@@ -37,10 +37,24 @@ export interface TemperatureResponse {
         city1: CityDebugInfo[],
         city2: CityDebugInfo[]
     };
-    errors?: string[];
+    errors?: Notification[];
     metadata: CityMetadataInfo[];
     queries: string[];
 }
+
+/**
+ * A notification from the server that is part of a temperature response.  Typically these contain notices that
+ * some data was unavailable.
+ */
+export interface Notification {
+    code: string;
+    params: NotificationParam[];
+}
+
+/**
+ * A parameter of a server notification.
+ */
+export type NotificationParam = Notification | string | number;
 
 export interface UnitConfig {
     axisSuffix: string;

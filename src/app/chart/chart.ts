@@ -5,6 +5,7 @@ import D3ToolTip from '../d3-tool-tip';
 import MonthUtil from '../month-util';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import ChartLegend from './chart-legend.vue';
+import Messages from '../messages';
 
 const TRANSITION_DURATION_MILLIS: number = 300;
 const MAX_CITY_COUNT: number = 2;
@@ -24,6 +25,9 @@ export default {
         chartTitle: {
             type: String,
             required: true
+        },
+        titleIcon: {
+            type: String
         },
         chartConfig: {
             type: Object, //ChartConfig,
@@ -392,7 +396,7 @@ export default {
             if (newValue === oldValue) {
                 return; // First time through
             }
-            this.errors = newValue.errors || [];
+            this.errors = Messages.localizeNotifications(newValue.errors || []);
             this.showErrors = [];
             for (let i: number = 0; i < this.errors.length; i++) {
                 this.showErrors.push(true);

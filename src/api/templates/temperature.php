@@ -1,39 +1,7 @@
 <?php
 require_once('../init.php');
 require_once('_dao.php');
-
-function _doCurl($url, $headers, $debug) {
-
-   $result = array();
-
-   $ch = curl_init($url);
-   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
-   curl_setopt($ch, CURLOPT_HEADER, 0);
-   if ($headers != null) {
-      curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-   }
-   curl_setopt($ch, CURLOPT_TIMEOUT, 90);
-   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 90);
-
-   $json = curl_exec($ch);
-   if ($debug === true) {
-      $result['curlInfo'] = curl_getinfo($ch);
-   }
-
-   curl_close($ch);
-   #echo $json;
-
-   $result['response'] = json_decode($json, true);
-   return $result;
-}
-
-function _addError(&$response, $error) {
-    if (!isset($response['errors'])) {
-        $response['errors'] = array();
-    }
-    array_push($response['errors'], $error);
-}
+require_once('util.php');
 
 function _fetchCityClimate($loc, &$response, $index, $debug) {
 
@@ -85,7 +53,7 @@ function _fetchCityClimate($loc, &$response, $index, $debug) {
       array_push($totalTimes, (microtime(true) - $start));
 
       if (!isset($decodedJson['metadata'])) {
-          _addError($response, "No temperature data found for $loc");
+          _addError($response, 'error.noDataForCity', array( $loc ));
           return;
       }
 

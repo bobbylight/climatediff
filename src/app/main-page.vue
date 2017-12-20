@@ -15,12 +15,14 @@
             <v-flex xs8 id='results' v-if='showCharts'>
 
                 <Chart chart-title='Temperature' index="1"
+                       title-icon='fa-thermometer-three-quarters'
                        :data='tempData'
                        :chart-config='tempChartConfig'
                        :set-units-callback='setUnits'
                        :mask='maskTempResults'
                        min-prop="min" max-prop="max"></Chart>
                 <Chart chart-title='Precipitation' index="2"
+                       title-icon='fa-tint'
                        :data='precipData'
                        :chart-config='precipChartConfig'
                        :set-units-callback='setUnits'

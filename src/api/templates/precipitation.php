@@ -1,39 +1,7 @@
 <?php
 require_once('../init.php');
 require_once('_dao.php');
-
-function _doCurl($url, $headers, $debug) {
-
-   $result = array();
-
-   $ch = curl_init($url);
-   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
-   curl_setopt($ch, CURLOPT_HEADER, 0);
-   if ($headers != null) {
-      curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-   }
-   curl_setopt($ch, CURLOPT_TIMEOUT, 90);
-   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 90);
-
-   $json = curl_exec($ch);
-   if ($debug) {
-      $result['curlInfo'] = curl_getinfo($ch);
-   }
-
-   curl_close($ch);
-   #error_log('Raw output: ' . json_decode($json, true) . ', ' . curl_getinfo($ch, CURLINFO_HTTP_COD));
-
-   $result['response'] = json_decode($json, true);
-   return $result;
-}
-
-function _addError(&$response, $error) {
-    if (!isset($response['errors'])) {
-        $response['errors'] = array();
-    }
-    array_push($response['errors'], $error);
-}
+require_once('util.php');
 
 function _fetchCityClimate($loc, &$response, $index, $debug) {
 
@@ -113,7 +81,9 @@ function _fetchCityClimate($loc, &$response, $index, $debug) {
 
    for ($month = 0; $month < 12; $month++) {
       if ($data[$month][$id]['precipCount'] == 0) {
-         _addError($response, "No data available for $loc for month $month.");
+         $monthParam = array();
+         $monthParam['code'] = "month.$month";
+         _addError($response, 'error.noDataForCityForMonth', array( $loc, $monthParam ));
          //$data = [];
          continue;
       }

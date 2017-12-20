@@ -1,7 +1,10 @@
 <template>
     <v-card class="chart-card">
         <v-toolbar color="primary" dark>
-            <v-toolbar-title>{{chartTitle}}</v-toolbar-title>
+            <v-toolbar-title style="padding-left: 16px">
+                <v-icon class="title-icon" v-if="titleIcon">{{titleIcon}}</v-icon>
+                {{chartTitle}}
+            </v-toolbar-title>
         </v-toolbar>
         <v-alert v-for="error in errors" v-model="showErrors"
                  class="chart-errors" transition="slide-y-transition" dismissible
@@ -31,6 +34,11 @@
 .chart-card {
 
     margin-bottom: 2em;
+
+    .title-icon {
+        font-size: 24px;
+        margin-right: 16px;
+    }
 
     .main-chart-div {
         height: 450px;
