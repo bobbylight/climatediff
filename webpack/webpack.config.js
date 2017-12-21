@@ -42,6 +42,7 @@ const config = {
             { from: 'src/img', to: 'img' },
             { from: 'src/all-locations.db', to: '.' },
             { from: 'src/.htaccess', to: '.' },
+            { from: 'src/favicon.ico', to: '.' },
             { from: 'src/init.php', to: '.' }
         ]),
         new HtmlWebpackPlugin({
