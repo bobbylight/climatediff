@@ -6,8 +6,8 @@
                 {{chartTitle}}
             </v-toolbar-title>
         </v-toolbar>
-        <v-alert v-for="error in errors" :key="error" v-model="showErrors"
-                 class="chart-errors" transition="slide-y-transition" dismissible
+        <v-alert v-for="(error, index) in errors" :key="error" v-model="showErrors"
+                 class="chart-errors" transition="slide-y-transition" :dismissible="index === 0"
                  color="error" icon="priority_high">
             {{error}}
         </v-alert>
@@ -57,9 +57,16 @@
     }
 
     .chart-errors {
+
         text-align: initial;
         margin-top: 0;
         margin-bottom: 0;
+
+        // Make multiple alerts appear to be one big alert
+        &:not(:first-of-type) {
+            border-top: none;
+            padding-top: 0;
+        }
     }
 }
 
