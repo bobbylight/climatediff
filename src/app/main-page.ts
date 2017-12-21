@@ -5,6 +5,8 @@ import CityForm from './city-form.vue';
 import Ajax from './ajax';
 import { Route } from 'vue-router';
 
+const TYPEAHEAD_WAIT_MILLIS: number = 500;
+
 export default {
 
     components: {
@@ -33,7 +35,7 @@ export default {
     created() {
 
         this.setCitiesFromRoute(this.$route);
-        this.typeaheadWaitMillis = 500;
+        this.typeaheadWaitMillis = TYPEAHEAD_WAIT_MILLIS;
 
         this.tempChartConfig = {
             units: [
@@ -59,7 +61,7 @@ export default {
      * @param {Route} from The route we're coming from.
      * @param next Callback.
      */
-    beforeRouteUpdate(to: Route, from: Route, next) {
+    beforeRouteUpdate(to: Route, from: Route, next: Function) {
         this.setCitiesFromRoute(to);
         next();
     },
@@ -154,7 +156,7 @@ export default {
 
                 const precipSuccess: Function = (responseData: any) => {
                     console.log(JSON.stringify(responseData));
-                    //result.data.data = celsiusToFahrenheit(result.data.data);
+                    // result.data.data = celsiusToFahrenheit(result.data.data);
                     this.maskPrecipResults = false;
                     this.precipData = responseData;
                 };

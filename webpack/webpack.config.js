@@ -7,20 +7,20 @@ const webpack = require('webpack');
 
 const devBuild = process.env.NODE_ENV === 'dev';
 
-// // Loaders specific to compiling
-// loaders.push({
-//     test: /\.tsx?$/,
-//     enforce: 'pre',
-//     loader: 'tslint-loader',
-//     exclude: /node_modules/,
-//     options: {
-//         typeCheck: true
-//     }
-// });
+// Loaders specific to compiling
+loaders.push({
+    test: /\.tsx?$/,
+    enforce: 'pre',
+    loader: 'tslint-loader',
+    exclude: /node_modules/,
+    options: {
+        typeCheck: true
+    }
+});
 
 const config = {
     entry: {
-        main: [ path.resolve('./src/app/app.js') ]
+        main: [ path.resolve('./src/app/app.ts') ]
     },
     output: {
         publicPath: './',

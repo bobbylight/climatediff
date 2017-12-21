@@ -37,7 +37,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import Typeahead from './typeahead.vue';
 
 export default {
@@ -79,7 +79,7 @@ export default {
             this.submitCallback(this.city1, this.city2);
         }
     }
-}
+};
 </script>
 
 <style lang="less">

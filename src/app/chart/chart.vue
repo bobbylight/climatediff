@@ -6,7 +6,7 @@
                 {{chartTitle}}
             </v-toolbar-title>
         </v-toolbar>
-        <v-alert v-for="error in errors" v-model="showErrors"
+        <v-alert v-for="error in errors" :key="error" v-model="showErrors"
                  class="chart-errors" transition="slide-y-transition" dismissible
                  color="error" icon="priority_high">
             {{error}}

@@ -10,6 +10,10 @@ import Messages from '../messages';
 const TRANSITION_DURATION_MILLIS: number = 300;
 const MAX_CITY_COUNT: number = 2;
 
+const POINT_SIZE_DEFAULT: number = 3;
+const POINT_SIZE_ARMED: number = 6;
+
+/* tslint:disable:no-magic-numbers */
 export default {
 
     components: {
@@ -30,7 +34,7 @@ export default {
             type: String
         },
         chartConfig: {
-            type: Object, //ChartConfig,
+            type: Object, // ChartConfig,
             required: true
         },
         setUnitsCallback: {
@@ -57,9 +61,9 @@ export default {
 
     data: function() {
         return {
-            errors: [], //string[],
-            showErrors: [], //boolean[],
-            selectedUnits: this.chartConfig.units[0].label, //string,
+            errors: [], // string[],
+            showErrors: [], // boolean[],
+            selectedUnits: this.chartConfig.units[0].label, // string,
             tips: [] // D3ToolTip[]
         };
     },
@@ -78,7 +82,7 @@ export default {
             return function(e: MonthRecord) {
                 tipCallback(e);
                 d3.select(this).transition()
-                    .attr('r', 6);
+                    .attr('r', POINT_SIZE_ARMED);
             };
         },
 
@@ -87,7 +91,7 @@ export default {
             return function(e: MonthRecord) {
                 tipCallback(e);
                 d3.select(this).transition()
-                    .attr('r', 3);
+                    .attr('r', POINT_SIZE_DEFAULT);
             };
         },
 
@@ -213,8 +217,8 @@ export default {
             const chartWrapper: HTMLElement = this.$refs.chartContent;
             const chartW: number = chartWrapper.offsetWidth;
             const chartH: number = chartWrapper.offsetHeight;
-            let chartWidth: number = chartW - chartMargin.left - chartMargin.right;
-            let chartHeight: number = chartH - chartMargin.top - chartMargin.bottom;
+            const chartWidth: number = chartW - chartMargin.left - chartMargin.right;
+            const chartHeight: number = chartH - chartMargin.top - chartMargin.bottom;
             const maxProp: string = this.maxProp;
             const minProp: string = this.minProp;
 
@@ -228,12 +232,12 @@ export default {
                 .range([ chartHeight, 0 ]);
 
             const barPad: number = 0.1;
-            //const xScale: d3.ScaleOrdinal<string, any> = d3.scaleOrdinal() // <any> to work around @types issue?
+            // const xScale: d3.ScaleOrdinal<string, any> = d3.scaleOrdinal() // <any> to work around @types issue?
             const xScale: d3.ScalePoint<string> = d3.scalePoint()
-            //.domain([ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ])
-            //.domain([ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ])
+            // .domain([ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ])
+            // .domain([ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ])
                 .domain([ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11' ])
-                //.rangeRoundPoints([ 0, chartWidth ], barPad); //barPad, barOuterPad);
+                // .rangeRoundPoints([ 0, chartWidth ], barPad); //barPad, barOuterPad);
                 .range([ 0, chartWidth ])
                 .padding(barPad);
 
@@ -243,13 +247,13 @@ export default {
 
             let min: number, max: number;
             function maxFrom2Cities(entry: MonthRecord): number {
-                let max1: number = entry.city1 ? entry.city1[maxProp] : 0;
-                let max2: number = entry.city2 ? entry.city2[maxProp] : 0;
+                const max1: number = entry.city1 ? entry.city1[maxProp] : 0;
+                const max2: number = entry.city2 ? entry.city2[maxProp] : 0;
                 return Math.max(max1, max2);
             }
             function minFrom2Cities(entry: MonthRecord): number {
-                let min1: number = entry.city1 ? entry.city1[minProp] : 0;
-                let min2: number = entry.city2 ? entry.city2[minProp] : 0;
+                const min1: number = entry.city1 ? entry.city1[minProp] : 0;
+                const min2: number = entry.city2 ? entry.city2[minProp] : 0;
                 return Math.min(min1, min2);
             }
             if (data.length !== 0) {
@@ -392,7 +396,7 @@ export default {
     },
 
     watch: {
-        data(newValue, oldValue) {
+        data(newValue: TemperatureResponse, oldValue: TemperatureResponse) {
             if (newValue === oldValue) {
                 return; // First time through
             }

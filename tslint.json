@@ -8,10 +8,13 @@
     "arrow-parens": true,
     "ban": false,
     "ban-comma-operator": true,
-    "class-name": false,
-    "comment-format": [ false ],
+    "class-name": true,
+    "comment-format": [ true, "check-space" ],
     "curly": true,
+    "cyclomatic-complexity": [ true, 20 ],
     "deprecation": true,
+    "encoding": true,
+    "eofline": true,
     "forin": false,
     "indent": [
       true,
@@ -20,17 +23,14 @@
     "jsdoc-format": [ true, "check-multiline-start" ],
     "label-position": true,
     //"linebreak-style": [ true, "LF" ],
-    "match-default-export-name": true,
-    "max-file-line-count": [ true, 1000 ],
+    "match-default-export-name": false, //true, // Being true breaks Vue components (default export is 'Vue')
+    "max-file-line-count": [ true, 500 ],
     "max-line-length": [
       true,
-      140
+      120
     ],
     "member-access": false,
-    "member-ordering": [
-      true,
-      "variables-before-functions"
-    ],
+    "member-ordering": false, //[ true, { "order": "fields-first" } ], // Requires weird placement of static methods
     "new-parens": true,
     "no-angle-bracket-type-assertion": false,
     "no-any": false,
@@ -38,33 +38,43 @@
     "no-bitwise": true,
     "no-boolean-literal-compare": true,
     "no-conditional-assignment": true,
-    "no-consecutive-blank-lines": false,
-    "no-console": [ true, "log", "debug", "info", "warn", "error" ],
+    "no-consecutive-blank-lines": false,//[ true, 1 ], // This breaks Vue single-file component *.vue files
+    //"no-console": [ true, "log", "debug", "info", "warn", "error" ],
     "no-construct": true,
     "no-constructor-vars": false,
     "no-debugger": true,
+    "no-duplicate-super": true,
     "no-duplicate-switch-case": true,
     "no-duplicate-variable": true,
-    "no-empty": false,
+    "no-empty": true,
+    "no-empty-interface": true,
     "no-eval": true,
     "no-for-in-array": true,
     "no-implicit-dependencies": [ true, "dev" ],
+    "no-import-side-effect": false,
     "no-inferrable-types": false,
-    "no-internal-module": false,
+    "no-internal-module": true,
+    "no-invalid-template-strings": true,
     "no-invalid-this": false,
+    "no-irregular-whitespace": true,
+    "no-magic-numbers": true,
+    "no-mergeable-namespace": true,
+    "no-misused-new": true,
+    "no-namespace": true,
     "no-null-keyword": false,
     "no-parameter-reassignment": false,
     "no-redundant-jsdoc": false,
-    "no-require-imports": false,
+    "no-reference": true,
+    "no-require-imports": true,
     "no-return-await": true,
-    "no-shadowed-variable": false, // Our interfaces and injected fields are named the same
+    "no-shadowed-variable": true,
     "no-string-literal": true,
     "no-trailing-whitespace": true,
     "no-unbound-method": false, // This interferes with our unit tests in particular
     "no-unnecessary-class": false, // app.ts
     "no-unnecessary-qualifier": true,
     "no-unnecessary-type-assertion": true,
-    //"no-unsafe-any": true,
+    "no-unsafe-any": false,
     "no-unsafe-finally": true,
     "no-unused-expression": true,
     "no-unused-variable": false, // We allow unused parameters
@@ -80,6 +90,8 @@
       "check-whitespace"
     ],
     //"only-arrow-functions": true,
+    "prefer-conditional-expression": true,
+    "prefer-const": true,
     "quotemark": [
       true,
       "single",
@@ -87,6 +99,7 @@
     ],
     "radix": true,
     "semicolon": true,
+    "strict-boolean-expressions": false,
     //"strict-type-predicates": true,
     "trailing-comma": [
       true,
@@ -113,6 +126,9 @@
         "variable-declaration": "nospace"
       }
     ],
+    "typeof-compare": true,
+    "unified-signatures": true,
+    "use-default-type-parameter": true,
     "use-isnan": true,
     "variable-name": [
       true,

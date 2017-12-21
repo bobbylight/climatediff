@@ -28,8 +28,9 @@ import '../../node_modules/vuetify/dist/vuetify.min.css';
 import '../../node_modules/font-awesome/css/font-awesome.css';
 import '../css/app.less';
 
+/* tslint:disable:no-unsafe-any */
 Vue.use(VueRouter);
-//Vue.use(Vuetify);
+// Vue.use(Vuetify);
 Vue.use(Vuetify, {
     components: {
         VAlert,
@@ -51,7 +52,7 @@ Vue.use(Vuetify, {
 });
 Vue.use(ToggleButton);
 
-const router = new VueRouter({
+const router: VueRouter = new VueRouter({
     routes: [
         { path: '/', redirect: '/compare' },
         { name: 'compare', path: '/compare/:city1?/:city2?', component: MainPage },
@@ -59,6 +60,7 @@ const router = new VueRouter({
     ]
 });
 
+// tslint:disable-next-line:no-unused-expression
 new Vue({
     el: '#app',
     router: router,

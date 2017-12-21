@@ -26,8 +26,8 @@
     </v-app>
 </template>
 
-<script>
-import AppFooter from './app-footer';
+<script lang="ts">
+import AppFooter from './app-footer.vue';
 
 export default {
 
