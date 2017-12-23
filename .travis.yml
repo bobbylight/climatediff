@@ -5,7 +5,7 @@ node_js:
 
 # init.php is needed for the webpack build to succeed
 before_install:
-  - "cp init.php.orig init.php"
+  - "cp src/init.php.orig src/init.php"
 
 script:
   - "npm run build"
