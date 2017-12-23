@@ -120,7 +120,8 @@ export default {
             const prevCity2: string = this.city2;
 
             this.city1 = Utils.cityRouteFormToReadableForm(route.params.city1 || 'Raleigh, NC US');
-            this.city2 = Utils.cityRouteFormToReadableForm(route.params.city2 || (route.params.city1 ? '' : 'Lexington, KY US'));
+            this.city2 = Utils.cityRouteFormToReadableForm(
+                route.params.city2 || (route.params.city1 ? '' : 'Lexington, KY US'));
 
             if (!route.params.city1 || this.city1 !== prevCity1 || this.city2 !== prevCity2) {
                 this.showCharts = false;
