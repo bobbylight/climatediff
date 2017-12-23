@@ -8,11 +8,11 @@
                           :submit-callback="updateClimateDiff"></CityForm>
             </v-flex>
 
-            <v-flex xs12>
+            <v-flex xs12 class="results-title" v-if="showCharts">
                 <h1>{{resultsTitle}}</h1>
             </v-flex>
 
-            <v-flex xs8 id='results' v-if='showCharts'>
+            <v-flex xs8 class="results" v-if='showCharts'>
 
                 <Chart chart-title='Temperature' index="1"
                        title-icon='fa-thermometer-three-quarters'
@@ -44,14 +44,14 @@
     .city-form {
         box-shadow: 0 2px 1px -1px rgba(0,0,0,.2);
     }
-}
 
-#results {
-    margin-top: 3em;
-    text-align: center;
-}
+    .results-title {
+        margin-top: 2rem;
+    }
 
-.city-info {
-    white-space: nowrap;
+    .results {
+        margin-top: 3em;
+        text-align: center;
+    }
 }
 </style>

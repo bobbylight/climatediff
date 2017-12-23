@@ -13,7 +13,7 @@ import VFlex from 'vuetify/es5/components/VGrid';
 import VFooter from 'vuetify/es5/components/VFooter';
 import VIcon from 'vuetify/es5/components/VIcon';
 import VLayout from 'vuetify/es5/components/VGrid';
-import VProgressLinear from 'vuetify/es5/components/VProgressLinear';
+import VProgressCircular from 'vuetify/es5/components/VProgressCircular';
 import VSelect from 'vuetify/es5/components/VSelect';
 import VSpacer from 'vuetify/es5/components/VGrid';
 import VToolbar from 'vuetify/es5/components/VToolbar';
@@ -43,7 +43,7 @@ Vue.use(Vuetify, {
         VFooter,
         VIcon,
         VLayout,
-        VProgressLinear,
+        VProgressCircular,
         VSpacer,
         VSelect,
         VToolbar,
@@ -54,7 +54,7 @@ Vue.use(ToggleButton);
 
 const router: VueRouter = new VueRouter({
     routes: [
-        { path: '/', redirect: '/compare' },
+        { name: 'start', path: '/', redirect: '/compare' },
         { name: 'compare', path: '/compare/:city1?/:city2?', component: MainPage },
         { name: 'about', path: '/about', component: About }
     ]

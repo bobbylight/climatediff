@@ -1,8 +1,8 @@
 <template>
     <v-app>
-        <v-toolbar app dark color="primary" style="padding: 0 3rem">
+        <v-toolbar app dark color="primary" class="app-toolbar">
 
-            <v-toolbar-title class="white--text">
+            <v-toolbar-title class="app-title" @click="onReset()">
                 <i class="fa fa-cloud"></i> ClimateDiff
             </v-toolbar-title>
 
@@ -42,6 +42,10 @@ export default {
 
     methods: {
 
+        onReset() {
+            this.$router.push({ name: 'start' });
+        },
+
         showAboutDialog() {
             this.$router.push({ name: 'about' });
         },
@@ -54,11 +58,21 @@ export default {
 </script>
 
 <style lang="less">
-.banner-item {
-    font-size: 24px; //@font-size-large;
+.app-toolbar {
 
-    a {
-        padding: 11px; // Just right so icons are centered without navbar getting taller
+    padding: 0 3rem !important;
+
+    .app-title {
+        cursor: pointer;
+    }
+
+    .banner-item {
+        font-size: 24px; //@font-size-large;
+
+        a {
+            padding: 11px; // Just right so icons are centered without navbar getting taller
+        }
     }
 }
+
 </style>

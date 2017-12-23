@@ -3,7 +3,6 @@ import * as d3 from 'd3';
 import { BaseType } from 'd3';
 import D3ToolTip from '../d3-tool-tip';
 import MonthUtil from '../month-util';
-import VueSimpleSpinner from 'vue-simple-spinner';
 import ChartLegend from './chart-legend.vue';
 import Messages from '../messages';
 
@@ -17,7 +16,6 @@ const POINT_SIZE_ARMED: number = 6;
 export default {
 
     components: {
-        VueSimpleSpinner,
         ChartLegend
     },
 

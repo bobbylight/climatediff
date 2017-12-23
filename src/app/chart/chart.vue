@@ -13,7 +13,7 @@
         </v-alert>
         <div class='main-chart-div'>
             <div class='chart-content' ref="chartContent"> <!-- todo: some kind of fade in/out of bg while loading -->
-                <vue-simple-spinner v-if="mask"></vue-simple-spinner>
+                <v-progress-circular v-if="mask" indeterminate :size="70" :width="7" color="primary"></v-progress-circular>
                 <svg v-show='dataLoaded' :id='chartId' class='chart' preserveAspectRatio="none"></svg>
                 <div class="units-toggle">
                     <toggle-button @change="onUnitChange" :labels="unitLabels"

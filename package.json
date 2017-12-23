@@ -1,6 +1,6 @@
 {
   "name": "climatediff",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "license": "MIT",
   "scripts": {
     "clean": "rimraf dist coverage",
@@ -50,7 +50,6 @@
     "vue": "2.5.13",
     "vue-js-toggle-button": "1.2.2",
     "vue-router": "3.0.1",
-    "vue-simple-spinner": "1.2.8",
     "vuetify": "0.17.5"
   }
 }

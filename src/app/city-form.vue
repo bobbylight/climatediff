@@ -1,7 +1,7 @@
 <template>
     <div>
-        <v-container>
-            <v-layout row wrap justify-center>
+        <v-container :class="formHeaderClasses">
+            <v-layout row wrap justify-center class="form-header-inner">
                 <h1>Cities to compare:</h1>
             </v-layout>
         </v-container>
@@ -69,6 +69,10 @@ export default {
             typeaheadWaitMillis: 500,
             locationQueryParams: {
                 limit: 10
+            },
+            formHeaderClasses: {
+                'form-header': true,
+                submitted: false
             }
         };
     },
@@ -76,6 +80,7 @@ export default {
     methods: {
 
         onSubmit() {
+            this.formHeaderClasses.submitted = true;
             this.submitCallback(this.city1, this.city2);
         }
     }
@@ -83,7 +88,28 @@ export default {
 </script>
 
 <style lang="less">
+.form-header {
+
+    transition: max-height .3s, opacity .3s;
+    max-height: 100px;
+    padding: unset; // Clear default 16px padding for smooth animation
+
+    .form-header-inner {
+        padding: 16px; // Add 16px border typically on the parent .container
+    }
+
+    &.submitted {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+    }
+}
+
 .city-form-no-top-padding {
     padding-top: 0;
+}
+
+.city-info {
+    white-space: nowrap;
 }
 </style>

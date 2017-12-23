@@ -115,8 +115,16 @@ export default {
         },
 
         setCitiesFromRoute(route: Route) {
-            this.city1 = route.params.city1 || 'Raleigh, NC US';
-            this.city2 = route.params.city2 || (route.params.city1 ? '' : 'Lexington, KY US');
+
+            const prevCity1: string = this.city1;
+            const prevCity2: string = this.city2;
+
+            this.city1 = Utils.cityRouteFormToReadableForm(route.params.city1 || 'Raleigh, NC US');
+            this.city2 = Utils.cityRouteFormToReadableForm(route.params.city2 || (route.params.city1 ? '' : 'Lexington, KY US'));
+
+            if (!route.params.city1 || this.city1 !== prevCity1 || this.city2 !== prevCity2) {
+                this.showCharts = false;
+            }
         },
 
         setUnits(unitConfig: UnitConfig) {
@@ -139,7 +147,7 @@ export default {
             this.maskTempResults = true;
             this.maskPrecipResults = true;
 
-            this.resultsTitle = 'Comparing ' + this.city1 + ' to ' + this.city2 + ':';
+            this.resultsTitle = `Comparing ${this.city1} to ${this.city2}:`;
 
             // Mimic an empty data set to clear out previous graphs
             this.tempData = { data: [],
