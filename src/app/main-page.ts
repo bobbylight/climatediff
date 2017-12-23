@@ -1,5 +1,5 @@
 import { /*ChartConfig, */ MonthRecord, TemperatureResponse, UnitConfig } from './climatediff';
-import Utils from './Utils';
+import Utils from './utils';
 import Chart from './chart/chart.vue';
 import CityForm from './city-form.vue';
 import Ajax from './ajax';
