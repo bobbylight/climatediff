@@ -22,8 +22,8 @@
     ],
     "jsdoc-format": [ true, "check-multiline-start" ],
     "label-position": true,
-    //"linebreak-style": [ true, "LF" ],
-    "match-default-export-name": false, //true, // Being true breaks Vue components (default export is 'Vue')
+    "linebreak-style": [ true, "LF" ],
+    "match-default-export-name": false, // Being true breaks Vue components (default export is 'Vue')
     "max-file-line-count": [ true, 500 ],
     "max-line-length": [
       true,
