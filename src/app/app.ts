@@ -14,6 +14,7 @@ import VFooter from 'vuetify/es5/components/VFooter';
 import VIcon from 'vuetify/es5/components/VIcon';
 import VLayout from 'vuetify/es5/components/VGrid';
 import VProgressCircular from 'vuetify/es5/components/VProgressCircular';
+import VProgressLinear from 'vuetify/es5/components/VProgressLinear';
 import VSelect from 'vuetify/es5/components/VSelect';
 import VSpacer from 'vuetify/es5/components/VGrid';
 import VToolbar from 'vuetify/es5/components/VToolbar';
@@ -44,6 +45,7 @@ Vue.use(Vuetify, {
         VIcon,
         VLayout,
         VProgressCircular,
+        VProgressLinear,
         VSpacer,
         VSelect,
         VToolbar,

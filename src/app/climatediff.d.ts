@@ -26,20 +26,17 @@ export interface CityTemperatureInfo {
     maxCount: number;
 }
 
-export interface MonthRecord {
-    city1: CityTemperatureInfo;
-    city2: CityTemperatureInfo;
+export interface CityTemperatureResponse {
+    data: CityTemperatureInfo[];
+    debug?: CityDebugInfo;
+    errors?: Notification[];
+    metadata: CityMetadataInfo;
+    queries: string[];
 }
 
 export interface TemperatureResponse {
-    data: MonthRecord[];
-    debug: { // TODO: Make not arrays!!
-        city1: CityDebugInfo[],
-        city2: CityDebugInfo[]
-    };
-    errors?: Notification[];
-    metadata: CityMetadataInfo[];
-    queries: string[];
+    city1: CityTemperatureResponse;
+    city2?: CityTemperatureResponse;
 }
 
 /**
@@ -63,7 +60,7 @@ export interface UnitConfig {
 }
 
 export interface UnitConversionFunction {
-    (data: MonthRecord[]): MonthRecord[];
+    (data: CityTemperatureInfo[]): CityTemperatureInfo[];
 }
 
 interface Window {

@@ -31,9 +31,7 @@ function _fetchCityClimate($loc, &$response, $index, $debug) {
    $totalTimes = array();
    $curlInfos = array();
 
-   $metadata = &$response['metadata'];
-   $cityMetadata = array( 'city_id' => $locId, 'city_name' => $loc);
-   $metadata[] = &$cityMetadata;
+   $response['metadata'] = array( 'city_id' => $locId, 'city_name' => $loc);
 
    # We loop in case we ask for data with > 1000 rows
    # TODO: Prevent making > 5 requests per second!
@@ -63,20 +61,19 @@ function _fetchCityClimate($loc, &$response, $index, $debug) {
       $offs = count($results) + 1;//$returnedOffs + $returnedCount;
    }
 
-   $rawResponse = $response;
    $data = &$response['data'];
    $id = "city$index";
 
-   $cityMetadata['total_time'] = $totalTimes;
+   $response['metadata']['total_time'] = $totalTimes;
 
    for ($i = 0; $i < 12; $i++) {
-      $data[$i][$id] = array();
-      $data[$i][$id]['min'] = 0;
-      $data[$i][$id]['minCount'] = 0;
-      $data[$i][$id]['median'] = 0;
-      $data[$i][$id]['medianCount'] = 0;
-      $data[$i][$id]['max'] = 0;
-      $data[$i][$id]['maxCount'] = 0;
+      $data[$i] = array();
+      $data[$i]['min'] = 0;
+      $data[$i]['minCount'] = 0;
+      $data[$i]['median'] = 0;
+      $data[$i]['medianCount'] = 0;
+      $data[$i]['max'] = 0;
+      $data[$i]['maxCount'] = 0;
    }
 
    foreach ($results as &$result) {
@@ -84,45 +81,43 @@ function _fetchCityClimate($loc, &$response, $index, $debug) {
       $date = new DateTime($result['date']);
       $month = $date->format('n') - 1; # Convert from 1-12 to 0-11
       if ($datatype == 'MMNT') {
-         $data[$month][$id]['min'] += $result['value'];
-         $data[$month][$id]['minCount']++;
+         $data[$month]['min'] += $result['value'];
+         $data[$month]['minCount']++;
       }
       elseif ($datatype == 'MMXT') {
-         $data[$month][$id]['max'] += $result['value'];
-         $data[$month][$id]['maxCount']++;
+         $data[$month]['max'] += $result['value'];
+         $data[$month]['maxCount']++;
       }
       elseif ($datatype == 'MNTM') {
-         $data[$month][$id]['median'] += $result['value'];
-         $data[$month][$id]['medianCount']++;
+         $data[$month]['median'] += $result['value'];
+         $data[$month]['medianCount']++;
       }
    }
 
    for ($month = 0; $month < 12; $month++) {
-      if ($data[$month][$id]['minCount'] == 0 ||
-            $data[$month][$id]['medianCount'] == 0 ||
-            $data[$month][$id]['maxCount'] == 0) {
+      if ($data[$month]['minCount'] == 0 ||
+            $data[$month]['medianCount'] == 0 ||
+            $data[$month]['maxCount'] == 0) {
          _addError($response, "No data found for $loc for month $month (" .
-               $data[$month][$id]['minCount'] . ', ' .
-               $data[$month][$id]['medianCount'] . ', ' .
-               $data[$month][$id]['maxCount'] . ').');
+               $data[$month]['minCount'] . ', ' .
+               $data[$month]['medianCount'] . ', ' .
+               $data[$month]['maxCount'] . ').');
          $data = [];
          break;
       }
-      $data[$month][$id]['min'] /= $data[$month][$id]['minCount'];
-      $data[$month][$id]['min'] /= 10; // Measurements are in tenths of degrees
-      $data[$month][$id]['min'] = round($data[$month][$id]['min'], $decimalCount);
-      $data[$month][$id]['median'] /= $data[$month][$id]['medianCount'];
-      $data[$month][$id]['median'] /= 10; // Measurements are in tenths of degrees
-      $data[$month][$id]['median'] = round($data[$month][$id]['median'], $decimalCount);
-      $data[$month][$id]['max'] /= $data[$month][$id]['maxCount'];
-      $data[$month][$id]['max'] /= 10; // Measurements are in tenths of degrees
-      $data[$month][$id]['max'] = round($data[$month][$id]['max'], $decimalCount);
+      $data[$month]['min'] /= $data[$month]['minCount'];
+      $data[$month]['min'] /= 10; // Measurements are in tenths of degrees
+      $data[$month]['min'] = round($data[$month]['min'], $decimalCount);
+      $data[$month]['median'] /= $data[$month]['medianCount'];
+      $data[$month]['median'] /= 10; // Measurements are in tenths of degrees
+      $data[$month]['median'] = round($data[$month]['median'], $decimalCount);
+      $data[$month]['max'] /= $data[$month]['maxCount'];
+      $data[$month]['max'] /= 10; // Measurements are in tenths of degrees
+      $data[$month]['max'] = round($data[$month]['max'], $decimalCount);
    }
 
    if ($debug === true) {
-      $debugData = &$response['debug'];
-      $debugData[$id] = $curlInfos;
-      $debugData['rawResponse'] = $rawResponse;
+      $response['debug']['curlInfo'] = $curlInfos;
    }
 }
 
@@ -138,17 +133,20 @@ if (!isset($debug)) {
 # PHP by default still returns 200 OK for fatal errors (!)
 http_response_code(500);
 
-$response = array( 'data' => array(), 'metadata' => array(), 'queries' => array() );
+$response = array();
+$response['city1'] = array( 'data' => array(), 'metadata' => array(), 'queries' => array() );
 if ($debug) {
-    $response['debug'] = array();
+    $response['city1']['debug'] = array();
 }
 
-_fetchCityClimate($loc1, $response, 1, $debug);
+_fetchCityClimate($loc1, $response['city1'], 1, $debug);
 if (isset($loc2)) {# && !isset($response['metadata'][0]['error'])) {
-   _fetchCityClimate($loc2, $response, 2, $debug);
+    $response['city2'] = array( 'data' => array(), 'metadata' => array(), 'queries' => array() );
+    if ($debug) {
+        $response['city2']['debug'] = array();
+    }
+   _fetchCityClimate($loc2, $response['city2'], 2, $debug);
 }
 
 http_response_code(200);
 echo json_encode($response, JSON_NUMERIC_CHECK);
-
-?>

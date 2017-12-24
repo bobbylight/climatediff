@@ -31,9 +31,7 @@ function _fetchCityClimate($loc, &$response, $index, $debug) {
    $totalTimes = array();
    $curlInfos = array();
 
-   $metadata = &$response['metadata'];
-   $cityMetadata = array( 'city_id' => $locId, 'city_name' => $loc);
-   $metadata[] = &$cityMetadata;
+   $response['metadata'] = array( 'city_id' => $locId, 'city_name' => $loc);
 
    # We loop in case we ask for data with > 1000 rows
    # TODO: Prevent making > 5 requests per second!
@@ -61,12 +59,12 @@ function _fetchCityClimate($loc, &$response, $index, $debug) {
    $data = &$response['data'];
    $id = "city$index";
 
-   $cityMetadata['total_time'] = $totalTimes;
+   $response['metadata']['total_time'] = $totalTimes;
 
    for ($i = 0; $i < 12; $i++) {
-      $data[$i][$id] = array();
-      $data[$i][$id]['precip'] = 0;
-      $data[$i][$id]['precipCount'] = 0;
+      $data[$i] = array();
+      $data[$i]['precip'] = 0;
+      $data[$i]['precipCount'] = 0;
    }
 
    foreach ($results as &$result) {
@@ -74,28 +72,27 @@ function _fetchCityClimate($loc, &$response, $index, $debug) {
       $date = new DateTime($result['date']);
       $month = $date->format('n') - 1; # Convert from 1-12 to 0-11
       if ($datatype == 'TPCP') {
-         $data[$month][$id]['precip'] += $result['value'];
-         $data[$month][$id]['precipCount']++;
+         $data[$month]['precip'] += $result['value'];
+         $data[$month]['precipCount']++;
       }
    }
 
    for ($month = 0; $month < 12; $month++) {
-      if ($data[$month][$id]['precipCount'] == 0) {
+      if ($data[$month]['precipCount'] == 0) {
          $monthParam = array();
          $monthParam['code'] = "month.$month";
          _addError($response, 'error.noDataForCityForMonth', array( $loc, $monthParam ));
          //$data = [];
          continue;
       }
-      $data[$month][$id]['precip'] /= $data[$month][$id]['precipCount'];
+      $data[$month]['precip'] /= $data[$month]['precipCount'];
 # TODO: Not yet sure of unit of measurement.  For now pretending it's tenths of mm (mm * 10)
-$inches = ($data[$month][$id]['precip'] / 10) * 0.03937007874;
-      $data[$month][$id]['precip'] = round($inches, $decimalCount);
+$inches = ($data[$month]['precip'] / 10) * 0.03937007874;
+      $data[$month]['precip'] = round($inches, $decimalCount);
    }
 
    if ($debug === true) {
-      $debugData = &$response['debug'];
-      $debugData[$id] = $curlInfos;
+      $response['debug']['curlInfo'] = $curlInfos;
    }
 }
 
@@ -111,17 +108,20 @@ if (!isset($debug)) {
 # PHP by default still returns 200 OK for fatal errors (!)
 http_response_code(500);
 
-$response = array( 'data' => array(), 'metadata' => array(), 'queries' => array() );
+$response = array();
+$response['city1'] = array( 'data' => array(), 'metadata' => array(), 'queries' => array() );
 if ($debug) {
-    $response['debug'] = array();
+    $response['city1']['debug'] = array();
 }
 
-_fetchCityClimate($loc1, $response, 1, $debug);
+_fetchCityClimate($loc1, $response['city1'], 1, $debug);
 if (isset($loc2)) {# && !isset($response['metadata'][0]['error'])) {
-   _fetchCityClimate($loc2, $response, 2, $debug);
+    $response['city2'] = array( 'data' => array(), 'metadata' => array(), 'queries' => array() );
+    if ($debug) {
+        $response['city2']['debug'] = array();
+    }
+   _fetchCityClimate($loc2, $response['city2'], 2, $debug);
 }
 
 http_response_code(200);
 echo json_encode($response, JSON_NUMERIC_CHECK);
-
-?>

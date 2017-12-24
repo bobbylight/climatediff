@@ -1,4 +1,7 @@
-import { /*ChartConfig, */ MonthRecord, TemperatureResponse, UnitConfig } from '../climatediff';
+import {
+    CityTemperatureInfo, CityTemperatureResponse, /*ChartConfig, */ TemperatureResponse,
+    UnitConfig
+} from '../climatediff';
 import * as d3 from 'd3';
 import { BaseType } from 'd3';
 import D3ToolTip from '../d3-tool-tip';
@@ -77,7 +80,7 @@ export default {
 
         expandPoint(tipCallback: Function): Function {
             // function scope important so 'this' refers to the mouseover'd DOM node
-            return function(e: MonthRecord) {
+            return function(e: CityTemperatureInfo) {
                 tipCallback(e);
                 d3.select(this).transition()
                     .attr('r', POINT_SIZE_ARMED);
@@ -86,7 +89,7 @@ export default {
 
         collapsePoint(tipCallback: Function): Function {
             // function scope important so 'this' refers to the mouseover'd DOM node
-            return function(e: MonthRecord) {
+            return function(e: CityTemperatureInfo) {
                 tipCallback(e);
                 d3.select(this).transition()
                     .attr('r', POINT_SIZE_DEFAULT);
@@ -105,24 +108,25 @@ export default {
                 xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>,
                 maxField: string, minField ?: string) {
 
-            const data: any = this.data;
-            if (!data || !data.data || data.data.length === 0) {
+            const data: TemperatureResponse = this.data;
+            const city: string = 'city' + (index + 1);
+            if (!data || !data[city] || !data[city].data || data[city].data.length === 0) {
                 return;
             }
 
-            const city: string = 'city' + (index + 1);
-            if (!data.data[0][city] || typeof data.data[0][city][maxField] === 'undefined') {
+            const cityData: any = data[city].data;
+            if (cityData[0][maxField] === 'undefined') {
                 console.log(`Note: No data in response for city: "${city}"`);
                 return;
             }
 
             const area: d3.Area<[number, number]> = d3.area()
                 .x((d: any, i: number) => { return xScale(i); })
-                .y0((d: any) => { const index2: number = d[city][minField] || 0; return yScale(index2); })
-                .y1((d: any) => { return yScale(d[city][maxField]); })
+                .y0((d: any) => { const index2: number = d[minField] || 0; return yScale(index2); })
+                .y1((d: any) => { return yScale(d[maxField]); })
                 .curve(d3.curveCardinal);
             chart.append('path')
-                .datum(data.data)
+                .datum(cityData)
                 .attr('class', `area area${index + 1}`)
                 .attr('d', this.createEmptyArea(xScale, yScale))
                 .transition()
@@ -132,20 +136,20 @@ export default {
             if (minField) {
                 const minLine: d3.Line<[number, number]> = d3.line()
                     .x((d: any, i: number) => { return xScale(i); })
-                    .y((d: any) => { return yScale(d[city][minField]); })
+                    .y((d: any) => { return yScale(d[minField]); })
                     .curve(d3.curveCardinal);
                 chart.append('path')
-                    .datum(data.data)
+                    .datum(cityData)
                     .attr('class', `line line${index + 1}`)
                     .attr('d', minLine);
             }
 
             const maxLine: d3.Line<[number, number]> = d3.line()
                 .x((d: any, i: number) => { return xScale(i); })
-                .y((d: any) => { return yScale(d[city][maxField]); })
+                .y((d: any) => { return yScale(d[maxField]); })
                 .curve(d3.curveCardinal);
             chart.append('path')
-                .datum(data.data)
+                .datum(cityData)
                 .attr('class', `line line${index + 1}`)
                 .attr('d', maxLine);
 
@@ -156,24 +160,25 @@ export default {
                                   maxVar: string, minVar ?: string) {
 
             const data: TemperatureResponse = this.data;
-            if (!data || !data.data || data.data.length === 0) {
+            const city: string = 'city' + (index + 1);
+            if (!data || !data[city] || !data[city].data || data[city].data.length === 0) {
                 return;
             }
 
-            const city: string = 'city' + (index + 1);
-            if (!data.data[0][city] || typeof data.data[0][city][maxVar] === 'undefined') {
+            const cityData: any = data[city].data;
+            if (cityData[0][maxVar] === 'undefined') {
                 console.log(`Note: No data in response for city: "${city}"`);
                 return;
             }
 
             let tip: D3ToolTip = this.createNewTip(chart, index * 2, city, maxVar);
             chart.selectAll('.point')
-                .data(data.data)
+                .data(cityData)
                 .enter().append('svg:circle')
                 .attr('class', `chartPoint point${index + 1}`)
                 .attr('cx', (d: any, i: number) => { return xScale(i); })
                 .attr('cy', (d: any, i: number) => {
-                    return yScale(d[city][maxVar]);
+                    return yScale(d[maxVar]);
                 })
                 .attr('r', (d: any, i: number) => { return 3; })
                 .attr('pointer-events', 'all')
@@ -183,11 +188,11 @@ export default {
             if (minVar) {
                 tip = this.createNewTip(chart, index * 2 + 1, city, minVar);
                 chart.selectAll('.point')
-                    .data(data.data)
+                    .data(cityData)
                     .enter().append('svg:circle')
                     .attr('class', `chartPoint point${index + 1}`)
                     .attr('cx', (d: any, i: number) => { return xScale(i); })
-                    .attr('cy', (d: any, i: number) => { return yScale(d[city][minVar]); })
+                    .attr('cy', (d: any, i: number) => { return yScale(d[minVar]); })
                     .attr('r', (d: any, i: number) => { return 3; })
                     .attr('pointer-events', 'all')
                     .on('mouseover', this.expandPoint(tip.show))
@@ -239,41 +244,22 @@ export default {
                 .range([ 0, chartWidth ])
                 .padding(barPad);
 
-            const data: MonthRecord[] = this.data.data;
+            const data: TemperatureResponse = this.data;
 
             const topPadding: number = 5;
 
-            let min: number, max: number;
-            function maxFrom2Cities(entry: MonthRecord): number {
-                const max1: number = entry.city1 ? entry.city1[maxProp] : 0;
-                const max2: number = entry.city2 ? entry.city2[maxProp] : 0;
-                return Math.max(max1, max2);
+            let min: number = 0;
+            if (minProp) { // Chart is form min - max
+                const min1: number = this.minForCity(data.city1, minProp);
+                const min2: number = this.minForCity(data.city2, minProp);
+                min = Math.min(min1, min2);
             }
-            function minFrom2Cities(entry: MonthRecord): number {
-                const min1: number = entry.city1 ? entry.city1[minProp] : 0;
-                const min2: number = entry.city2 ? entry.city2[minProp] : 0;
-                return Math.min(min1, min2);
-            }
-            if (data.length !== 0) {
-                if (minProp) { // Chart is form min - max
-                    min = d3.min<MonthRecord, number>(data, (entry: MonthRecord): number => {
-                        return minFrom2Cities(entry);
-                    });
-                    min = Math.min(min, 0);
-                }
-                else { // Chart is from 0 - value
-                    min = 0;
-                }
-                // Intellij expects a type assertion here but tsc doesn't
-                max = d3.max<MonthRecord, number>(data, (entry: MonthRecord): number => {
-                    return maxFrom2Cities(entry);
-                });
-            }
-            else {
-                min = 0;
-                max = 100;
-            }
-            yScale.domain([min, max + topPadding]);
+
+            const max1: number = this.maxForCity(data.city1, maxProp);
+            const max2: number = this.maxForCity(data.city2, maxProp);
+            const max: number = Math.max(max1, max2);
+
+            yScale.domain([ min, max + topPadding ]);
 
             // Remove previous chart, if any
             const chartDomNode: Element = chartWrapper.querySelector('.chart');
@@ -281,7 +267,8 @@ export default {
                 .select('g').remove();
 
             // If there's no data, bail now
-            if (!data.length) {
+            if ((!data.city1 || !data.city1.data || !data.city1.data.length) &&
+                (!data.city2 || !data.city2.data || !data.city2.data.length)) {
                 return;
             }
 
@@ -297,14 +284,8 @@ export default {
                 .classed('x', true)
                 .classed('axis', true)
                 .attr('transform', 'translate(0,' + chartHeight + ')')
-                .call(xAxis)
-                // Rotate text on x-axis
-                // .selectAll('text')
-                // .style('text-anchor', 'end')
-                // .attr('dx', '-.8em')
-                // .attr('dy', '.15em')
-                // .attr('transform', (d: any) => { return 'rotate(-65)'; });
-;
+                .call(xAxis);
+
             const yAxis: d3.Axis<any> = d3.axisLeft(yScale)
             // .scale(yScale)
             // .orient('left')
@@ -340,7 +321,7 @@ export default {
                     const firstChar: string = this.selectedUnits.charAt(0);
                     const firstIsLetter: boolean = firstChar >= 'a' && firstChar <= 'z';
                     const suffix: string = firstIsLetter ? ` ${this.selectedUnits}` : this.selectedUnits;
-                    return (Math.round(d[city][dataVar] * 10) / 10) + suffix;
+                    return (Math.round(d[dataVar] * 10) / 10) + suffix;
                 });
 
             chart.call(tip.init);
@@ -364,6 +345,34 @@ export default {
             d3.selectAll('.area.area2, .line.line2, .chartPoint.point2').classed('unfocused', unfocused2);
         },
 
+        maxForCity(city: CityTemperatureResponse | null | undefined, maxProp: string): number {
+
+            let max: number = 100;
+
+            if (city && city.data && city.data.length) {
+                max = d3.max<CityTemperatureInfo, number>(city.data,
+                    (entry: CityTemperatureInfo): number => {
+                        return entry[maxProp];
+                    });
+            }
+
+            return max;
+        },
+
+        minForCity(city: CityTemperatureResponse | null | undefined, minProp: string): number {
+
+            let min: number = 0;
+
+            if (city && city.data && city.data.length) {
+                min = d3.min<CityTemperatureInfo, number>(city.data,
+                    (entry: CityTemperatureInfo): number => {
+                        return entry[minProp];
+                    });
+            }
+
+            return min;
+        },
+
         onUnitChange() {
             console.log('Units changed!');
         },
@@ -381,6 +390,16 @@ export default {
         chartId: function() {
             return `chart-${this.index}`;
         },
+        legendLabels: function() {
+            const labels: string[] = [];
+            if (this.data.city1) {
+                labels.push(this.data.city1.metadata.city_name);
+            }
+            if (this.data.city2) {
+                labels.push(this.data.city2.metadata.city_name);
+            }
+            return labels;
+        },
         unitLabels: function() {
             return {
                 checked: this.chartConfig.units[0].label,
@@ -395,10 +414,19 @@ export default {
 
     watch: {
         data(newValue: TemperatureResponse, oldValue: TemperatureResponse) {
+
             if (newValue === oldValue) {
                 return; // First time through
             }
-            this.errors = Messages.localizeNotifications(newValue.errors || []);
+
+            this.errors = [];
+            if (newValue.city1 && newValue.city1.errors && newValue.city1.errors.length) {
+                this.errors.push.apply(this.errors, newValue.city1.errors);
+            }
+            if (newValue.city2 && newValue.city2.errors && newValue.city2.errors.length) {
+                this.errors.push.apply(this.errors, newValue.city2.errors);
+            }
+            this.errors = Messages.localizeNotifications(this.errors);
             this.showErrors = [];
             for (let i: number = 0; i < this.errors.length; i++) {
                 this.showErrors.push(true);

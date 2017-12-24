@@ -1,4 +1,4 @@
-import { /*ChartConfig, */ MonthRecord, TemperatureResponse, UnitConfig } from './climatediff';
+import { CityTemperatureInfo, /*ChartConfig, */ TemperatureResponse, UnitConfig } from './climatediff';
 import Utils from './utils';
 import Chart from './chart/chart.vue';
 import CityForm from './city-form.vue';
@@ -80,35 +80,25 @@ export default {
 
     methods: {
 
-        celsiusToFahrenheit(data: MonthRecord[]): MonthRecord[] {
-            return data.map((elem: MonthRecord) => {
+        celsiusToFahrenheit(data: CityTemperatureInfo[]): CityTemperatureInfo[] {
+            return data.map((elem: CityTemperatureInfo) => {
                 // Ensure 'min' is defined as empty city objects can be sent down on error
-                if (elem.city1 && typeof elem.city1.min === 'number') {
-                    elem.city1.min = Utils.celsiusToFahrenheit(elem.city1.min);
-                    elem.city1.median = Utils.celsiusToFahrenheit(elem.city1.median);
-                    elem.city1.max = Utils.celsiusToFahrenheit(elem.city1.max);
-                }
-                if (elem.city2 && typeof elem.city2.min === 'number') {
-                    elem.city2.min = Utils.celsiusToFahrenheit(elem.city2.min);
-                    elem.city2.median = Utils.celsiusToFahrenheit(elem.city2.median);
-                    elem.city2.max = Utils.celsiusToFahrenheit(elem.city2.max);
+                if (elem && typeof elem.min === 'number') {
+                    elem.min = Utils.celsiusToFahrenheit(elem.min);
+                    elem.median = Utils.celsiusToFahrenheit(elem.median);
+                    elem.max = Utils.celsiusToFahrenheit(elem.max);
                 }
                 return elem;
             });
         },
 
-        fahrenheitToCelsius(data: MonthRecord[]): MonthRecord[] {
-            return data.map((elem: MonthRecord) => {
+        fahrenheitToCelsius(data: CityTemperatureInfo[]): CityTemperatureInfo[] {
+            return data.map((elem: CityTemperatureInfo) => {
                 // Ensure 'min' is defined as empty city objects can be sent down on error
-                if (elem.city1 && typeof elem.city1.min === 'number') {
-                    elem.city1.min = Utils.fahrenheitToCelsius(elem.city1.min);
-                    elem.city1.median = Utils.fahrenheitToCelsius(elem.city1.median);
-                    elem.city1.max = Utils.fahrenheitToCelsius(elem.city1.max);
-                }
-                if (elem.city2 && typeof elem.city2.min === 'number') {
-                    elem.city2.min = Utils.fahrenheitToCelsius(elem.city2.min);
-                    elem.city2.median = Utils.fahrenheitToCelsius(elem.city2.median);
-                    elem.city2.max = Utils.fahrenheitToCelsius(elem.city2.max);
+                if (elem && typeof elem.min === 'number') {
+                    elem.min = Utils.fahrenheitToCelsius(elem.min);
+                    elem.median = Utils.fahrenheitToCelsius(elem.median);
+                    elem.max = Utils.fahrenheitToCelsius(elem.max);
                 }
                 return elem;
             });
@@ -180,12 +170,23 @@ export default {
             const tempSuccess: Function = (responseData: TemperatureResponse) => {
                 // We must clone the response data since it is read-only and we want to mutate it
                 const data: TemperatureResponse = {
-                    data: this.celsiusToFahrenheit(responseData.data),
-                    metadata: responseData.metadata,
-                    debug: responseData.debug,
-                    errors: responseData.errors,
-                    queries: responseData.queries
+                    city1: {
+                        data: this.celsiusToFahrenheit(responseData.city1.data),
+                        metadata: responseData.city1.metadata,
+                        debug: responseData.city1.debug,
+                        errors: responseData.city1.errors,
+                        queries: responseData.city1.queries
+                    }
                 };
+                if (responseData.city2) {
+                    data.city2 = {
+                        data: this.celsiusToFahrenheit(responseData.city2.data),
+                        metadata: responseData.city2.metadata,
+                        debug: responseData.city2.debug,
+                        errors: responseData.city2.errors,
+                        queries: responseData.city2.queries
+                    };
+                }
                 this.maskTempResults = false;
                 this.tempData = data;
                 updatePrecipChart();

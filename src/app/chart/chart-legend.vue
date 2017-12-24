@@ -1,9 +1,9 @@
 <template>
     <div class="chart-legend">
-        <span v-for="(city, index) in cityMetadata" :class="citySpanClass(index)"
+        <span v-for="(city, index) in cityLabels" :class="citySpanClass(index)"
                 @mouseenter="onMouseEnter(index)" @mouseleave="onMouseLeave">
             <div :class="dotDivClass(index)"></div>
-            {{city.city_name}}
+            {{city}}
         </span>
     </div>
 </template>
@@ -14,7 +14,7 @@ const ARMED_CITY = 'armedCity';
 export default {
 
     props: {
-        cityMetadata: Array,
+        cityLabels: Array, // string[]
         required: true
     },
 

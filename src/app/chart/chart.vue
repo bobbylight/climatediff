@@ -20,7 +20,7 @@
                             :value="unitToggleState"></toggle-button>
                 </div>
             </div>
-            <ChartLegend :city-metadata="data.metadata" @armedCity="onArmedCityChanged"></ChartLegend>
+            <ChartLegend :city-labels="legendLabels" @armedCity="onArmedCityChanged"></ChartLegend>
         </div>
     </v-card>
 </template>
