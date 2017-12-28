@@ -21,6 +21,7 @@
     "target": "es5",
     "module": "es2015",
     "moduleResolution": "node",
+    "experimentalDecorators": true, // Allow TypeScript classes via typescript-class-components
 
     "outDir": "src/js",
     "rootDir": "src/app",

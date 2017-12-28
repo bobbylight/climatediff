@@ -39,7 +39,9 @@
     "typescript": "2.6.2",
     "uglifyjs-webpack-plugin": "1.1.4",
     "url-loader": "0.6.2",
+    "vue-class-component": "6.1.2",
     "vue-loader": "13.6.0",
+    "vue-property-decorator": "6.0.0",
     "vue-template-compiler": "2.5.13",
     "webpack": "3.10.0",
     "webpack-bundle-size-analyzer": "2.7.0"

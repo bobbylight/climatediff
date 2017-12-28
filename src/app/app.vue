@@ -27,34 +27,25 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
 import AppFooter from './app-footer.vue';
+import Component from 'vue-class-component';
 
-export default {
+@Component({ components: { AppFooter } })
+export default class App extends Vue {
 
-    components: {
-        AppFooter
-    },
-
-    data: function() {
-        return {
-        };
-    },
-
-    methods: {
-
-        onReset() {
-            this.$router.push({ name: 'start' });
-        },
-
-        showAboutDialog() {
-            this.$router.push({ name: 'about' });
-        },
-
-        viewOnGitHub() {
-            window.open('https://github.com/bobbylight/climatediff', '_blank');
-        }
+    onReset() {
+        this.$router.push({ name: 'start' });
     }
-};
+
+    showAboutDialog() {
+        this.$router.push({ name: 'about' });
+    }
+
+    viewOnGitHub() {
+        window.open('https://github.com/bobbylight/climatediff', '_blank');
+    }
+}
 </script>
 
 <style lang="less">

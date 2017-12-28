@@ -30,12 +30,12 @@ export interface CityTemperatureResponse {
     data: CityTemperatureInfo[];
     debug?: CityDebugInfo;
     errors?: Notification[];
-    metadata: CityMetadataInfo;
+    metadata?: CityMetadataInfo;
     queries: string[];
 }
 
 export interface TemperatureResponse {
-    city1: CityTemperatureResponse;
+    city1?: CityTemperatureResponse;
     city2?: CityTemperatureResponse;
 }
 

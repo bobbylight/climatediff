@@ -43,7 +43,7 @@ export default {
 
         goBack() {
             this.$router.push({ name: 'compare' });
-        },
+        }
     }
 }
 </script>

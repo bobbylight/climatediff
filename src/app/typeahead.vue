@@ -21,130 +21,117 @@
     </span>
 </template>
 
-<script>
-import Ajax from './ajax';
+<script lang="ts">
+import Ajax, { QueryParams } from './ajax';
+import Vue from 'vue';
+import { Prop, Watch } from 'vue-property-decorator';
+import Component from 'vue-class-component';
 
-export default {
+@Component
+export default class Typeahead extends Vue {
 
-    props: {
-        // "value" facilitates for v-model support
-        value: {
-            type: String,
-            required: true
-        },
-        url: {
-            type: String,
-            required: true
-        },
-        filterParamName: {
-            type: String,
-            required: true
-        },
-        responseLabelField: {
-            type: String
-        },
-        responseValueField: {
-            type: String
-        },
-        queryParams: {
-            type: Object,
-            required: false
-        },
-        id: {
-            type: String,
-            required: true
-        },
-        icon: {
-            type: String
-        },
-        label: {
-            type: String,
-            required: false
-        },
-        placeholder: {
-            type: String,
-            required: false
-        },
-        focus: {
-            type: Boolean | String,
-            required: false
-        },
-        debounceMillis: {
-            type: Number,
-            'default': 300
-        },
-        classes: {
-            type: String,
-            required: false
-        }
-    },
+    /**
+     * "value" facilitates v-model support
+     */
+    @Prop({ required: true })
+    value: string;
 
-    computed: {
-        spanId() {
-            return `${this.id}-span`;
-        }
-    },
+    @Prop({ required: true })
+    url: string;
 
-    data: function() {
-        const items = [];
+    @Prop({ required: true })
+    filterParamName: string;
+
+    @Prop()
+    responseLabelField: string;
+
+    @Prop()
+    responseValueField: string;
+
+    @Prop()
+    queryParams: QueryParams;
+
+    @Prop({ required: true })
+    id: string;
+
+    @Prop()
+    icon: string;
+
+    @Prop()
+    label: string;
+
+    @Prop()
+    placeholder: string;
+
+    @Prop()
+    focus: boolean | string;
+
+    @Prop({ 'default': 300 })
+    debounceMillis: number;
+
+    @Prop()
+    classes: string;
+
+    curValue: string = this.value;
+    items: any[] = [];
+    loading: boolean = false;
+    search: string = null;
+
+    get spanId() {
+        return `${this.id}-span`;
+    }
+
+    created() {
         if (this.value) {
-            const item = {};
+            const item: any = {};
             item[this.responseLabelField] = this.value;
             item[this.responseValueField] = this.value;
-            items.push(item);
+            this.items.push(item);
         }
-        return {
-            curValue: this.value,
-            items: items,
-            loading: false,
-            search: null
-        };
-    },
+    }
 
     mounted() {
-        if (this.focus === 'true' || !!this.focus) {
-            select.focus();
+        // if (this.focus === 'true' || !!this.focus) {
+        //     (this.$refs.select as HTMLElement).focus();
+        // }
+    }
+
+    @Watch('search')
+    onSearchChanged(newValue: string, oldValue: string) {
+        if (newValue) {
+            this.runQuery(newValue);
         }
-    },
+    }
 
-    watch: {
-        search(val) {
-            val && this.runQuery(val);
-        }
-    },
+    private static clone<T>(obj: T): T {
+        return JSON.parse(JSON.stringify(obj));
+    }
 
-    methods: {
+    /**
+     * Fires an "input" event stating our value has changed.  Part of implementing v-model for this component.
+     */
+    fireUpdateEvent(newValue: string) {
+        console.log(`New value: ${newValue}`);
+        this.$emit('input', newValue);
+    }
 
-        clone(obj) {
-            return JSON.parse(JSON.stringify(obj));
-        },
+    private runQuery(query: string) {
 
-        /**
-         * Fires an "input" event stating our value has changed.  Part of implementing v-model for this component.
-         */
-        fireUpdateEvent(newValue) {
-            console.log(`New value: ${newValue}`);
-            this.$emit('input', newValue);
-        },
+        this.loading = true;
 
-        runQuery(query) {
+        const queryParams: QueryParams = Typeahead.clone(this.queryParams);
+        queryParams[this.filterParamName] = query;
 
-            this.loading = true;
+        Ajax.get(this.url, queryParams, this.ajaxSuccess, this.ajaxFailure);
+    }
 
-            const queryParams = this.clone(this.queryParams);
-            queryParams[this.filterParamName] = query;
+    private ajaxSuccess(responseData: any[]) {
+        this.items = responseData;
+        this.loading = false;
+    }
 
-            Ajax.get(this.url, queryParams, this.ajaxSuccess, this.ajaxFailure);
-        },
-
-        ajaxSuccess(responseData) {
-            this.items = responseData;
-            this.loading = false;
-        },
-
-        ajaxFailure() {
-            this.loading = false;
-        }
+    private ajaxFailure() {
+        this.loading = false;
     }
 }
 </script>

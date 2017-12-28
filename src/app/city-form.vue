@@ -15,7 +15,7 @@
                         <Typeahead url="api/locations" v-model="city1" filter-param-name="input"
                                    :query-params="locationQueryParams" icon="location_city"
                                    response-label-field="city_name" response-value-field="city_name" id="city1" label="City 1:"
-                                   classes="city-info" autofocus="true"></Typeahead>
+                                   classes="city-info" focus="true"></Typeahead>
                     </v-flex>
                     <v-flex xs3 offset-xs1>
                         <Typeahead url="api/locations" v-model="city2" filter-param-name="input"
@@ -39,52 +39,37 @@
 
 <script lang="ts">
 import Typeahead from './typeahead.vue';
+import Vue from 'vue';
+import { Prop } from 'vue-property-decorator';
+import Component from 'vue-class-component';
 
-export default {
+@Component({ components: { Typeahead }})
+export default class CityForm extends Vue {
 
-    components: {
-        Typeahead
-    },
+    @Prop({ required: true })
+    private initialCity1: string;
 
-    props: {
-        initialCity1: {
-            type: String,
-            required: true
-        },
-        initialCity2: {
-            type: String,
-            required: true
-        },
-        submitCallback: {
-            type: Function,
-            required: true
-        }
-    },
+    @Prop({ required: true })
+    private initialCity2: string;
 
-    data: function() {
+    @Prop({ required: true })
+    private submitCallback: Function;
 
-        return {
-            city1: this.initialCity1,
-            city2: this.initialCity2,
-            typeaheadWaitMillis: 500,
-            locationQueryParams: {
-                limit: 10
-            },
-            formHeaderClasses: {
-                'form-header': true,
-                submitted: false
-            }
-        };
-    },
+    city1: string = this.initialCity1;
+    city2: string = this.initialCity2;
+    locationQueryParams: any = {
+        limit: 10
+    };
+    formHeaderClasses: any = {
+        'form-header': true,
+        submitted: false
+    };
 
-    methods: {
-
-        onSubmit() {
-            this.formHeaderClasses.submitted = true;
-            this.submitCallback(this.city1, this.city2);
-        }
+    onSubmit() {
+        this.formHeaderClasses.submitted = true;
+        this.submitCallback(this.city1, this.city2);
     }
-};
+}
 </script>
 
 <style lang="less">
