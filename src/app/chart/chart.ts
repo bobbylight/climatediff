@@ -1,7 +1,7 @@
 import {
     CityInfo,
     PrecipDataPoint,
-    TempDataPoint, /*ChartConfig, */ Response,
+    TempDataPoint, Response,
     UnitConfig
 } from '../climatediff';
 import * as d3 from 'd3';

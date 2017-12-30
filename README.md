@@ -1,8 +1,8 @@
 climatediff - Compares the climate of two cities
 ================================================
 [![Build Status](https://travis-ci.org/bobbylight/climatediff.svg?branch=master)](https://travis-ci.org/bobbylight/climatediff)
-[![Dependency Status](https://img.shields.io/david/bobbylight/climatediff.svg)](https://david-dm.org/jy95/Orlan)
-[![Dev Dependency Status](https://img.shields.io/david/dev/bobbylight/climatediff.svg)](https://david-dm.org/jy95/Orlan?type=dev)
+[![Dependency Status](https://img.shields.io/david/bobbylight/climatediff.svg)](https://david-dm.org/bobbylight/climatediff)
+[![Dev Dependency Status](https://img.shields.io/david/dev/bobbylight/climatediff.svg)](https://david-dm.org/bobbylight/climatediff?type=dev)
 [![Maintainability](https://api.codeclimate.com/v1/badges/0f348c94f047998bdb3d/maintainability)](https://codeclimate.com/github/bobbylight/climatediff/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/0f348c94f047998bdb3d/test_coverage)](https://codeclimate.com/github/bobbylight/climatediff/test_coverage)
 
