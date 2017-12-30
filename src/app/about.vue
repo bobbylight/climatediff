@@ -28,7 +28,7 @@
                 </div>
 
                 <div class="about-buttons">
-                    <v-btn primary @click="goBack">Back</v-btn>
+                    <v-btn color="primary" @click="goBack">Back</v-btn>
                 </div>
             </v-flex>
 

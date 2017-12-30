@@ -1,5 +1,7 @@
 import {
-    CityTemperatureInfo, CityTemperatureResponse, /*ChartConfig, */ TemperatureResponse,
+    CityInfo,
+    PrecipDataPoint,
+    TempDataPoint, /*ChartConfig, */ Response,
     UnitConfig
 } from '../climatediff';
 import * as d3 from 'd3';
@@ -43,7 +45,7 @@ export default {
             required: true
         },
         data: {
-            type: Object, // TemperatureResponse,
+            type: Object, // Response,
             required: true
         },
         mask: {
@@ -80,7 +82,7 @@ export default {
 
         expandPoint(tipCallback: Function): Function {
             // function scope important so 'this' refers to the mouseover'd DOM node
-            return function(e: CityTemperatureInfo) {
+            return function(e: TempDataPoint) {
                 tipCallback(e);
                 d3.select(this).transition()
                     .attr('r', POINT_SIZE_ARMED);
@@ -89,7 +91,7 @@ export default {
 
         collapsePoint(tipCallback: Function): Function {
             // function scope important so 'this' refers to the mouseover'd DOM node
-            return function(e: CityTemperatureInfo) {
+            return function(e: TempDataPoint) {
                 tipCallback(e);
                 d3.select(this).transition()
                     .attr('r', POINT_SIZE_DEFAULT);
@@ -105,11 +107,10 @@ export default {
         },
 
         appendCityArea(chart: d3.Selection<BaseType, {}, null, undefined>, index: number,
-                xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>,
+                city: string, xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>,
                 maxField: string, minField ?: string) {
 
-            const data: TemperatureResponse = this.data;
-            const city: string = 'city' + (index + 1);
+            const data: Response<PrecipDataPoint | TempDataPoint> = this.data;
             if (!data || !data[city] || !data[city].data || data[city].data.length === 0) {
                 return;
             }
@@ -156,11 +157,10 @@ export default {
         },
 
         appendCityAreaPoints(chart: d3.Selection<BaseType, {}, null, undefined>, index: number,
-                                  xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>,
-                                  maxVar: string, minVar ?: string) {
+                              city: string, xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>,
+                              maxVar: string, minVar ?: string) {
 
-            const data: TemperatureResponse = this.data;
-            const city: string = 'city' + (index + 1);
+            const data: Response<PrecipDataPoint | TempDataPoint> = this.data;
             if (!data || !data[city] || !data[city].data || data[city].data.length === 0) {
                 return;
             }
@@ -172,33 +172,28 @@ export default {
             }
 
             let tip: D3ToolTip = this.createNewTip(chart, index * 2, city, maxVar);
+            this.createCityAreaPoints(chart, cityData, index, xScale, yScale, maxVar, tip);
+
+            if (minVar) {
+                tip = this.createNewTip(chart, index * 2 + 1, city, minVar);
+                this.createCityAreaPoints(chart, cityData, index, xScale, yScale, minVar, tip);
+            }
+
+        },
+
+        createCityAreaPoints(chart: d3.Selection<BaseType, {}, null, undefined>, cityData: any, index: number,
+                             xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>, yVar: string,
+                             tip: D3ToolTip) {
             chart.selectAll('.point')
                 .data(cityData)
                 .enter().append('svg:circle')
                 .attr('class', `chartPoint point${index + 1}`)
                 .attr('cx', (d: any, i: number) => { return xScale(i); })
-                .attr('cy', (d: any, i: number) => {
-                    return yScale(d[maxVar]);
-                })
+                .attr('cy', (d: any, i: number) => { return yScale(d[yVar]); })
                 .attr('r', (d: any, i: number) => { return 3; })
                 .attr('pointer-events', 'all')
                 .on('mouseover', this.expandPoint(tip.show))
                 .on('mouseout', this.collapsePoint(tip.hide));
-
-            if (minVar) {
-                tip = this.createNewTip(chart, index * 2 + 1, city, minVar);
-                chart.selectAll('.point')
-                    .data(cityData)
-                    .enter().append('svg:circle')
-                    .attr('class', `chartPoint point${index + 1}`)
-                    .attr('cx', (d: any, i: number) => { return xScale(i); })
-                    .attr('cy', (d: any, i: number) => { return yScale(d[minVar]); })
-                    .attr('r', (d: any, i: number) => { return 3; })
-                    .attr('pointer-events', 'all')
-                    .on('mouseover', this.expandPoint(tip.show))
-                    .on('mouseout', this.collapsePoint(tip.hide));
-            }
-
         },
 
         fixViewBox(element: HTMLElement) {
@@ -244,20 +239,20 @@ export default {
                 .range([ 0, chartWidth ])
                 .padding(barPad);
 
-            const data: TemperatureResponse = this.data;
+            const data: Response<PrecipDataPoint | TempDataPoint> = this.data;
 
             const topPadding: number = 5;
 
             let min: number = 0;
             if (minProp) { // Chart is form min - max
-                const min1: number = this.minForCity(data.city1, minProp);
-                const min2: number = this.minForCity(data.city2, minProp);
-                min = Math.min(min1, min2);
+                min = Math.min(...Object.keys(data).map((city: string) => {
+                    return this.minForCity(data[city], minProp);
+                }));
             }
 
-            const max1: number = this.maxForCity(data.city1, maxProp);
-            const max2: number = this.maxForCity(data.city2, maxProp);
-            const max: number = Math.max(max1, max2);
+            const max: number = Math.max(...Object.keys(data).map((city: string) => {
+                return this.maxForCity(data[city], maxProp);
+            }));
 
             yScale.domain([ min, max + topPadding ]);
 
@@ -267,8 +262,7 @@ export default {
                 .select('g').remove();
 
             // If there's no data, bail now
-            if ((!data.city1 || !data.city1.data || !data.city1.data.length) &&
-                (!data.city2 || !data.city2.data || !data.city2.data.length)) {
+            if (this.hasNoData(data)) {
                 return;
             }
 
@@ -295,10 +289,18 @@ export default {
                 .classed('axis', true)
                 .call(yAxis);
 
-            this.appendCityArea(chart, 0, xScale, yScale, maxProp, minProp);
-            this.appendCityArea(chart, 1, xScale, yScale, maxProp, minProp);
-            this.appendCityAreaPoints(chart, 0, xScale, yScale, maxProp, minProp);
-            this.appendCityAreaPoints(chart, 1, xScale, yScale, maxProp, minProp);
+            // Render area first, then points, so points are "above" in SVG and get mouseover events no matter what
+            const cities: string[] = Object.keys(this.data);
+            let index: number = 0;
+            cities.forEach((city: string) => {
+                this.appendCityArea(chart, index, city, xScale, yScale, maxProp, minProp);
+                index++;
+            });
+            index = 0;
+            cities.forEach((city: string) => {
+                this.appendCityAreaPoints(chart, index, city, xScale, yScale, maxProp, minProp);
+                index++;
+            });
 
             this.fixViewBox(this.$el);
         //      $scope.resultsLoaded = true;
@@ -329,6 +331,23 @@ export default {
             return tip;
         },
 
+        hasNoData(data: Response<PrecipDataPoint | TempDataPoint>) {
+
+            const keys: string[] = Object.keys(data);
+            if (!keys.length) {
+                return true;
+            }
+
+            for (let i: number = 0; i < keys.length; i++) {
+                const key: string = keys[i];
+                if (data[key].data && data[key].data.length) {
+                    return false;
+                }
+            }
+
+            return true;
+        },
+
         onArmedCityChanged(index: number | null) {
 
             let unfocused1: boolean = false;
@@ -345,13 +364,14 @@ export default {
             d3.selectAll('.area.area2, .line.line2, .chartPoint.point2').classed('unfocused', unfocused2);
         },
 
-        maxForCity(city: CityTemperatureResponse | null | undefined, maxProp: string): number {
+        maxForCity(city: CityInfo<TempDataPoint | PrecipDataPoint> | null,
+                   maxProp: string): number {
 
             let max: number = 100;
 
             if (city && city.data && city.data.length) {
-                max = d3.max<CityTemperatureInfo, number>(city.data,
-                    (entry: CityTemperatureInfo): number => {
+                max = d3.max<any, number>(city.data,
+                    (entry: TempDataPoint): number => {
                         return entry[maxProp];
                     });
             }
@@ -359,13 +379,14 @@ export default {
             return max;
         },
 
-        minForCity(city: CityTemperatureResponse | null | undefined, minProp: string): number {
+        minForCity(city: CityInfo<TempDataPoint | PrecipDataPoint> | null,
+                   minProp: string): number {
 
             let min: number = 0;
 
             if (city && city.data && city.data.length) {
-                min = d3.min<CityTemperatureInfo, number>(city.data,
-                    (entry: CityTemperatureInfo): number => {
+                min = d3.min<any, number>(city.data,
+                    (entry: TempDataPoint): number => {
                         return entry[minProp];
                     });
             }
@@ -391,14 +412,7 @@ export default {
             return `chart-${this.index}`;
         },
         legendLabels: function() {
-            const labels: string[] = [];
-            if (this.data.city1) {
-                labels.push(this.data.city1.metadata.city_name);
-            }
-            if (this.data.city2) {
-                labels.push(this.data.city2.metadata.city_name);
-            }
-            return labels;
+            return Object.keys(this.data);
         },
         unitLabels: function() {
             return {
@@ -413,19 +427,18 @@ export default {
     },
 
     watch: {
-        data(newValue: TemperatureResponse, oldValue: TemperatureResponse) {
+        data(newValue: Response<any>, oldValue: Response<any>) {
 
             if (newValue === oldValue) {
                 return; // First time through
             }
 
             this.errors = [];
-            if (newValue.city1 && newValue.city1.errors && newValue.city1.errors.length) {
-                this.errors.push.apply(this.errors, newValue.city1.errors);
-            }
-            if (newValue.city2 && newValue.city2.errors && newValue.city2.errors.length) {
-                this.errors.push.apply(this.errors, newValue.city2.errors);
-            }
+            Object.keys(newValue).forEach((city: string) => {
+                if (newValue[city].errors && newValue[city].errors.length) {
+                    this.errors.push.apply(this.errors, newValue[city].errors);
+                }
+            });
             this.errors = Messages.localizeNotifications(this.errors);
             this.showErrors = [];
             for (let i: number = 0; i < this.errors.length; i++) {

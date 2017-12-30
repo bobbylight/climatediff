@@ -1,11 +1,11 @@
 import Vue from 'vue';
-import { ChartConfig, CityTemperatureInfo, TemperatureResponse, UnitConfig } from './climatediff';
+import { ChartConfig, PrecipDataPoint, TempDataPoint, Response, UnitConfig } from './climatediff';
 import Utils from './utils';
 import Chart from './chart/chart.vue';
 import CityForm from './city-form.vue';
-import Ajax from './ajax';
 import { Route } from 'vue-router';
 import Component from 'vue-class-component';
+import dataSource, { Callback } from './data-source';
 
 const TYPEAHEAD_WAIT_MILLIS: number = 500;
 
@@ -20,8 +20,8 @@ export default class MainPage extends Vue {
     maskTempResults: boolean = false;
     maskPrecipResults: boolean = false;
     resultsTitle: string = null;
-    tempData: TemperatureResponse = null;
-    precipData: TemperatureResponse = null;
+    tempData: Response<TempDataPoint> = null;
+    precipData: Response<PrecipDataPoint> = null;
     typeaheadWatiMillis: number = TYPEAHEAD_WAIT_MILLIS;
 
     /**
@@ -33,8 +33,8 @@ export default class MainPage extends Vue {
 
         this.tempChartConfig = {
             units: [
-                { axisSuffix: '\u00b0 F', label: '\u00b0 F', convert: this.celsiusToFahrenheit },
-                { axisSuffix: '\u00b0 C', label: '\u00b0 C', convert: this.fahrenheitToCelsius }
+                { axisSuffix: '\u00b0 F', label: '\u00b0 F', convert: Utils.arrayCtoF },
+                { axisSuffix: '\u00b0 C', label: '\u00b0 C', convert: Utils.arrayFtoC }
             ]
         };
         const identity: (data: any) => any = (data: any) => {
@@ -71,30 +71,6 @@ export default class MainPage extends Vue {
             const city2: string = Utils.cityRouteFormToReadableForm(this.$route.params.city2);
             this.updateClimateDiff(city1, city2);
         }
-    }
-
-    private celsiusToFahrenheit(data: CityTemperatureInfo[]): CityTemperatureInfo[] {
-        return data.map((elem: CityTemperatureInfo) => {
-            // Ensure 'min' is defined as empty city objects can be sent down on error
-            if (elem && typeof elem.min === 'number') {
-                elem.min = Utils.celsiusToFahrenheit(elem.min);
-                elem.median = Utils.celsiusToFahrenheit(elem.median);
-                elem.max = Utils.celsiusToFahrenheit(elem.max);
-            }
-            return elem;
-        });
-    }
-
-    private fahrenheitToCelsius(data: CityTemperatureInfo[]): CityTemperatureInfo[] {
-        return data.map((elem: CityTemperatureInfo) => {
-            // Ensure 'min' is defined as empty city objects can be sent down on error
-            if (elem && typeof elem.min === 'number') {
-                elem.min = Utils.fahrenheitToCelsius(elem.min);
-                elem.median = Utils.fahrenheitToCelsius(elem.median);
-                elem.max = Utils.fahrenheitToCelsius(elem.max);
-            }
-            return elem;
-        });
     }
 
     setCitiesFromRoute(route: Route) {
@@ -140,14 +116,9 @@ export default class MainPage extends Vue {
         this.tempData = {};
         this.precipData = {};
 
-        let urlCityArgs: string = `${this.city1}`;
-        if (this.city2) {
-            urlCityArgs += `/${this.city2}`;
-        }
-
         const updatePrecipChart: Function = () => {
 
-            const precipSuccess: Function = (responseData: any) => {
+            const precipSuccess: Callback<PrecipDataPoint> = (responseData: Response<PrecipDataPoint>) => {
                 console.log(JSON.stringify(responseData));
                 // result.data.data = celsiusToFahrenheit(result.data.data);
                 this.maskPrecipResults = false;
@@ -158,31 +129,12 @@ export default class MainPage extends Vue {
                 this.maskPrecipResults = false;
             };
 
-            Ajax.get(`api/precipitation/${urlCityArgs}`, null, precipSuccess, precipFailure);
+            dataSource.getPrecipitationData(precipSuccess, precipFailure, this.city1, this.city2);
         };
 
-        const tempSuccess: Function = (responseData: TemperatureResponse) => {
-            // We must clone the response data since it is read-only and we want to mutate it
-            const data: TemperatureResponse = {
-                city1: {
-                    data: this.celsiusToFahrenheit(responseData.city1.data),
-                    metadata: responseData.city1.metadata,
-                    debug: responseData.city1.debug,
-                    errors: responseData.city1.errors,
-                    queries: responseData.city1.queries
-                }
-            };
-            if (responseData.city2) {
-                data.city2 = {
-                    data: this.celsiusToFahrenheit(responseData.city2.data),
-                    metadata: responseData.city2.metadata,
-                    debug: responseData.city2.debug,
-                    errors: responseData.city2.errors,
-                    queries: responseData.city2.queries
-                };
-            }
+        const tempSuccess: Callback<TempDataPoint> = (responseData: Response<TempDataPoint>) => {
             this.maskTempResults = false;
-            this.tempData = data;
+            this.tempData = responseData;
             updatePrecipChart();
         };
 
@@ -192,6 +144,6 @@ export default class MainPage extends Vue {
             updatePrecipChart();
         };
 
-        Ajax.get(`api/temperature/${urlCityArgs}`, null, tempSuccess, tempFailure);
+        dataSource.getTemperatureData(tempSuccess, tempFailure, this.city1, this.city2);
     }
 }

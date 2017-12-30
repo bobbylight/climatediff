@@ -33,7 +33,6 @@ export default {
             this.$emit(ARMED_CITY, index + 1);
 
             const otherCityClass = `city-${index === 1 ? 1 : 2}`;
-            console.log('>>> ' + otherCityClass);
             const citySpans = this.$el.getElementsByClassName(otherCityClass);
             for (let i = 0; i < citySpans.length; i++) { // Should always be 1
                 citySpans[i].classList.add('unfocused');

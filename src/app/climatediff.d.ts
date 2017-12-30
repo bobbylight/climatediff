@@ -11,32 +11,44 @@ export interface CityDebugInfo {
     url: string;
 }
 
-export interface CityMetadataInfo {
-    city_id: string;
-    city_name: string;
-    total_time: number[];
-}
-
-export interface CityTemperatureInfo {
-    min: number;
-    minCount: number;
-    median: number;
-    medianCount: number;
-    max: number;
-    maxCount: number;
-}
-
-export interface CityTemperatureResponse {
-    data: CityTemperatureInfo[];
+/**
+ * Monthly information about a city's climate.
+ */
+export interface CityInfo<T extends PrecipDataPoint | TempDataPoint> {
+    data: T[];
     debug?: CityDebugInfo;
     errors?: Notification[];
     metadata?: CityMetadataInfo;
     queries: string[];
 }
 
-export interface TemperatureResponse {
-    city1?: CityTemperatureResponse;
-    city2?: CityTemperatureResponse;
+/**
+ * Metadata about a city whose climate information was returned.
+ */
+export interface CityMetadataInfo {
+    city_id: string;
+    city_name: string;
+    total_time: number[];
+}
+
+/**
+ * Precipitation information, i.e. monthly or yearly, for a city.
+ */
+export interface PrecipDataPoint {
+    precip: number;
+    precipCount: number;
+}
+
+/**
+ * Temperature information, i.e. monthly or yearly, for a city.
+ */
+export interface TempDataPoint {
+    min: number;
+    minCount: number;
+    median: number;
+    medianCount: number;
+    max: number;
+    maxCount: number;
 }
 
 /**
@@ -53,6 +65,13 @@ export interface Notification {
  */
 export type NotificationParam = Notification | string | number;
 
+/**
+ * Response from REST APIs for historical temperature and precipitation data of a city.
+ */
+export interface Response<T extends PrecipDataPoint | TempDataPoint> {
+    [ cityName: string ]: CityInfo<T>;
+}
+
 export interface UnitConfig {
     axisSuffix: string;
     label: string;
@@ -60,9 +79,5 @@ export interface UnitConfig {
 }
 
 export interface UnitConversionFunction {
-    (data: CityTemperatureInfo[]): CityTemperatureInfo[];
-}
-
-interface Window {
-    d3: any;
+    (data: TempDataPoint[]): TempDataPoint[];
 }

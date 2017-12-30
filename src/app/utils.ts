@@ -1,4 +1,30 @@
+import { TempDataPoint } from './climatediff';
+
 export default class Utils {
+
+    static arrayCtoF(data: TempDataPoint[]): TempDataPoint[] {
+        return data.map((elem: TempDataPoint) => {
+            // Ensure 'min' is defined as empty city objects can be sent down on error
+            if (elem && typeof elem.min === 'number') {
+                elem.min = Utils.celsiusToFahrenheit(elem.min);
+                elem.median = Utils.celsiusToFahrenheit(elem.median);
+                elem.max = Utils.celsiusToFahrenheit(elem.max);
+            }
+            return elem;
+        });
+    }
+
+    static arrayFtoC(data: TempDataPoint[]): TempDataPoint[] {
+        return data.map((elem: TempDataPoint) => {
+            // Ensure 'min' is defined as empty city objects can be sent down on error
+            if (elem && typeof elem.min === 'number') {
+                elem.min = Utils.fahrenheitToCelsius(elem.min);
+                elem.median = Utils.fahrenheitToCelsius(elem.median);
+                elem.max = Utils.fahrenheitToCelsius(elem.max);
+            }
+            return elem;
+        });
+    }
 
     static celsiusToFahrenheit(c: number): number {
         // tslint:disable-next-line:no-magic-numbers

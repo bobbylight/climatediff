@@ -109,18 +109,18 @@ if (!isset($debug)) {
 http_response_code(500);
 
 $response = array();
-$response['city1'] = array( 'data' => array(), 'metadata' => array(), 'queries' => array() );
+$response[$loc1] = array( 'data' => array(), 'metadata' => array(), 'queries' => array() );
 if ($debug) {
-    $response['city1']['debug'] = array();
+    $response[$loc1]['debug'] = array();
 }
 
-_fetchCityClimate($loc1, $response['city1'], 1, $debug);
+_fetchCityClimate($loc1, $response[$loc1], 1, $debug);
 if (isset($loc2)) {# && !isset($response['metadata'][0]['error'])) {
-    $response['city2'] = array( 'data' => array(), 'metadata' => array(), 'queries' => array() );
+    $response[$loc2] = array( 'data' => array(), 'metadata' => array(), 'queries' => array() );
     if ($debug) {
-        $response['city2']['debug'] = array();
+        $response[$loc2]['debug'] = array();
     }
-   _fetchCityClimate($loc2, $response['city2'], 2, $debug);
+   _fetchCityClimate($loc2, $response[$loc2], 2, $debug);
 }
 
 http_response_code(200);

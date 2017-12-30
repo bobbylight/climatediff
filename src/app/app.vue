@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <v-toolbar app dark color="primary" class="app-toolbar">
+        <v-toolbar app dark class="app-toolbar">
 
             <v-toolbar-title class="app-title" @click="onReset()">
                 <i class="fa fa-cloud"></i> ClimateDiff
