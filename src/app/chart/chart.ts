@@ -66,7 +66,7 @@ export default {
         return {
             errors: [], // string[],
             showErrors: [], // boolean[],
-            selectedUnits: this.chartConfig.units[0].label, // string,
+            selectedUnits: this.chartConfig.units[0], // UnitConfig,
             tips: [] // D3ToolTip[]
         };
     },
@@ -76,6 +76,21 @@ export default {
             this.tips.push(null);
             this.tips.push(null);
         }
+    },
+
+    mounted() {
+        if (this.data) {
+            this.createChartAndShowErrors(this.data);
+        }
+    },
+
+    destroyed() {
+        this.tips.forEach((tip: D3ToolTip) => {
+            if (tip) {
+                tip.destroy();
+            }
+        });
+        this.tips.length = 0;
     },
 
     methods: {
@@ -129,10 +144,11 @@ export default {
             chart.append('path')
                 .datum(cityData)
                 .attr('class', `area area${index + 1}`)
-                .attr('d', this.createEmptyArea(xScale, yScale))
+                .attr('d', area)
+                .style('opacity', 0)
                 .transition()
-                .duration(TRANSITION_DURATION_MILLIS)
-                .attr('d', area);
+                    .duration(TRANSITION_DURATION_MILLIS)
+                    .style('opacity', 1);
 
             if (minField) {
                 const minLine: d3.Line<[number, number]> = d3.line()
@@ -142,7 +158,11 @@ export default {
                 chart.append('path')
                     .datum(cityData)
                     .attr('class', `line line${index + 1}`)
-                    .attr('d', minLine);
+                    .attr('d', minLine)
+                    .style('opacity', 0)
+                    .transition()
+                        .duration(TRANSITION_DURATION_MILLIS)
+                        .style('opacity', 1);
             }
 
             const maxLine: d3.Line<[number, number]> = d3.line()
@@ -152,7 +172,11 @@ export default {
             chart.append('path')
                 .datum(cityData)
                 .attr('class', `line line${index + 1}`)
-                .attr('d', maxLine);
+                .attr('d', maxLine)
+                .style('opacity', 0)
+                .transition()
+                    .duration(TRANSITION_DURATION_MILLIS)
+                    .style('opacity', 1);
 
         },
 
@@ -193,7 +217,11 @@ export default {
                 .attr('r', (d: any, i: number) => { return 3; })
                 .attr('pointer-events', 'all')
                 .on('mouseover', this.expandPoint(tip.show))
-                .on('mouseout', this.collapsePoint(tip.hide));
+                .on('mouseout', this.collapsePoint(tip.hide))
+                .style('opacity', 0)
+                .transition()
+                    .duration(TRANSITION_DURATION_MILLIS)
+                    .style('opacity', 1);
         },
 
         fixViewBox(element: HTMLElement) {
@@ -306,6 +334,21 @@ export default {
         //      $scope.resultsLoaded = true;
         },
 
+        createChartAndShowErrors(data: Response<any>) {
+            this.errors = [];
+            Object.keys(data).forEach((city: string) => {
+                if (data[city].errors && data[city].errors.length) {
+                    this.errors.push.apply(this.errors, data[city].errors);
+                }
+            });
+            this.errors = Messages.localizeNotifications(this.errors);
+            this.showErrors = [];
+            for (let i: number = 0; i < this.errors.length; i++) {
+                this.showErrors.push(true);
+            }
+            this.createChart();
+        },
+
         /**
          * We must create a new tool tip for every set of data points unfortunately.  Delete the prior one and
          * add a replacement.
@@ -320,9 +363,10 @@ export default {
             this.tips[index] = tip = new D3ToolTip()
                 .attr('class', 'd3-tip')
                 .html((d: any) => {
-                    const firstChar: string = this.selectedUnits.charAt(0);
+                    let suffix: string = this.selectedUnits.axisSuffix;
+                    const firstChar: string = suffix.charAt(0);
                     const firstIsLetter: boolean = firstChar >= 'a' && firstChar <= 'z';
-                    const suffix: string = firstIsLetter ? ` ${this.selectedUnits}` : this.selectedUnits;
+                    suffix = firstIsLetter ? ` ${suffix}` : suffix;
                     return (Math.round(d[dataVar] * 10) / 10) + suffix;
                 });
 
@@ -422,29 +466,13 @@ export default {
         },
         unitToggleState() {
             console.log(this.selectedUnits + ', ' + this.chartConfig.units[0].label);
-            return this.selectedUnits === this.chartConfig.units[0].label;
+            return this.selectedUnits === this.chartConfig.units[0];
         }
     },
 
     watch: {
         data(newValue: Response<any>, oldValue: Response<any>) {
-
-            if (newValue === oldValue) {
-                return; // First time through
-            }
-
-            this.errors = [];
-            Object.keys(newValue).forEach((city: string) => {
-                if (newValue[city].errors && newValue[city].errors.length) {
-                    this.errors.push.apply(this.errors, newValue[city].errors);
-                }
-            });
-            this.errors = Messages.localizeNotifications(this.errors);
-            this.showErrors = [];
-            for (let i: number = 0; i < this.errors.length; i++) {
-                this.showErrors.push(true);
-            }
-            this.createChart();
+            this.createChartAndShowErrors(newValue);
         }
     }
 };
