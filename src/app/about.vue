@@ -8,6 +8,7 @@
                 <div class="about-section about-header">
                     <img class="about-image" src="img/263883.svg">
                     <h3>About Climatediff</h3>
+                    <h6>Version: [AIV]{version}[/AIV]<span class="about-metadata-splitter">|</span>[AIV]{date}[/AIV]</h6>
                 </div>
 
                 <div class="about-section about-content">
@@ -64,6 +65,13 @@ export default {
             width: 256px;
             height: 256px;
             padding-right: 30px;
+        }
+
+        h6 {
+            .about-metadata-splitter {
+                font-size: larger;
+                margin: 0 .5rem;
+            }
         }
     }
 

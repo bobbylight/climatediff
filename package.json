@@ -1,6 +1,6 @@
 {
   "name": "climatediff",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "license": "MIT",
   "scripts": {
     "clean": "rimraf dist coverage",
@@ -44,6 +44,7 @@
     "vue-property-decorator": "6.0.0",
     "vue-template-compiler": "2.5.13",
     "webpack": "3.10.0",
+    "webpack-auto-inject-version": "1.0.0",
     "webpack-bundle-size-analyzer": "2.7.0"
   },
   "dependencies": {
