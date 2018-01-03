@@ -29,7 +29,7 @@
 
             <v-container class="city-form-no-top-padding">
                 <v-layout row-wrap justify-center>
-                    <v-btn type='submit' color="primary">Compare!</v-btn>
+                    <v-btn type='submit' color="primary" :disabled="loading">Compare!</v-btn>
                 </v-layout>
             </v-container>
 
@@ -54,6 +54,9 @@ export default class CityForm extends Vue {
 
     @Prop({ required: true })
     private submitCallback: Function;
+
+    @Prop({ required: true })
+    loading: boolean; // Not private since tsc doesn't know about usage in vue template
 
     city1: string = this.initialCity1;
     city2: string = this.initialCity2;

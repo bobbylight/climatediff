@@ -14,6 +14,7 @@ export default class MainPage extends Vue {
 
     city1: string = null;
     city2: string = null;
+    loading: boolean = false;
     tempChartConfig: ChartConfig = null;
     precipChartConfig: ChartConfig = null;
     showCharts: boolean = false;
@@ -97,6 +98,8 @@ export default class MainPage extends Vue {
 
     private updateClimateDiff(city1: string, city2: string) {
 
+        this.loading = true;
+
         this.$router.push({ name: 'compare', params: {
                 city1: Utils.cityReadableFormToRouteForm(city1),
                 city2: Utils.cityReadableFormToRouteForm(city2)
@@ -123,10 +126,12 @@ export default class MainPage extends Vue {
                 // result.data.data = celsiusToFahrenheit(result.data.data);
                 this.maskPrecipResults = false;
                 this.precipData = responseData;
+                this.loading = false;
             };
             const precipFailure: Function = () => {
                 alert('An error occurred fetching precipitation data!');
                 this.maskPrecipResults = false;
+                this.loading = false;
             };
 
             dataSource.getPrecipitationData(precipSuccess, precipFailure, this.city1, this.city2);

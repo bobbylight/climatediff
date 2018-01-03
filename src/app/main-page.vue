@@ -5,7 +5,8 @@
 
             <v-flex xs12 style="background: white">
                 <CityForm :initial-city1="city1" :initial-city2="city2"
-                          :submit-callback="updateClimateDiff"></CityForm>
+                          :submit-callback="updateClimateDiff"
+                          :loading="loading"></CityForm>
             </v-flex>
 
             <v-flex xs12 class="results-title" v-if="showCharts">
