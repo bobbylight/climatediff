@@ -29,102 +29,94 @@ export class DataSource {
 
     getPrecipitationData(callback: Callback<PrecipDataPoint>, failureCallback: Function, ...cities: string[]) {
 
-        const cityData: CityInfo<PrecipDataPoint>[] = [];
         const cached: boolean[] = [];
-
         for (let i: number = 0; i < cities.length; i++) {
-            const city: string = cities[i];
-            cached.push(!!this.precipCache[city]);
-            if (cached[i]) {
-                cityData.push(this.precipCache[city]);
-            }
+            cached.push(!!this.precipCache[cities[i]]);
         }
 
         if (DataSource.isSomethingNotCached(cached)) {
-
-            let url: string = 'api/precipitation';
-            for (let i: number = 0; i < cities.length; i++) {
-                if (!cached[i]) {
-                    url += `/${cities[i]}`;
-                }
-                else {
-                    cityData[i] = cityData[i];
-                }
-            }
-
-            const tempSuccess: Callback<PrecipDataPoint> = (data: Response<PrecipDataPoint>) => {
-
-                Object.keys(data).forEach((city: string) => {
-
-                    const temp: CityInfo<PrecipDataPoint> = data[city];
-
-                    cityData[city] = this.precipCache[city] = {
-                        data: temp.data,
-                        metadata: temp.metadata,
-                        debug: temp.debug,
-                        errors: temp.errors,
-                        queries: temp.queries
-                    };
-                });
-                this.runCallback(this.precipCache, callback, failureCallback, ...cities);
-            };
-
-            Ajax.get(url, null, tempSuccess, failureCallback);
+            this.getPrecipitationDataSomeUncached(callback, failureCallback, cached, ...cities);
         }
-
         else {
             this.runCallback(this.precipCache, callback, failureCallback, ...cities);
         }
     }
 
+    private getPrecipitationDataSomeUncached(callback: Callback<PrecipDataPoint>, failureCallback: Function,
+                                           cached: boolean[], ...cities: string[]) {
+
+        // Build the URL to fetch data for cities not yet cached
+        let url: string = 'api/precipitation';
+        for (let i: number = 0; i < cities.length; i++) {
+            if (!cached[i]) {
+                url += `/${cities[i]}`;
+            }
+        }
+
+        const tempSuccess: Callback<PrecipDataPoint> = (data: Response<PrecipDataPoint>) => {
+
+            Object.keys(data).forEach((city: string) => {
+
+                const temp: CityInfo<PrecipDataPoint> = data[city];
+
+                this.precipCache[city] = {
+                    data: temp.data,
+                    metadata: temp.metadata,
+                    debug: temp.debug,
+                    errors: temp.errors,
+                    queries: temp.queries
+                };
+            });
+            this.runCallback(this.precipCache, callback, failureCallback, ...cities);
+        };
+
+        Ajax.get(url, null, tempSuccess, failureCallback);
+    }
+
     getTemperatureData(callback: Callback<TempDataPoint>, failureCallback: Function, ...cities: string[]) {
 
-        const cityData: CityInfo<TempDataPoint>[] = [];
         const cached: boolean[] = [];
-
         for (let i: number = 0; i < cities.length; i++) {
-            const city: string = cities[i];
-            cached.push(!!this.tempCache[city]);
-            if (cached[i]) {
-                cityData.push(this.tempCache[city]);
-            }
+            cached.push(!!this.tempCache[cities[i]]);
         }
 
         if (DataSource.isSomethingNotCached(cached)) {
-
-            let url: string = 'api/temperature';
-            for (let i: number = 0; i < cities.length; i++) {
-                if (!cached[i]) {
-                    url += `/${cities[i]}`;
-                }
-                else {
-                    cityData[i] = cityData[i];
-                }
-            }
-
-            const tempSuccess: Callback<TempDataPoint> = (data: Response<TempDataPoint>) => {
-
-                Object.keys(data).forEach((city: string) => {
-
-                    const temp: CityInfo<TempDataPoint> = data[city];
-
-                    cityData[city] = this.tempCache[city] = {
-                        data: Utils.arrayCtoF(temp.data),
-                        metadata: temp.metadata,
-                        debug: temp.debug,
-                        errors: temp.errors,
-                        queries: temp.queries
-                    };
-                });
-                this.runCallback(this.tempCache, callback, failureCallback, ...cities);
-            };
-
-            Ajax.get(url, null, tempSuccess, failureCallback);
+            this.getTemperatureDataSomeUncached(callback, failureCallback, cached, ...cities);
         }
-
         else {
             this.runCallback(this.tempCache, callback, failureCallback, ...cities);
         }
+    }
+
+    private getTemperatureDataSomeUncached(callback: Callback<TempDataPoint>, failureCallback: Function,
+                                           cached: boolean[], ...cities: string[]) {
+
+        // Build the URL to fetch data for cities not yet cached
+        let url: string = 'api/temperature';
+        for (let i: number = 0; i < cities.length; i++) {
+            if (!cached[i]) {
+                url += `/${cities[i]}`;
+            }
+        }
+
+        const tempSuccess: Callback<TempDataPoint> = (data: Response<TempDataPoint>) => {
+
+            Object.keys(data).forEach((city: string) => {
+
+                const temp: CityInfo<TempDataPoint> = data[city];
+
+                this.tempCache[city] = {
+                    data: Utils.arrayCtoF(temp.data),
+                    metadata: temp.metadata,
+                    debug: temp.debug,
+                    errors: temp.errors,
+                    queries: temp.queries
+                };
+            });
+            this.runCallback(this.tempCache, callback, failureCallback, ...cities);
+        };
+
+        Ajax.get(url, null, tempSuccess, failureCallback);
     }
 
     static isSomethingNotCached(cached: boolean[]): boolean {
