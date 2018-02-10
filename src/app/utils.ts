@@ -1,5 +1,8 @@
 import { TempDataPoint } from './climatediff';
 
+/**
+ * Obligatory utility methods.
+ */
 export default class Utils {
 
     static arrayCtoF(data: TempDataPoint[]): TempDataPoint[] {

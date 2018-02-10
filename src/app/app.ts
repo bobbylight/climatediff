@@ -16,16 +16,12 @@ import VAlert from 'vuetify/es5/components/VAlert';
 import VApp from 'vuetify/es5/components/VApp';
 import VBtn from 'vuetify/es5/components/VBtn';
 import VCard from 'vuetify/es5/components/VCard';
-import VContainer from 'vuetify/es5/components/VGrid';
-import VContent from 'vuetify/es5/components/VGrid';
-import VFlex from 'vuetify/es5/components/VGrid';
 import VFooter from 'vuetify/es5/components/VFooter';
+import VGrid from 'vuetify/es5/components/VGrid'; // VContainer, VContent, VFlex, VGrid, VLayout, VSpacer
 import VIcon from 'vuetify/es5/components/VIcon';
-import VLayout from 'vuetify/es5/components/VGrid';
 import VProgressCircular from 'vuetify/es5/components/VProgressCircular';
 import VProgressLinear from 'vuetify/es5/components/VProgressLinear';
 import VSelect from 'vuetify/es5/components/VSelect';
-import VSpacer from 'vuetify/es5/components/VGrid';
 import VToolbar from 'vuetify/es5/components/VToolbar';
 import transitions from 'vuetify/es5/components/transitions';
 
@@ -47,15 +43,11 @@ Vue.use(Vuetify, {
         VApp,
         VBtn,
         VCard,
-        VContainer,
-        VContent,
-        VFlex,
         VFooter,
+        VGrid,
         VIcon,
-        VLayout,
         VProgressCircular,
         VProgressLinear,
-        VSpacer,
         VSelect,
         VToolbar,
         transitions

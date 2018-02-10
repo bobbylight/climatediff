@@ -1,5 +1,8 @@
 import { Notification, NotificationParam } from './climatediff';
 
+/**
+ * A simple key/value pair map.
+ */
 interface Resources {
     [ key: string ]: string;
 }

@@ -1,5 +1,11 @@
+/**
+ * Supported HTTP methods.
+ */
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
+/**
+ * A simple key/value pair map for storing query parameters.
+ */
 export interface QueryParams {
     [ key: string ]: string;
 }

@@ -2,6 +2,9 @@ import { CityInfo, PrecipDataPoint, TempDataPoint, Response } from './climatedif
 import Ajax from './ajax';
 import Utils from './utils';
 
+/**
+ * A mapping from strings to data points.
+ */
 interface Cache<T extends CityInfo<TempDataPoint | PrecipDataPoint>> {
     [ key: string ]: T;
 }

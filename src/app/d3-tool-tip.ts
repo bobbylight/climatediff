@@ -1,6 +1,8 @@
 import * as d3 from 'd3';
-import { Selection } from 'd3';
 
+/**
+ * The bounding box of a part of an SVG.
+ */
 interface BoundingBox {
     n: SVGPoint;
     e: SVGPoint;
@@ -59,7 +61,7 @@ interface BoundingBox {
 /* tslint:disable:no-magic-numbers */
 export default class D3ToolTip {
 
-    private direction_callbacks: { [ key: string ]: Function };
+    private directionCallbacks: { [ key: string ]: Function };
     private directions: string[];
 
     private dir: Function;
@@ -72,7 +74,7 @@ export default class D3ToolTip {
 
     constructor() {
 
-        this.direction_callbacks = {
+        this.directionCallbacks = {
             n: this.direction_n,
             s: this.direction_s,
             e: this.direction_e,
@@ -83,7 +85,7 @@ export default class D3ToolTip {
             se: this.direction_se
         };
 
-        this.directions = Object.keys(this.direction_callbacks);
+        this.directions = Object.keys(this.directionCallbacks);
 
         this.dir = () => {
             return 'n';
@@ -112,7 +114,7 @@ export default class D3ToolTip {
      * </code>
      * @param {Selection<SVGElement, {}, null, undefined>} vis The d3 selection.
      */
-    init(vis: Selection<SVGElement, {}, null, undefined>) {
+    init(vis: d3.Selection<SVGElement, {}, null, undefined>) {
         this.svg = D3ToolTip.getSVGNode(vis);
         this.point = this.svg.createSVGPoint();
         document.body.appendChild(this.node);
@@ -136,7 +138,7 @@ export default class D3ToolTip {
         const content: string = this.content.apply(this, args);
         const poffset: any = this.offs.apply(this, args);
         const dir: string = this.dir.apply(this, args);
-        const nodel: Selection<HTMLDivElement, {}, null, undefined> = this.getNodeEl();
+        const nodel: d3.Selection<HTMLDivElement, {}, null, undefined> = this.getNodeEl();
         const scrollTop: number = document.documentElement.scrollTop || document.body.scrollTop;
         const scrollLeft: number  = document.documentElement.scrollLeft || document.body.scrollLeft;
 
@@ -149,7 +151,7 @@ export default class D3ToolTip {
         while (i--) {
             nodel.classed(this.directions[i], false);
         }
-        const coords: any = this.direction_callbacks[dir].apply(this);
+        const coords: any = this.directionCallbacks[dir].apply(this);
         nodel.classed(dir, true)
             .style('top', (coords.top +  poffset[0]) + scrollTop + 'px')
             .style('left', (coords.left + poffset[1]) + scrollLeft + 'px');
@@ -158,7 +160,7 @@ export default class D3ToolTip {
     }
 
     hide(): D3ToolTip {
-        const nodel: Selection<HTMLDivElement, {}, null, undefined> = this.getNodeEl();
+        const nodel: d3.Selection<HTMLDivElement, {}, null, undefined> = this.getNodeEl();
         nodel
             .style('opacity', 0)
             .style('pointer-events', 'none');
@@ -203,7 +205,7 @@ export default class D3ToolTip {
         return this;
     }
 
-    private static getSVGNode(el: Selection<SVGElement, {}, null, undefined>): SVGSVGElement {
+    private static getSVGNode(el: d3.Selection<SVGElement, {}, null, undefined>): SVGSVGElement {
         const selectedElement: SVGElement = el.node();
         if (selectedElement.tagName.toLowerCase() === 'svg') {
             return selectedElement as SVGSVGElement;
@@ -211,7 +213,7 @@ export default class D3ToolTip {
         return selectedElement.ownerSVGElement;
     }
 
-    private getNodeEl(): Selection<HTMLDivElement, {}, null, undefined> {
+    private getNodeEl(): d3.Selection<HTMLDivElement, {}, null, undefined> {
         if (this.node === null) {
             this.node = D3ToolTip.initNode();
             // re-add node to DOM
@@ -337,7 +339,7 @@ export default class D3ToolTip {
     }
 
     private static initNode(): HTMLDivElement {
-        const node: Selection<HTMLDivElement, {}, null, undefined> = d3.select(document.createElement('div'));
+        const node: d3.Selection<HTMLDivElement, {}, null, undefined> = d3.select(document.createElement('div'));
         node
             .style('position', 'absolute')
             .style('top', 0)

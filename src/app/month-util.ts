@@ -1,3 +1,6 @@
+/**
+ * Utility methods dealing with months of the year.
+ */
 export default class MonthUtil {
 
     private static readonly MONTHS: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct',

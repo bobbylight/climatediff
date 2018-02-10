@@ -10,8 +10,9 @@
     "ban-comma-operator": true,
     "class-name": true,
     "comment-format": [ true, "check-space" ],
+    "completed-docs": [ true, "classes", "enums", "functions", "interfaces", "types" ],
     "curly": true,
-    "cyclomatic-complexity": [ true, 20 ],
+    "cyclomatic-complexity": [ true, 10 ],
     "deprecation": true,
     "encoding": true,
     "eofline": true,
@@ -32,7 +33,7 @@
     "member-access": false,
     "member-ordering": false, //[ true, { "order": "fields-first" } ], // Requires weird placement of static methods
     "new-parens": true,
-    "no-angle-bracket-type-assertion": false,
+    "no-angle-bracket-type-assertion": true,
     "no-any": false,
     "no-arg": true,
     "no-bitwise": true,
@@ -43,6 +44,7 @@
     "no-construct": true,
     "no-constructor-vars": false,
     "no-debugger": true,
+    "no-duplicate-imports": true,
     "no-duplicate-super": true,
     "no-duplicate-switch-case": true,
     "no-duplicate-variable": true,
@@ -69,6 +71,8 @@
     "no-return-await": true,
     "no-shadowed-variable": true,
     "no-string-literal": true,
+    "no-submodule-imports": false, // Importing submodules of vue for builds
+    "no-this-assignment": true,
     "no-trailing-whitespace": true,
     "no-unbound-method": false, // This interferes with our unit tests in particular
     "no-unnecessary-class": false, // app.ts
@@ -98,6 +102,7 @@
       "avoid-escape"
     ],
     "radix": true,
+    "restrict-plus-operands": false, // Allow concatenating strings with numbers
     "semicolon": true,
     "strict-boolean-expressions": false,
     //"strict-type-predicates": true,
@@ -126,12 +131,12 @@
         "variable-declaration": "nospace"
       }
     ],
-    "typeof-compare": true,
     "unified-signatures": true,
     "use-default-type-parameter": true,
     "use-isnan": true,
     "variable-name": [
       true,
+      "check-format",
       "ban-keywords"
     ],
     "whitespace": [

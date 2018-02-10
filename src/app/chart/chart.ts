@@ -5,7 +5,6 @@ import {
     UnitConfig
 } from '../climatediff';
 import * as d3 from 'd3';
-import { BaseType } from 'd3';
 import D3ToolTip from '../d3-tool-tip';
 import MonthUtil from '../month-util';
 import ChartLegend from './chart-legend.vue';
@@ -121,7 +120,7 @@ export default {
                 .curve(d3.curveCardinal);
         },
 
-        appendCityArea(chart: d3.Selection<BaseType, {}, null, undefined>, index: number,
+        appendCityArea(chart: d3.Selection<d3.BaseType, {}, null, undefined>, index: number,
                 city: string, xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>,
                 maxField: string, minField ?: string) {
 
@@ -180,7 +179,7 @@ export default {
 
         },
 
-        appendCityAreaPoints(chart: d3.Selection<BaseType, {}, null, undefined>, index: number,
+        appendCityAreaPoints(chart: d3.Selection<d3.BaseType, {}, null, undefined>, index: number,
                               city: string, xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>,
                               maxVar: string, minVar ?: string) {
 
@@ -205,7 +204,7 @@ export default {
 
         },
 
-        createCityAreaPoints(chart: d3.Selection<BaseType, {}, null, undefined>, cityData: any, index: number,
+        createCityAreaPoints(chart: d3.Selection<d3.BaseType, {}, null, undefined>, cityData: any, index: number,
                              xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>, yVar: string,
                              tip: D3ToolTip) {
             chart.selectAll('.point')
@@ -294,7 +293,7 @@ export default {
                 return;
             }
 
-            const chart: d3.Selection<BaseType, {}, null, undefined> = d3.select(chartDomNode)
+            const chart: d3.Selection<d3.BaseType, {}, null, undefined> = d3.select(chartDomNode)
                 .append('g')
                 .attr('transform', 'translate(' + chartMargin.left + ', ' + chartMargin.top + ')');
 
