@@ -9,7 +9,7 @@
     "livereload": "livereload dist",
     "test": "cross-env NODE_ENV=test karma start karma.unit.js",
     "coverage": "cross-env NODE_ENV=test karma start karma.coverage.js",
-    "make-aws-archive": "rm -f aws-archive.zip && cd dist && zip -r aws-archive.zip * && mv ./aws-archive.zip ../",
+    "make-aws-archive": "rm -f aws-archive.zip && cd dist && zip -r aws-archive.zip . && mv ./aws-archive.zip ../",
     "webpack-analyze": "cross-env NODE_ENV=production webpack --config webpack/webpack.config.js --json > size-info.json",
     "webpack-size-view": "webpack-bundle-size-analyzer size-info.json > size-info.txt"
   },
