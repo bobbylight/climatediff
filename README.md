@@ -42,6 +42,14 @@ You can build the production version of it into `dist/` by running `npm run buil
 * _npm run livereload_ - Runs a livereload server for hot-deploying changes (run with _npm run watch_)
 * _npm run test_ - Run unit tests (nothing yet)
 * _npm run coverage_ - Run unit tests, generate coverage report (nothing yet)
+* _npm run make-aws-archive_ - Builds `aws-archive.zip` from the current contents of `dist/`
+
+## To Deploy to AWS
+To deploy to AWS, as configured in `.elasticbeanstalk/config.yml`:
+```sh
+npm run make-aws-archive
+eb deploy --label "label for new version"
+```
 
 ## To-Do
 * Convert backend from PHP to node
