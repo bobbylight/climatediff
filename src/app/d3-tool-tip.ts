@@ -61,8 +61,8 @@ interface BoundingBox {
 /* tslint:disable:no-magic-numbers */
 export default class D3ToolTip {
 
-    private directionCallbacks: { [ key: string ]: Function };
-    private directions: string[];
+    private readonly directionCallbacks: { [ key: string ]: Function };
+    private readonly directions: string[];
 
     private dir: Function;
     private offs: Function;

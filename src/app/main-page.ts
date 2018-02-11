@@ -9,6 +9,9 @@ import dataSource, { Callback } from './data-source';
 
 const TYPEAHEAD_WAIT_MILLIS: number = 500;
 
+/**
+ * Component encapsulating the main page of the application.
+ */
 @Component({ components: { CityForm, Chart } })
 export default class MainPage extends Vue {
 

@@ -48,6 +48,7 @@
     "no-duplicate-super": true,
     "no-duplicate-switch-case": true,
     "no-duplicate-variable": true,
+    "no-dynamic-delete": true,
     "no-empty": true,
     "no-empty-interface": true,
     "no-eval": true,
@@ -70,8 +71,10 @@
     "no-require-imports": true,
     "no-return-await": true,
     "no-shadowed-variable": true,
+    "no-sparse-arrays": true,
     "no-string-literal": true,
     "no-submodule-imports": false, // Importing submodules of vue for builds
+    "no-switch-case-fall-through": true,
     "no-this-assignment": true,
     "no-trailing-whitespace": true,
     "no-unbound-method": false, // This interferes with our unit tests in particular
@@ -96,6 +99,7 @@
     //"only-arrow-functions": true,
     "prefer-conditional-expression": true,
     "prefer-const": true,
+    "prefer-readonly": true,
     "quotemark": [
       true,
       "single",

@@ -22,8 +22,8 @@ export interface Callback<T extends TempDataPoint | PrecipDataPoint> {
  */
 export class DataSource {
 
-    private tempCache: Cache<CityInfo<TempDataPoint>>;
-    private precipCache: Cache<CityInfo<PrecipDataPoint>>;
+    private readonly tempCache: Cache<CityInfo<TempDataPoint>>;
+    private readonly precipCache: Cache<CityInfo<PrecipDataPoint>>;
 
     constructor() {
         this.tempCache = {};

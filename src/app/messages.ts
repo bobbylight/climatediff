@@ -12,7 +12,7 @@ interface Resources {
  */
 class Messages {
 
-    private resources: Resources;
+    private readonly resources: Resources;
 
     constructor() {
 
