@@ -2,20 +2,32 @@ module.exports = [
     {
         test: /\.tsx?$/,
         exclude: /node_modules/,
-        loader: 'ts-loader',
-        options: {
-            // Needed for <script lang="ts"> to work in *.vue files; see https://github.com/vuejs/vue-loader/issues/109
-            appendTsSuffixTo: [ /\.vue$/ ]
-        }
+        use: [
+            {
+                loader: 'ts-loader',
+                options: {
+                    // Needed for <script lang="ts"> to work in *.vue files; see https://github.com/vuejs/vue-loader/issues/109
+                    appendTsSuffixTo: [ /\.vue$/ ]
+                }
+            },
+            {
+                loader: 'tslint-loader'
+                // Enabling the typeCheck option here causes builds to fail:
+                // "Ensure that the files supplied to lint have a .ts, .tsx, .d.ts, .js or .jsx extension."
+                // Commented out like this, the build runs, but all lines of *.vue files are linted, including
+                // <template> and <script> blocks.
+                // , options: {
+                //     typeCheck: true
+                // }
+            }
+        ]
     }, {
         test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-            loaders: {
-                ts: 'ts-loader!tslint-loader',
-                css: 'vue-style-loader!css-loader' // <style lang="css">
+        use: [
+            {
+                loader: 'vue-loader'
             }
-        }
+        ]
     }, {
         test: /\.css$/,
         loader: 'style-loader!css-loader'

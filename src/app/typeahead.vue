@@ -1,14 +1,12 @@
 <template>
     <span :id="spanId" :class="classes">
-        <v-select
+        <v-autocomplete
             ref="select"
             :id="id"
             :label="label"
             :placeholder="placeholder"
             :loading="loading"
             :prepend-icon="icon"
-            autocomplete
-            browser-autocomplete="off"
             required
             :debounce-search="debounceMillis"
             :items="items"
@@ -17,7 +15,7 @@
             :search-input.sync="search"
             :value="curValue"
             @input="fireUpdateEvent($event)"
-            ></v-select>
+            ></v-autocomplete>
     </span>
 </template>
 

@@ -1,23 +1,13 @@
 const loaders = require('./loaders');
 const path = require('path');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackAutoInject = require('webpack-auto-inject-version');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
 
 const devBuild = process.env.NODE_ENV === 'dev';
-
-// Loaders specific to compiling
-loaders.push({
-    test: /\.tsx?$/,
-    enforce: 'pre',
-    loader: 'tslint-loader',
-    exclude: /node_modules/,
-    options: {
-        typeCheck: true
-    }
-});
+console.log(`Starting webpack build with NODE_ENV: ${process.env.NODE_ENV}`);
 
 const config = {
     entry: {
@@ -30,14 +20,13 @@ const config = {
         filename: '[name].js'
     },
     resolve: {
-        extensions: [ '.ts', '.tsx', '.js', '.json', '.vue', '.svg' ],
-        modules: [ 'src/app', 'src/img', 'src/css', 'node_modules' ],
-        alias: {
-            'vue$': 'vue/dist/vue.esm.js'
-        }
+        extensions: [ '.ts', '.tsx', '.js', '.json', '.svg' ],
+        modules: [ 'src/app', 'src/img', 'src/css', 'node_modules' ]
     },
+    mode: devBuild ? 'development' : 'production',
     devtool: devBuild ? 'cheap-eval-source-map' : 'source-map',
     plugins: [
+        new VueLoaderPlugin(),
         new CopyWebpackPlugin([
             { from: 'src/api', to: 'api' },
             { from: 'src/img', to: 'img' },
@@ -75,20 +64,21 @@ const config = {
     ],
     module: {
         rules: loaders
+    },
+
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                // Create a separate chunk for everything in node_modules
+                vendor: {
+                    test: /node_modules/,
+                    name: 'vendor',
+                    enforce: true,
+                    chunks: 'all'
+                }
+            }
+        }
     }
 };
-
-if (process.env.NODE_ENV === 'production') {
-    config.plugins.push(
-        new UglifyJsPlugin({
-            uglifyOptions: {
-                compress: {
-                    warnings: false
-                }
-            },
-            parallel: true
-        })
-    );
-}
 
 module.exports = config;

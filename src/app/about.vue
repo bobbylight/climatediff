@@ -37,14 +37,15 @@
     </v-container>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+import Component from 'vue-class-component';
 
-    methods: {
+@Component
+export default class About extends Vue {
 
-        goBack() {
-            this.$router.push({ name: 'compare' });
-        }
+    goBack() {
+        this.$router.push({ name: 'compare' });
     }
 }
 </script>

@@ -10,9 +10,9 @@ Component.registerHooks([
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-// import Vuetify from 'vuetify';
 import Vuetify from 'vuetify/es5/components/Vuetify';
 import VAlert from 'vuetify/es5/components/VAlert';
+import VAutocomplete from 'vuetify/es5/components/VAutocomplete';
 import VApp from 'vuetify/es5/components/VApp';
 import VBtn from 'vuetify/es5/components/VBtn';
 import VCard from 'vuetify/es5/components/VCard';
@@ -20,8 +20,6 @@ import VFooter from 'vuetify/es5/components/VFooter';
 import VGrid from 'vuetify/es5/components/VGrid'; // VContainer, VContent, VFlex, VGrid, VLayout, VSpacer
 import VIcon from 'vuetify/es5/components/VIcon';
 import VProgressCircular from 'vuetify/es5/components/VProgressCircular';
-import VProgressLinear from 'vuetify/es5/components/VProgressLinear';
-import VSelect from 'vuetify/es5/components/VSelect';
 import VToolbar from 'vuetify/es5/components/VToolbar';
 import transitions from 'vuetify/es5/components/transitions';
 
@@ -34,21 +32,18 @@ import '../../node_modules/vuetify/dist/vuetify.min.css';
 import '../../node_modules/font-awesome/css/font-awesome.css';
 import '../css/app.less';
 
-/* tslint:disable:no-unsafe-any */
 Vue.use(VueRouter);
-// Vue.use(Vuetify);
 Vue.use(Vuetify, {
     components: {
         VAlert,
         VApp,
+        VAutocomplete,
         VBtn,
         VCard,
         VFooter,
         VGrid,
         VIcon,
         VProgressCircular,
-        VProgressLinear,
-        VSelect,
         VToolbar,
         transitions
     }
@@ -67,7 +62,7 @@ const router: VueRouter = new VueRouter({
 new Vue({
     el: '#app',
     router: router,
-    components: {
-        App
+    render: (h) => {
+        return h(App);
     }
 });

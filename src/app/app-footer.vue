@@ -1,7 +1,7 @@
 <template>
     <v-footer dark class="app-footer">
         <div class="footer-content">
-            &copy; 2017 Climatediff
+            &copy; 2018 Climatediff
         </div>
     </v-footer>
 </template>
