@@ -47,10 +47,10 @@ import Component from 'vue-class-component';
 export default class CityForm extends Vue {
 
     @Prop({ required: true })
-    private initialCity1: string;
+    private initialCity1!: string;
 
     @Prop({ required: true })
-    private initialCity2: string;
+    private initialCity2!: string;
 
     @Prop({ required: true })
     private submitCallback: Function;

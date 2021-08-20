@@ -239,7 +239,7 @@ export default class D3ToolTip {
      */
     private getScreenBBox(): BoundingBox {
 
-        let targetel: any /*SVGElement | EventTarget*/ = this.target || d3.event.target;
+        let targetel: any /*SVGElement | EventTarget*/ = this.target || (d3 as any).event.target; // TODO: Type
         while (!targetel.getScreenCTM && 'undefined' === targetel.parentNode) {
             targetel = targetel.parentNode;
         }

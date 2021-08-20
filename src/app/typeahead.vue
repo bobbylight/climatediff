@@ -32,7 +32,7 @@ export default class Typeahead extends Vue {
      * "value" facilitates v-model support
      */
     @Prop({ required: true })
-    value: string;
+    value!: string;
 
     @Prop({ required: true })
     url: string;

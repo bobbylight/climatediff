@@ -63,8 +63,8 @@ export default class Chart extends Vue {
     @Prop()
     titleIcon: string; // Not private, used in template
 
-    @Prop()
-    private chartConfig: ChartConfig;
+    @Prop({ required: true })
+    private chartConfig!: ChartConfig;
 
     @Prop({ required: true })
     private setUnitsCallback: Function;
@@ -231,8 +231,8 @@ export default class Chart extends Vue {
             .attr('cy', (d: any, i: number) => { return yScale(d[yVar]); })
             .attr('r', (d: any, i: number) => { return 3; })
             .attr('pointer-events', 'all')
-            .on('mouseover', this.expandPoint(tip.show))
-            .on('mouseout', this.collapsePoint(tip.hide))
+            .on('mouseover', this.expandPoint(tip.show) as any)
+            .on('mouseout', this.collapsePoint(tip.hide) as any) // TODO: Fix this and previous line's types
             .style('opacity', 0)
             .transition()
             .duration(TRANSITION_DURATION_MILLIS)

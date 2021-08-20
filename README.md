@@ -1,6 +1,5 @@
-climatediff - Compares the climate of two cities
-================================================
-[![Build Status](https://travis-ci.org/bobbylight/climatediff.svg?branch=master)](https://travis-ci.org/bobbylight/climatediff)
+# climatediff - Compares the climate of two cities
+![Build](https://github.com/bobbylight/climatediff/actions/workflows/gradle.yml/badge.svg)
 [![Dependency Status](https://img.shields.io/david/bobbylight/climatediff.svg)](https://david-dm.org/bobbylight/climatediff)
 [![Dev Dependency Status](https://img.shields.io/david/dev/bobbylight/climatediff.svg)](https://david-dm.org/bobbylight/climatediff?type=dev)
 
