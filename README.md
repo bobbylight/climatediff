@@ -1,5 +1,5 @@
 # climatediff - Compares the climate of two cities
-![Build](https://github.com/bobbylight/climatediff/actions/workflows/gradle.yml/badge.svg)
+![Build](https://github.com/bobbylight/climatediff/actions/workflows/build.yml/badge.svg)
 [![Dependency Status](https://img.shields.io/david/bobbylight/climatediff.svg)](https://david-dm.org/bobbylight/climatediff)
 [![Dev Dependency Status](https://img.shields.io/david/dev/bobbylight/climatediff.svg)](https://david-dm.org/bobbylight/climatediff?type=dev)
 
