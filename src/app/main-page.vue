@@ -135,7 +135,7 @@ export default class MainPage extends Vue {
         }
     }
 
-    private updateClimateDiff(city1: string, city2: string) {
+    updateClimateDiff(city1: string, city2: string) {
 
         this.loading = true;
 

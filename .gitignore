@@ -11,9 +11,9 @@ vendor
 *.zip
 interesting-datatypes.txt
 cacert.pem
-size-info.json
-size-info.txt
 npm-debug.log
+js/
+tsconfig.tsbuildinfo
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

@@ -5,7 +5,7 @@
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "alwaysStrict": true,
-    "declaration": false,
+    //"declaration": false,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,//true,
     "noImplicitReturns": true,
@@ -16,19 +16,31 @@
     "removeComments": false,
     //"strict": true,
 
+    // Stuff from a vanilla vite config
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": [ "ES2020", "DOM", "DOM.Iterable" ],
+    "composite": true,
+    "skipLibCheck": true,
+    //"module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    //"allowSyntheticDefaultImports": true,
+    //"strict": true,
+
     // Some of these are required for vue to work
     "allowSyntheticDefaultImports": true,
-    "target": "es5",
-    "module": "es2015",
-    "moduleResolution": "node",
+    //"target": "es5",
+    //"module": "es2015",
     "experimentalDecorators": true, // Allow TypeScript classes via typescript-class-components
 
     "outDir": "src/js",
     "rootDir": "src/app",
     "sourceMap": true
   },
-  "exclude": [
-    "node_modules",
-    "src/js"
-  ]
+  "include": [ "src/app/*.ts", "src/app/*.tsx", "src/app/*.vue" ]
 }
