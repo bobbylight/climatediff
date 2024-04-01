@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@types/d3": "5.0.0",
-    "less": "3.8.1",
+    "less": "3.13.1",
     "rimraf": "2.6.2",
     "run-sequence": "2.2.1",
     "stylus": "0.54.5",
