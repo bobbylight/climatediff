@@ -25,7 +25,6 @@ export default class Ajax {
 
         request.onload = (e: Event) => {
 
-            // tslint:disable-next-line:no-magic-numbers
             if (request.status < 400) {
                 success(request.response);
             }

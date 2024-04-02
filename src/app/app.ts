@@ -58,7 +58,6 @@ const router: VueRouter = new VueRouter({
     ]
 });
 
-// tslint:disable-next-line:no-unused-expression
 new Vue({
     el: '#app',
     router: router,

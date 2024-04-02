@@ -26,12 +26,10 @@ export default class Utils {
     }
 
     static celsiusToFahrenheit(c: number): number {
-        // tslint:disable-next-line:no-magic-numbers
         return c * (9 / 5) + 32;
     }
 
     static fahrenheitToCelsius(f: number): number {
-        // tslint:disable-next-line:no-magic-numbers
         return (f - 32) * (5 / 9);
     }
 

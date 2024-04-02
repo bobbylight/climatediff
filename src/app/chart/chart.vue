@@ -50,7 +50,6 @@ const MAX_CITY_COUNT: number = 2;
 const POINT_SIZE_DEFAULT: number = 3;
 const POINT_SIZE_ARMED: number = 6;
 
-/* tslint:disable:no-magic-numbers */
 @Component({ components: { ChartLegend }})
 export default class Chart extends Vue {
 

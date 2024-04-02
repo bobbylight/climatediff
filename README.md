@@ -34,9 +34,8 @@ You can build the production version of it into `dist/` by running `npm run buil
 
 ### npm Scripts
 * _npm run clean_ - Delete the `dist/` and `coverage/` (for unit tests) folders
-* _npm run build_ - Run a minified webpack build, output in `dist/`
-* _npm run watch_ - Runs a dev webpack build and listens for changes, output in `dist/`
-* _npm run livereload_ - Runs a livereload server for hot-deploying changes (run with _npm run watch_)
+* _npm run build_ - Create a minified build in `dist/`
+* _npm run dev_ - Runs a dev build, watches for and hotswaps changes
 * _npm run test_ - Run unit tests (nothing yet)
 * _npm run coverage_ - Run unit tests, generate coverage report (nothing yet)
 * _npm run make-aws-archive_ - Builds `aws-archive.zip` from the current contents of `dist/`

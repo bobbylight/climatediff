@@ -58,7 +58,6 @@ interface BoundingBox {
  *     .on('mouseout', collapsePoint(tip.hide));
  * </code>
  */
-/* tslint:disable:no-magic-numbers */
 export default class D3ToolTip {
 
     private readonly directionCallbacks: { [ key: string ]: Function };
