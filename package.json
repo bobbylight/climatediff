@@ -16,7 +16,7 @@
   "devDependencies": {
     "@types/d3": "5.0.0",
     "eslint": "8.57.0",
-    "less": "3.8.1",
+    "less": "4.2.0",
     "rimraf": "2.6.2",
     "run-sequence": "2.2.1",
     "stylus": "0.54.5",
