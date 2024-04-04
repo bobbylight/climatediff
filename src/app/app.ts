@@ -1,12 +1,3 @@
-import Component from 'vue-class-component';
-
-// Allows vue-class-component classes to resolve hooks provided by vue-router
-Component.registerHooks([
-    'beforeRouteEnter',
-    'beforeRouteLeave',
-    'beforeRouteUpdate'
-]);
-
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 

@@ -21,63 +21,53 @@
 
 <script lang="ts">
 import Ajax, { QueryParams } from './ajax';
-import Vue from 'vue';
-import { Prop, Watch } from 'vue-property-decorator';
-import Component from 'vue-class-component';
 
-@Component
-export default class Typeahead extends Vue {
+export default {
+    props: {
+        /**
+         * "value" facilitates v-model support
+         */
+        value: String,
 
-    /**
-     * "value" facilitates v-model support
-     */
-    @Prop({ required: true })
-    value!: string;
+        url: String,
 
-    @Prop({ required: true })
-    url: string;
+        filterParamName: String,
 
-    @Prop({ required: true })
-    filterParamName: string;
+        responseLabelField: String,
 
-    @Prop()
-    responseLabelField: string;
+        responseValueField: String,
 
-    @Prop()
-    responseValueField: string;
+        queryParams: Object, /*QueryParams*/
 
-    @Prop()
-    queryParams: QueryParams;
+        id: String,
 
-    @Prop({ required: true })
-    id: string;
+        icon: String,
 
-    @Prop()
-    icon: string;
+        label: String,
 
-    @Prop()
-    label: string;
+        placeholder: String,
 
-    @Prop()
-    placeholder: string;
+        focus: Object,//boolean | string;
 
-    @Prop()
-    focus: boolean | string;
+        debounceMillis: Number, // default: 300
 
-    @Prop({ 'default': 300 })
-    debounceMillis: number;
+        classes: String,
+    },
 
-    @Prop()
-    classes: string;
+    data() {
+        return {
+            curValue: this.value, // string
+            items: [], // any[]
+            loading: false,
+            search: null, // string
+        };
+    },
 
-    curValue: string = this.value;
-    items: any[] = [];
-    loading: boolean = false;
-    search: string = null;
-
-    get spanId() {
-        return `${this.id}-span`;
-    }
+    computed: {
+        spanId() {
+            return `${this.id}-span`;
+        },
+    },
 
     created() {
         if (this.value) {
@@ -86,51 +76,50 @@ export default class Typeahead extends Vue {
             item[this.responseValueField] = this.value;
             this.items.push(item);
         }
-    }
+    },
 
     mounted() {
         // if (this.focus === 'true' || !!this.focus) {
         //     (this.$refs.select as HTMLElement).focus();
         // }
-    }
+    },
 
-    @Watch('search')
-    onSearchChanged(newValue: string, oldValue: string) {
-        if (newValue) {
-            this.runQuery(newValue);
-        }
-    }
+    watch: {
+        search: function (newValue: string, oldValue: string) {
+            if (newValue) {
+                this.runQuery(newValue);
+            }
+        },
+    },
 
-    private static clone<T>(obj: T): T {
-        return JSON.parse(JSON.stringify(obj));
-    }
+    methods: {
+        /**
+         * Fires an "input" event stating our value has changed.  Part of implementing v-model for this component.
+         */
+        fireUpdateEvent(newValue: string) {
+            console.log(`New value: ${newValue}`);
+            this.$emit('input', newValue);
+        },
 
-    /**
-     * Fires an "input" event stating our value has changed.  Part of implementing v-model for this component.
-     */
-    fireUpdateEvent(newValue: string) {
-        console.log(`New value: ${newValue}`);
-        this.$emit('input', newValue);
-    }
+        runQuery(query: string) {
 
-    private runQuery(query: string) {
+            this.loading = true;
 
-        this.loading = true;
+            const queryParams: QueryParams = JSON.parse(JSON.stringify(this.queryParams));
+            queryParams[this.filterParamName] = query;
 
-        const queryParams: QueryParams = Typeahead.clone(this.queryParams);
-        queryParams[this.filterParamName] = query;
+            Ajax.get(this.url, queryParams, this.ajaxSuccess, this.ajaxFailure);
+        },
 
-        Ajax.get(this.url, queryParams, this.ajaxSuccess, this.ajaxFailure);
-    }
+        ajaxSuccess(responseData: any[]) {
+            this.items = responseData;
+            this.loading = false;
+        },
 
-    private ajaxSuccess(responseData: any[]) {
-        this.items = responseData;
-        this.loading = false;
-    }
-
-    private ajaxFailure() {
-        this.loading = false;
-    }
+        ajaxFailure() {
+            this.loading = false;
+        },
+    },
 }
 </script>
 

@@ -23,7 +23,6 @@
                                    response-label-field="city_name" response-value-field="city_name" id="city2" label="City 2:"
                                    classes="city-info"></Typeahead>
                     </v-flex>
-
                 </v-layout>
             </v-container>
 
@@ -39,39 +38,39 @@
 
 <script lang="ts">
 import Typeahead from './typeahead.vue';
-import Vue from 'vue';
-import { Prop } from 'vue-property-decorator';
-import Component from 'vue-class-component';
 
-@Component({ components: { Typeahead }})
-export default class CityForm extends Vue {
+export default {
+    components: {
+        Typeahead,
+    },
 
-    @Prop({ required: true })
-    private initialCity1!: string;
+    props: {
+        initialCity1: String,
+        initialCity2: String,
+        submitCallback: Function,
+        loading: Boolean,
+    },
 
-    @Prop({ required: true })
-    private initialCity2!: string;
+    data() {
+        return {
+            city1: this.initialCity1,
+            city2: this.initialCity2,
+            locationQueryParams: {
+                limit: 10
+            },
+            formHeaderClasses: {
+                'form-header': true,
+                submitted: false
+            },
+        };
+    },
 
-    @Prop({ required: true })
-    private submitCallback: Function;
-
-    @Prop({ required: true })
-    loading: boolean; // Not private since tsc doesn't know about usage in vue template
-
-    city1: string = this.initialCity1;
-    city2: string = this.initialCity2;
-    locationQueryParams: any = {
-        limit: 10
-    };
-    formHeaderClasses: any = {
-        'form-header': true,
-        submitted: false
-    };
-
-    onSubmit() {
-        this.formHeaderClasses.submitted = true;
-        this.submitCallback(this.city1, this.city2);
-    }
+    methods: {
+        onSubmit() {
+            this.formHeaderClasses.submitted = true;
+            this.submitCallback(this.city1, this.city2);
+        },
+    },
 }
 </script>
 

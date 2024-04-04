@@ -27,24 +27,26 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import AppFooter from './app-footer.vue';
-import Component from 'vue-class-component';
 
-@Component({ components: { AppFooter } })
-export default class App extends Vue {
+export default {
+    components: {
+        AppFooter,
+    },
 
-    onReset() {
-        this.$router.push({ name: 'start' });
-    }
+    methods: {
+        onReset() {
+            this.$router.push({name: 'start'});
+        },
 
-    showAboutDialog() {
-        this.$router.push({ name: 'about' });
-    }
+        showAboutDialog() {
+            this.$router.push({name: 'about'});
+        },
 
-    viewOnGitHub() {
-        window.open('https://github.com/bobbylight/climatediff', '_blank');
-    }
+        viewOnGitHub() {
+            window.open('https://github.com/bobbylight/climatediff', '_blank');
+        },
+    },
 }
 </script>
 
