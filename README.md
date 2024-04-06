@@ -24,11 +24,9 @@ curl -sS https://getcomposer.org/installer | php
 php composer.phar install
 ```
 
-Then, [get a token to access the NCDC CDO web services](http://www.ncdc.noaa.gov/cdo-web/token). Create a new file named `src/init.php` from
-`src/init.php.orig` with your token inserted appropriately.  This is necessary for the application to fetch historical data from the NOAA.
-
-The development version of the application lives in `src/`.  Running `npm run watch` will set up watches and
-`livereload` for real-time development and debugging.
+Then, [get a token to access the NCDC CDO web services](http://www.ncdc.noaa.gov/cdo-web/token). Create a new file named `public/api/init.php` from
+`public/api/init.php.orig` with your token inserted appropriately.  This is necessary for the application to fetch
+historical data from the NOAA.
 
 You can build the production version of it into `dist/` by running `npm run build`.
 
@@ -46,14 +44,6 @@ To deploy to AWS, as configured in `.elasticbeanstalk/config.yml`:
 npm run make-aws-archive
 eb deploy --label "label for new version"
 ```
-
-## To-Do
-* Convert backend from PHP to node
-* Multiple cities, not just 2
-* Current weather
-* Toggle between Fahrenheit and Celsius
-* Toggle between inches and cm
-* All other items in the issue tracker
 
 ## Miscellaneous
 Non-Font-Awesome icons were grabbed from:
