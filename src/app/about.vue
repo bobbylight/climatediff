@@ -6,7 +6,7 @@
             <v-flex xs6>
 
                 <div class="about-section about-header">
-                    <img class="about-image" src="/src/img/263883.svg">
+                    <img class="about-image" src="/img/263883.svg">
                     <h3>About Climatediff</h3>
                     <h6>Version: [AIV]{version}[/AIV]<span class="about-metadata-splitter">|</span>[AIV]{date}[/AIV]</h6>
                 </div>

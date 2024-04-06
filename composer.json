@@ -1,8 +1,9 @@
 {
     "config": {
-        "vendor-dir": "src/api/vendor"
+        "vendor-dir": "public/vendor"
     },
     "require": {
-        "slim/slim": "2.*"
+        "slim/slim": "4.*",
+        "guzzlehttp/psr7": "^2"
     }
 }

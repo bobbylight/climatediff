@@ -13,40 +13,69 @@
  *       * Returns [ { "city_id": "id_1", "city_name": "Anytown, NC 21775" }, ... ]
  *       * Optional 'limit' parameter limits result set size
  */
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Factory\AppFactory;
 
-//require 'codeguy-Slim-4906b77/Slim/Slim.php';
-//\Slim\Slim::registerAutoloader();
-require 'vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
-$app = new \Slim\Slim();
+$app = AppFactory::create();
 
-$app->get('/hello/:name', function ($name) use ($app) {
-    $app->response->headers->set('Content-Type', 'application/json');
-    $app->render('hello.php', array('name' => $name));
+$app->get('/api/hello/{name}', function (Request $request, Response $response, $args) {
+    require_once 'hello.php';
+    $response->getBody()->write(sayHello($args['name']));
+    return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/locations', function () use ($app) {
-    $app->response->headers->set('Content-Type', 'application/json');
-    $app->render('locations.php');
+$app->get('/api/locations', function (Request $request, Response $response) {
+    require_once 'locations.php';
+    $response->getBody()->write(locations());
+    return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/temperature/:locId1(/:locId2)', function ($locId1, $locId2 = null) use ($app) {
+$app->get('/api/temperature/{locId1}[/{locId2}]', function (Request $request, Response $response, $args) {
+    require_once 'temperature.php';
+    $loc1 = $args['locId1'] ?? null;
+    $loc2 = $args['locId2'] ?? null;
     $debug = isset($_GET['debug']);
-    $app->response->headers->set('Content-Type', 'application/json');
-    $app->render('temperature.php', array('loc1' => $locId1, 'loc2' => $locId2, 'debug' => $debug));
+    $response->getBody()->write(temperature($loc1, $loc2, $debug));
+    return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/precipitation/:locId1(/:locId2)', function ($locId1, $locId2 = null) use ($app) {
+$app->get('/api/precipitation/{locId1}[/{locId2}]', function (Request $request, Response $response, $args) {
+    require_once 'precipitation.php';
+    $loc1 = $args['locId1'] ?? null;
+    $loc2 = $args['locId2'] ?? null;
     $debug = isset($_GET['debug']);
-    $app->response->headers->set('Content-Type', 'application/json');
-    $app->render('precipitation.php', array('loc1' => $locId1, 'loc2' => $locId2, 'debug' => $debug));
+    $response->getBody()->write(precipitation($loc1, $loc2, $debug));
+    return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->error(function(Exception $e) use ($app) {
-    $app->response->headers->set('Content-Type', 'application/json');
-    $app->response->body(json_encode($e));
-});
+$errorMiddleware = $app->addErrorMiddleware(true, true, true);
+//$errorMiddleware->setDefaultErrorHandler(function (
+//    Request $request,
+//    Throwable $exception,
+//    bool $displayErrorDetails,
+//    bool $logErrors,
+//    bool $logErrorDetails,
+//    ?LoggerInterface $logger = null
+//) use ($app) {
+//    //$logger->error($exception->getMessage());
+//
+//    $status = 500;
+//    if ($exception instanceof \Slim\Exception\HttpException) {
+//        $status = $exception->getCode();
+//    }
+//
+//    $payload = ['message' => $exception->getMessage(), 'status' => $status];
+//
+//    $response = $app->getResponseFactory()->createResponse();
+//    $response->getBody()->write(
+//        json_encode($payload, JSON_UNESCAPED_UNICODE)
+//    );
+//
+//    return $response->withHeader('Content-Type', 'application/json')->withStatus($status);
+//});
 
 $app->run();
-
 ?>
