@@ -1,18 +1,18 @@
 <template>
     <v-container fluid class="main-container">
-        <v-layout row wrap justify-center>
+        <v-row wrap justify="center">
 
-            <v-flex xs12 style="background: white">
+            <v-col xs12>
                 <CityForm :initial-city1="city1" :initial-city2="city2"
                           :submit-callback="updateClimateDiff"
                           :loading="loading"></CityForm>
-            </v-flex>
+            </v-col>
 
-            <v-flex xs12 class="results-title" v-if="showCharts">
+            <v-col xs12 class="results-title" v-if="showCharts">
                 <h1>{{resultsTitle}}</h1>
-            </v-flex>
+            </v-col>
 
-            <v-flex xs8 class="results" v-if='showCharts'>
+            <v-col xs8 class="results" v-if='showCharts'>
 
                 <Chart chart-title='Temperature' index="1"
                        title-icon='fa-thermometer-three-quarters'
@@ -29,9 +29,9 @@
                        :mask='maskPrecipResults'
                        max-prop="precip"></Chart>
 
-            </v-flex>
+            </v-col>
 
-        </v-layout>
+        </v-row>
     </v-container>
 </template>
 
@@ -204,10 +204,6 @@ export default {
 .main-container {
 
     padding: 0 !important;
-
-    .city-form {
-        box-shadow: 0 2px 1px -1px rgba(0,0,0,.2);
-    }
 
     .results-title {
         margin-top: 2rem;

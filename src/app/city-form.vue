@@ -1,35 +1,37 @@
 <template>
-    <div>
+    <div class="city-form">
         <v-container :class="formHeaderClasses">
-            <v-layout row wrap justify-center class="form-header-inner">
+            <v-row wrap justify="center" class="form-header-inner">
                 <h1>Cities to compare:</h1>
-            </v-layout>
+            </v-row>
         </v-container>
 
-        <form @submit.prevent="onSubmit" id='cityForm' role='form' class='city-form'>
+        <form @submit.prevent="onSubmit" id='cityForm' role='form'>
 
             <v-container>
-                <v-layout row wrap justify-center>
+                <v-row wrap justify="center">
 
-                    <v-flex xs3>
+                    <v-col xs3>
                         <Typeahead url="api/locations" v-model="city1" filter-param-name="input"
                                    :query-params="locationQueryParams" icon="location_city"
                                    response-label-field="city_name" response-value-field="city_name" id="city1" label="City 1:"
                                    classes="city-info" focus="true"></Typeahead>
-                    </v-flex>
-                    <v-flex xs3 offset-xs1>
+                    </v-col>
+                    <v-col xs3 offset-xs1>
                         <Typeahead url="api/locations" v-model="city2" filter-param-name="input"
                                    :query-params="locationQueryParams" icon="location_city"
                                    response-label-field="city_name" response-value-field="city_name" id="city2" label="City 2:"
                                    classes="city-info"></Typeahead>
-                    </v-flex>
-                </v-layout>
+                    </v-col>
+                </v-row>
             </v-container>
 
-            <v-container class="city-form-no-top-padding">
-                <v-layout row-wrap justify-center>
-                    <v-btn type='submit' color="primary" :disabled="loading">Compare!</v-btn>
-                </v-layout>
+            <v-container class="button-panel">
+                <v-row>
+                    <v-col class="d-flex justify-center">
+                        <v-btn type='submit' color="primary" :disabled="loading">Compare!</v-btn>
+                    </v-col>
+                </v-row>
             </v-container>
 
         </form>
@@ -75,28 +77,34 @@ export default {
 </script>
 
 <style lang="less">
-.form-header {
+.city-form {
+    background: white;
+    border-bottom: 1px solid rgba(0,0,0,.2);
+    //box-shadow: 0 2px 1px -1px rgba(0,0,0,.2);
 
-    transition: max-height .3s, opacity .3s;
-    max-height: 100px;
-    padding: unset; // Clear default 16px padding for smooth animation
+    .form-header {
 
-    .form-header-inner {
-        padding: 16px; // Add 16px border typically on the parent .container
+        transition: max-height .3s, opacity .3s;
+        max-height: 100px;
+        padding: unset; // Clear default 16px padding for smooth animation
+
+        .form-header-inner {
+            padding: 16px; // Add 16px border typically on the parent .container
+        }
+
+        &.submitted {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
     }
 
-    &.submitted {
-        max-height: 0;
-        opacity: 0;
-        overflow: hidden;
+    .button-panel {
+        padding-bottom: 24px;
     }
-}
 
-.city-form-no-top-padding {
-    padding-top: 0;
-}
-
-.city-info {
-    white-space: nowrap;
+    .city-info {
+        white-space: nowrap;
+    }
 }
 </style>

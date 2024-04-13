@@ -1,5 +1,16 @@
-const { createVuePlugin } = require('vite-plugin-vue2');
+import { defineConfig } from 'vite'
+const path = require('path')
+import vue from '@vitejs/plugin-vue'
+import vuetify from 'vite-plugin-vuetify'
 
-module.exports = {
-    plugins: [createVuePlugin()],
-};
+// https://vitejs.dev/config/
+export default defineConfig({
+    plugins: [
+        vue(),
+        vuetify({ autoImport: true }),
+    ],
+    resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "./src"),
+        },
+    },})

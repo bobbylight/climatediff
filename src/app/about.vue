@@ -1,9 +1,9 @@
 <template>
     <v-container class="about-container">
 
-        <v-layout row wrap justify-center>
+        <v-row wrap justify-center>
 
-            <v-flex xs6>
+            <v-col xs6>
 
                 <div class="about-section about-header">
                     <img class="about-image" src="/img/263883.svg">
@@ -31,9 +31,9 @@
                 <div class="about-buttons">
                     <v-btn color="primary" @click="goBack">Back</v-btn>
                 </div>
-            </v-flex>
+            </v-col>
 
-        </v-layout>
+        </v-row>
     </v-container>
 </template>
 

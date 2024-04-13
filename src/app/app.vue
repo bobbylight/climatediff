@@ -1,26 +1,31 @@
 <template>
     <v-app>
-        <v-toolbar app dark class="app-toolbar">
+        <v-app-bar color="black" class="app-toolbar">
 
-            <v-toolbar-title class="app-title" @click="onReset()">
+            <v-app-bar-title class="app-title" @click="onReset()">
                 <i class="fa fa-cloud"></i> ClimateDiff
-            </v-toolbar-title>
+            </v-app-bar-title>
 
             <v-spacer></v-spacer>
 
-            <v-btn icon @click="viewOnGitHub" title="View on GitHub">
-                <i class="banner-item fa fa-github"></i>
+            <v-btn :icon=true @click="viewOnGitHub" title="View on GitHub">
+                <v-icon icon="mdi-github"></v-icon>
             </v-btn>
-            <v-btn icon @click="showAboutDialog" title="About ClimateDiff">
-                <v-icon>help</v-icon>
+            <v-btn :icon=true @click="showAboutDialog" title="About ClimateDiff">
+                <v-icon icon="mdi-help"></v-icon>
             </v-btn>
-        </v-toolbar>
+        </v-app-bar>
 
-        <v-content>
-            <transition name="page" mode="out-in">
-                <router-view></router-view>
-            </transition>
-        </v-content>
+        <v-main>
+            <router-view v-slot="{ Component, route }">
+                <transition name="page" mode="out-in">
+                    <component
+                        :is="Component"
+                        :key="route.path"
+                    />
+                </transition>
+            </router-view>
+        </v-main>
 
         <AppFooter app></AppFooter>
     </v-app>
@@ -58,14 +63,5 @@ export default {
     .app-title {
         cursor: pointer;
     }
-
-    .banner-item {
-        font-size: 24px; //@font-size-large;
-
-        a {
-            padding: 11px; // Just right so icons are centered without navbar getting taller
-        }
-    }
 }
-
 </style>
