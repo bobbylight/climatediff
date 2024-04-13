@@ -27,34 +27,73 @@ import Ajax, { QueryParams } from './ajax';
 
 export default {
     props: {
-    /**
+        /**
          * "value" facilitates v-model support
          */
-        value: String,
+        value: {
+            type: String,
+            required: true,
+        },
 
-        url: String,
+        url: {
+            type: String,
+            required: true,
+        },
 
-        filterParamName: String,
+        filterParamName: {
+            type: String,
+            required: true,
+        },
 
-        responseLabelField: String,
+        responseLabelField: {
+            type: String,
+            required: true,
+        },
 
-        responseValueField: String,
+        responseValueField: {
+            type: String,
+            required: true,
+        },
 
-        queryParams: Object, /*QueryParams*/
+        queryParams: {
+            type: Object, /*QueryParams*/
+            required: true,
+        },
 
-        id: String,
+        id: {
+            type: String,
+            required: true,
+        },
 
-        icon: String,
+        icon: {
+            type: String,
+            required: true,
+        },
 
-        label: String,
+        label: {
+            type: String,
+            required: true,
+        },
 
-        placeholder: String,
+        placeholder: {
+            type: String,
+            required: true,
+        },
 
-        focus: Object,//boolean | string;
+        focus: {
+            type: Object,//boolean | string;
+            required: true,
+        },
 
-        debounceMillis: Number, // default: 300
+        debounceMillis: {
+            type: Number, // default: 300,
+            required: true,
+        },
 
-        classes: String,
+        classes: {
+            type: String,
+            required: true,
+        },
     },
 
     data() {

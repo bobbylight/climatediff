@@ -2,6 +2,7 @@
     <div class="chart-legend">
         <span
             v-for="(city, index) in cityLabels"
+            :key="city"
             :class="citySpanClass(index)"
             @mouseenter="onMouseEnter(index)"
             @mouseleave="onMouseLeave"
@@ -18,8 +19,10 @@ const ARMED_CITY = 'armedCity';
 export default {
 
     props: {
-        cityLabels: Array, // string[]
-        required: true,
+        cityLabels: {
+            type: Array, // string[]
+            required: true,
+        },
     },
 
     methods: {

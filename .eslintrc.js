@@ -5,7 +5,7 @@ module.exports = {
         browser: true,
     },
     'extends': [
-        //'plugin:vue/vue3-recommended',
+        'plugin:vue/vue3-recommended',
         //'plugin:vue/vue3-strongly-recommended',
         'eslint:recommended'
     ],
@@ -25,9 +25,9 @@ module.exports = {
         '@stylistic/comma-dangle': [ 'error', 'always-multiline' ],
         '@stylistic/indent': [ 'error', 4 ],
         '@stylistic/semi': [ 'error', 'always' ],
-        //'vue/html-indent': ['error', 4 ],
+        'vue/html-indent': ['error', 4 ],
         //'vue/valid-v-slot': [ 'error', { allowModifiers: true, }, ],
-        //'vue/multi-word-component-names': 'off', // TODO: Change about.vue and user.vue to multi-word
+        'vue/multi-word-component-names': 'off', // TODO: Change about.vue and chart.vue to multi-word
     },
     overrides: [
         {

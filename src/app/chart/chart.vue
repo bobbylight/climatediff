@@ -15,12 +15,12 @@
             </v-toolbar-title>
         </v-toolbar>
         <v-alert
-            v-for="(error, index) in errors"
+            v-for="(error, index2) in errors"
             :key="error"
             v-model="showErrors"
             class="chart-errors"
             transition="slide-y-transition"
-            :dismissible="index === 0"
+            :dismissible="index2 === 0"
             color="error"
             icon="priority_high"
         >
@@ -89,15 +89,42 @@ export default {
     },
 
     props: {
-        index: String,
-        chartTitle: String,
-        titleIcon: String,
-        chartConfig: Object,//ChartConfig;
-        setUnitsCallback: Function,
-        data: Object,//Response<any>;
-        mask: Boolean,
-        maxProp: String,
-        minProp: String,
+        index: {
+            type: String,
+            required: true,
+        },
+        chartTitle: {
+            type: String,
+            required: true,
+        },
+        titleIcon: {
+            type: String,
+            required: true,
+        },
+        chartConfig: {
+            type: Object, //ChartConfig;
+            required: true,
+        },
+        setUnitsCallback: {
+            type: Function,
+            required: true,
+        },
+        data: {
+            type: Object,//Response<any>;
+            required: true,
+        },
+        mask: {
+            type: Boolean,
+            required: true,
+        },
+        maxProp: {
+            type: String,
+            required: true,
+        },
+        minProp: {
+            type: String,
+            required: true,
+        },
     },
 
     data() {
