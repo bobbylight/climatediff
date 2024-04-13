@@ -96,6 +96,8 @@ export default {
         },
     },
 
+    emits: ['input'],
+
     data() {
         return {
             curValue: this.value, // string

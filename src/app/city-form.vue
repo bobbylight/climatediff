@@ -81,10 +81,22 @@ export default {
     },
 
     props: {
-        initialCity1: String,
-        initialCity2: String,
-        submitCallback: Function,
-        loading: Boolean,
+        initialCity1: {
+            type: String,
+            required: true,
+        },
+        initialCity2: {
+            type: String,
+            required: true,
+        },
+        submitCallback: {
+            type: Function,
+            required: true,
+        },
+        loading: {
+            type: Boolean,
+            required: true,
+        },
     },
 
     data() {
