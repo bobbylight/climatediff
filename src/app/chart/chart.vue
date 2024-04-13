@@ -576,46 +576,53 @@ export default {
 };
 </script>
 
-<style lang="less">
-@import '../../css/variables.less';
-
-@chart-axis-color: #888888;
+<style scoped>
 .chart-card {
-
     margin-bottom: 2em;
 
-    .title-icon {
-        font-size: 24px;
-        margin-right: 16px;
-    }
+    --chart-axis-color: #888888;
+    --chart-border-color: #ddd;
+    --chart-transition-duration: 0.3s;
+    --chart-unfocused-opacity: 0.1;
 
-    .main-chart-div {
-        height: 450px;
-        display: flex;
-        flex-flow: column;
-        position: relative;
-        padding: 2rem;
+    --chart-color-1: steelblue;
+    --chart-fill-1: lightsteelblue;
 
-        .chart-content {
-            flex: 1 1 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-    }
+    --chart-color-2: maroon;
+    --chart-fill-2: lightcoral;
+}
 
-    .chart-errors {
+.title-icon {
+    font-size: 24px;
+    margin-right: 16px;
+}
 
-        text-align: initial;
-        margin-top: 0;
-        margin-bottom: 0;
+.main-chart-div {
+    height: 450px;
+    display: flex;
+    flex-flow: column;
+    position: relative;
+    padding: 2rem;
+}
 
-        // Make multiple alerts appear to be one big alert
-        &:not(:first-of-type) {
-            border-top: none;
-            padding-top: 0;
-        }
+.chart-content {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.chart-errors {
+
+    text-align: initial;
+    margin-top: 0;
+    margin-bottom: 0;
+
+    /* Make multiple alerts appear to be one big alert */
+    &:not(:first-of-type) {
+        border-top: none;
+        padding-top: 0;
     }
 }
 
@@ -628,12 +635,11 @@ export default {
 /* Legend stuff */
 .legend .legend-box {
     fill: white;
-    stroke: @chart-border-color;
+    stroke: var(--chart-border-color);
 }
 
 /* SVG chart styling */
 .chart {
-
     width: 100%;
     height: 100%;
     /*width: 800px;*/
@@ -646,7 +652,7 @@ export default {
     font: 10px "Roboto", sans-serif;
 
     text {
-        fill: @chart-axis-color;
+        fill: var(--chart-axis-color);
     }
 }
 
@@ -658,7 +664,7 @@ y {
 .axis path,
 .axis line {
     fill: none;
-    stroke: @chart-axis-color;
+    stroke: var(--chart-axis-color);
     shape-rendering: crispEdges;
 }
 
@@ -666,18 +672,18 @@ y {
 
     fill-opacity: 0.3;
     stroke-width: 0;
-    transition: fill-opacity @chart-transition-duration;
+    transition: fill-opacity var(--chart-transition-duration);
 
 
     &.area1 {
-        fill: @chart-fill-1;
+        fill: var(--chart-fill-1);
     }
     &.area2 {
-        fill: @chart-fill-2;
+        fill: var(--chart-fill-2);
     }
 
     &.unfocused {
-        fill-opacity: @chart-unfocused-opacity;
+        fill-opacity: var(--chart-unfocused-opacity);
     }
 }
 
@@ -685,34 +691,34 @@ y {
 
     fill: none;
     stroke-width: 1.5px;
-    transition: stroke-opacity @chart-transition-duration;
+    transition: stroke-opacity var(--chart-transition-duration);
 
 
     &.line1 {
-        stroke: @chart-color-1;
+        stroke: var(--chart-color-1);
     }
     &.line2 {
-        stroke: @chart-color-2;
+        stroke: var(--chart-color-2);
     }
 
     &.unfocused {
-        stroke-opacity: @chart-unfocused-opacity;
+        stroke-opacity: var(--chart-unfocused-opacity);
     }
 }
 
 .chartPoint {
 
-    transition: fill-opacity @chart-transition-duration;
+    transition: fill-opacity var(--chart-transition-duration);
 
     &.point1 {
-        fill: @chart-color-1;
+        fill: var(--chart-color-1);
     }
     &.point2 {
-        fill: @chart-color-2;
+        fill: var(--chart-color-2);
     }
 
     &.unfocused {
-        fill-opacity: @chart-unfocused-opacity;
+        fill-opacity: var(--chart-unfocused-opacity);
     }
 }
 </style>

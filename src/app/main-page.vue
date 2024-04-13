@@ -220,18 +220,17 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style scoped>
 .main-container {
-
     padding: 0 !important;
+}
 
-    .results-title {
-        margin-top: 2rem;
-    }
+.results-title {
+    margin-top: 2rem;
+}
 
-    .results {
-        margin-top: 3em;
-        text-align: center;
-    }
+.results {
+    margin-top: 3em;
+    text-align: center;
 }
 </style>

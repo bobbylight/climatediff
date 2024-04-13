@@ -71,13 +71,12 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style scoped>
 .app-toolbar {
-
     padding: 0 3rem !important;
+}
 
-    .app-title {
-        cursor: pointer;
-    }
+.app-title {
+    cursor: pointer;
 }
 </style>

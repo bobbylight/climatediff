@@ -1,36 +1,45 @@
-@import 'variables';
-
 /**
  * Application styles not specific to a vue component.
  */
 html, body {
     height: 100%;
     background: white;
-    font-family: 'Roboto', sans-serif; // Catch everything not in '.application', such as tool tips
+    font-family: 'Roboto', sans-serif; /* Catch everything not in '.application', such as tool tips */
 }
 
 .application.theme--light {
-    background: #fafafa;//#87cefa;//url(../img/cloud-2725456_1920.jpg) no-repeat center center fixed;
+    background: #fafafa;/*#87cefa;//url(../img/cloud-2725456_1920.jpg) no-repeat center center fixed;*/
     background-size: cover;
+
+    --chart-axis-color: #888888;
+    --chart-border-color: #ddd;
+    --chart-transition-duration: 0.3s;
+    --chart-unfocused-opacity: 0.1;
+
+    --chart-color-1: steelblue;
+    --chart-fill-1: lightsteelblue;
+
+    --chart-color-2: maroon;
+    --chart-fill-2: lightcoral;
+
+    --d3-tip-background: rgba(0, 0, 0, 0.7);
 }
 
 h1 {
     text-align: center;
 }
 
-// d3-tip styles
-@d3-tip-background: rgba(0, 0, 0, 0.7);
 .d3-tip {
 
     line-height: 1;
     font-weight: bold;
     padding: 12px;
-    background: @d3-tip-background;
+    background: var(--d3-tip-background);
     color: #fff;
     border-radius: 2px;
     pointer-events: none;
 
-    transition: opacity @chart-transition-duration;
+    transition: opacity var(--chart-transition-duration);
 
     /* Creates a small triangle extender for the tooltip */
     &:after {
@@ -39,7 +48,7 @@ h1 {
         font-size: 10px;
         width: 100%;
         line-height: 1;
-        color: @d3-tip-background;
+        color: var(--d3-tip-background);
         position: absolute;
         pointer-events: none;
     }

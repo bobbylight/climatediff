@@ -59,40 +59,37 @@ export default {
 };
 </script>
 
-<style lang="less">
-@import '../../css/variables.less';
-
+<style scoped>
 .chart-legend {
-
     text-align: center;
+}
 
-    .city-span {
+.city-span {
 
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0 1rem;
-        cursor: pointer;
-        transition: opacity @chart-transition-duration;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 1rem;
+    cursor: pointer;
+    transition: opacity @chart-transition-duration;
 
-        .legend-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin: 0 0.3rem;
+    .legend-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin: 0 0.3rem;
 
-            &.city-1 {
-                background: @chart-color-1;
-            }
-            &.city-2 {
-                background: @chart-color-2;
-            }
+        &.city-1 {
+            background: var(--chart-color-1);
         }
-
-        &.unfocused {
-            opacity: @chart-unfocused-opacity;
+        &.city-2 {
+            background: var(--chart-color-2);
         }
+    }
+
+    &.unfocused {
+        opacity: var(--chart-unfocused-opacity);
     }
 }
 </style>

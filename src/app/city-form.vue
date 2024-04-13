@@ -122,35 +122,34 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style scoped>
 .city-form {
     background: white;
-    border-bottom: 1px solid rgba(0,0,0,.2);
-    //box-shadow: 0 2px 1px -1px rgba(0,0,0,.2);
+    border-bottom: 1px solid rgba(0, 0, 0, .2);
+}
 
-    .form-header {
+.form-header {
 
-        transition: max-height .3s, opacity .3s;
-        max-height: 100px;
-        padding: unset; // Clear default 16px padding for smooth animation
+    transition: max-height .3s, opacity .3s;
+    max-height: 100px;
+    padding: unset; /* Clear default 16px padding for smooth animation */
 
-        .form-header-inner {
-            padding: 16px; // Add 16px border typically on the parent .container
-        }
-
-        &.submitted {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-        }
+    .form-header-inner {
+        padding: 16px; /* Add 16px border typically on the parent .container */
     }
 
-    .button-panel {
-        padding-bottom: 24px;
+    &.submitted {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
     }
+}
 
-    .city-info {
-        white-space: nowrap;
-    }
+.button-panel {
+    padding-bottom: 24px;
+}
+
+.city-info {
+    white-space: nowrap;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <v-container class="about-container">
+    <v-container>
         <v-row
             wrap
             justify-center
@@ -59,40 +59,37 @@ export default {
 };
 </script>
 
-<style lang="less">
-.about-container {
+<style scoped>
+.about-section {
+    padding-bottom: 2rem;
+}
 
-    .about-section {
-        padding-bottom: 2rem;
+.about-header {
+
+    text-align: center;
+
+    // 50% of actual size
+    .about-image {
+        width: 256px;
+        height: 256px;
+        padding-right: 30px;
     }
 
-    .about-header {
-
-        text-align: center;
-
-        // 50% of actual size
-        .about-image {
-            width: 256px;
-            height: 256px;
-            padding-right: 30px;
-        }
-
-        h6 {
-            .about-metadata-splitter {
-                font-size: larger;
-                margin: 0 .5rem;
-            }
+    h6 {
+        .about-metadata-splitter {
+            font-size: larger;
+            margin: 0 .5rem;
         }
     }
+}
 
-    .about-thanks {
-        li {
-            list-style-position: inside;
-        }
+.about-thanks {
+    li {
+        list-style-position: inside;
     }
+}
 
-    .about-buttons {
-        text-align: center;
-    }
+.about-buttons {
+    text-align: center;
 }
 </style>

@@ -14,7 +14,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style scoped>
 .app-footer {
     background-image: linear-gradient(to bottom, #3c3c3c 0%, #222 100%);
     .footer-content {
