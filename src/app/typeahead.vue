@@ -32,7 +32,7 @@ export default {
          */
         value: {
             type: String,
-            required: true,
+            default: '',
         },
 
         url: {
@@ -77,17 +77,17 @@ export default {
 
         placeholder: {
             type: String,
-            required: true,
+            default: '',
         },
 
         focus: {
-            type: Object,//boolean | string;
-            required: true,
+            type: Boolean,
+            default: false,
         },
 
         debounceMillis: {
-            type: Number, // default: 300,
-            required: true,
+            type: Number,
+            default: 300,
         },
 
         classes: {

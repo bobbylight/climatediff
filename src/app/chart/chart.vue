@@ -123,14 +123,14 @@ export default {
         },
         minProp: {
             type: String,
-            required: true,
+            default: null,
         },
     },
 
     data() {
         return {
             errors: [],//string[]
-            showErrors: [], //boolean[]
+            showErrors: false,
             selectedUnits: this.chartConfig.units[0],
             tips: [], //D3ToolTip[]
         };
@@ -470,9 +470,7 @@ export default {
                 }
             });
             this.errors = Messages.localizeNotifications(notifications);
-            this.showErrors = this.errors.map(() => {
-                return true;
-            });
+            this.showErrors = true;
             this.createChart();
         },
 

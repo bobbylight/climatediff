@@ -42,5 +42,5 @@
     "rootDir": "src/app",
     "sourceMap": true
   },
-  "include": [ "src/app/*.ts", "src/app/*.tsx", "src/app/*.vue" ]
+  "include": [ "src/app/**/*.ts", "src/app/**/*.tsx", "src/app/**/*.vue" ]
 }

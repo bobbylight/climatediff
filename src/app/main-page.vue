@@ -60,7 +60,7 @@ import { PrecipDataPoint, TempDataPoint, Response, UnitConfig } from './climated
 import Utils from './utils';
 import Chart from './chart/chart.vue';
 import CityForm from './city-form.vue';
-import { Route } from 'vue-router';
+import { RouteLocationNormalized } from 'vue-router';
 import dataSource, { Callback } from './data-source';
 
 const TYPEAHEAD_WAIT_MILLIS: number = 500;
@@ -74,12 +74,12 @@ export default {
     /**
      * Called when the route changes.  Update the UI to reflect our new cities.
      *
-     * @param {Route} to The route we're going to.
-     * @param {Route} from The route we're coming from.
+     * @param {RouteLocationNormalized} to The route we're going to.
+     * @param {RouteLocationNormalized} from The route we're coming from.
      * @param next Callback.
      */
     // TODO: Why isn't this called?  We're calling Component.registerHooks()...
-    beforeRouteUpdate(to: Route, from: Route, next: Function) {
+    beforeRouteUpdate(to: RouteLocationNormalized, from: RouteLocationNormalized, next: Function) {
         this.setCitiesFromRoute(to);
         next();
     },
@@ -138,14 +138,14 @@ export default {
     },
 
     methods: {
-        setCitiesFromRoute(route: Route) {
+        setCitiesFromRoute(route: RouteLocationNormalized) {
 
             const prevCity1: string = this.city1;
             const prevCity2: string = this.city2;
 
-            this.city1 = Utils.cityRouteFormToReadableForm(route.params.city1 || 'Raleigh, NC US');
+            this.city1 = Utils.cityRouteFormToReadableForm(route.params.city1 as string || 'Raleigh, NC US');
             this.city2 = Utils.cityRouteFormToReadableForm(
-                route.params.city2 || (route.params.city1 ? '' : 'Lexington, KY US'));
+                route.params.city2 as string || (route.params.city1 ? '' : 'Lexington, KY US'));
 
             if (!route.params.city1 || this.city1 !== prevCity1 || this.city2 !== prevCity2) {
                 this.showCharts = false;

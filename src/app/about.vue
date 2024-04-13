@@ -7,6 +7,7 @@
             <v-col xs6>
                 <div class="about-section about-header">
                     <img
+                        alt="About image - picture of sunshine"
                         class="about-image"
                         src="/img/263883.svg"
                     >
@@ -68,7 +69,7 @@ export default {
 
     text-align: center;
 
-    // 50% of actual size
+    /* 50% of actual size */
     .about-image {
         width: 256px;
         height: 256px;

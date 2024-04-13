@@ -32,7 +32,7 @@
                             response-value-field="city_name"
                             label="City 1:"
                             classes="city-info"
-                            focus="true"
+                            :focus="true"
                         />
                     </v-col>
                     <v-col

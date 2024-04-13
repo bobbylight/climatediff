@@ -3,10 +3,10 @@
   "version": "0.9.0",
   "license": "MIT",
   "scripts": {
-    "clean": "rimraf dist coverage",
+    "clean": "rm -fr dist coverage",
     "dev": "vite",
     "build": "vue-tsc && vite build",
-    "preview": "vite preview --debug",
+    "preview": "vite preview",
     "lint": "eslint --ext .ts,.vue --ignore-path .gitignore --fix src",
     "make-aws-archive": "rm -f aws-archive.zip && cd dist && zip -r aws-archive.zip . && mv ./aws-archive.zip ../"
   },
@@ -22,16 +22,17 @@
     "@vitejs/plugin-vue": "5.0.4",
     "eslint": "8.57.0",
     "eslint-plugin-vue": "9.24.1",
-    "rimraf": "2.6.2",
-    "typescript": "5.2.2",
+    "typescript": "5.4.5",
     "vite": "5.2.8",
-    "vite-plugin-vuetify": "2.0.3"
+    "vite-plugin-eslint": "1.8.1",
+    "vite-plugin-vuetify": "2.0.3",
+    "vue-tsc": "2.0.13"
   },
   "dependencies": {
     "d3": "5.7.0",
     "font-awesome": "4.7.0",
     "vue": "3.4.21",
     "vue-router": "4.3.0",
-    "vuetify": "3.5.14"
+    "vuetify": "3.5.15"
   }
 }
