@@ -31,7 +31,7 @@ class Messages {
             'month.8': 'September',
             'month.9': 'October',
             'month.10': 'November',
-            'month.11': 'December'
+            'month.11': 'December',
         };
 
         this.localizeNotification = this.localizeNotification.bind(this);
@@ -83,11 +83,9 @@ class Messages {
 
         if (typeof param === 'string') {
             strParam = param;
-        }
-        else if (typeof param === 'number') {
+        } else if (typeof param === 'number') {
             strParam = param.toString();
-        }
-        else {
+        } else {
             strParam = this.localizeNotification(param);
         }
 

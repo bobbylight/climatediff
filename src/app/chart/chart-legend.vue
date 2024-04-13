@@ -1,9 +1,13 @@
 <template>
     <div class="chart-legend">
-        <span v-for="(city, index) in cityLabels" :class="citySpanClass(index)"
-                @mouseenter="onMouseEnter(index)" @mouseleave="onMouseLeave">
-            <div :class="dotDivClass(index)"></div>
-            {{city}}
+        <span
+            v-for="(city, index) in cityLabels"
+            :class="citySpanClass(index)"
+            @mouseenter="onMouseEnter(index)"
+            @mouseleave="onMouseLeave"
+        >
+            <div :class="dotDivClass(index)" />
+            {{ city }}
         </span>
     </div>
 </template>
@@ -15,7 +19,7 @@ export default {
 
     props: {
         cityLabels: Array, // string[]
-        required: true
+        required: true,
     },
 
     methods: {
@@ -47,9 +51,9 @@ export default {
             for (let i = 0; i < citySpans.length; i++) {
                 citySpans[i].classList.remove('unfocused');
             }
-        }
-    }
-}
+        },
+    },
+};
 </script>
 
 <style lang="less">

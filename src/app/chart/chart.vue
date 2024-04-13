@@ -1,26 +1,62 @@
 <template>
     <v-card class="chart-card">
-        <v-toolbar color="primary" dark>
+        <v-toolbar
+            color="primary"
+            dark
+        >
             <v-toolbar-title style="padding-left: 16px">
-                <v-icon class="title-icon" v-if="titleIcon">{{titleIcon}}</v-icon>
-                {{chartTitle}}
+                <v-icon
+                    v-if="titleIcon"
+                    class="title-icon"
+                >
+                    {{ titleIcon }}
+                </v-icon>
+                {{ chartTitle }}
             </v-toolbar-title>
         </v-toolbar>
-        <v-alert v-for="(error, index) in errors" :key="error" v-model="showErrors"
-                 class="chart-errors" transition="slide-y-transition" :dismissible="index === 0"
-                 color="error" icon="priority_high">
-            {{error}}
+        <v-alert
+            v-for="(error, index) in errors"
+            :key="error"
+            v-model="showErrors"
+            class="chart-errors"
+            transition="slide-y-transition"
+            :dismissible="index === 0"
+            color="error"
+            icon="priority_high"
+        >
+            {{ error }}
         </v-alert>
-        <div class='main-chart-div'>
-            <div class='chart-content' ref="chartContent"> <!-- todo: some kind of fade in/out of bg while loading -->
-                <v-progress-circular v-if="mask" indeterminate :size="70" :width="7" color="primary"></v-progress-circular>
-                <svg v-show='dataLoaded' :id='chartId' class='chart' preserveAspectRatio="none"></svg>
+        <div class="main-chart-div">
+            <div
+                ref="chartContent"
+                class="chart-content"
+            >
+                <!-- todo: some kind of fade in/out of bg while loading -->
+                <v-progress-circular
+                    v-if="mask"
+                    indeterminate
+                    :size="70"
+                    :width="7"
+                    color="primary"
+                />
+                <svg
+                    v-show="dataLoaded"
+                    :id="chartId"
+                    class="chart"
+                    preserveAspectRatio="none"
+                />
                 <div class="units-toggle">
-                    <toggle-button @change="onUnitChange" :labels="unitLabels"
-                            :value="unitToggleState"></toggle-button>
+                    <toggle-button
+                        :labels="unitLabels"
+                        :value="unitToggleState"
+                        @change="onUnitChange"
+                    />
                 </div>
             </div>
-            <ChartLegend :city-labels="legendLabels" @armedCity="onArmedCityChanged"></ChartLegend>
+            <ChartLegend
+                :city-labels="legendLabels"
+                @armed-city="onArmedCityChanged"
+            />
         </div>
     </v-card>
 </template>
@@ -33,7 +69,7 @@ import {
     Response,
     UnitConfig,
     //ChartConfig,
-    Notification
+    Notification,
 } from '../climatediff';
 import * as d3 from 'd3';
 import D3ToolTip from '../d3-tool-tip';
@@ -73,6 +109,38 @@ export default {
         };
     },
 
+    computed: {
+        dataLoaded() {
+            return !this.mask;
+        },
+
+        chartId() {
+            return `chart-${this.index}`;
+        },
+
+        legendLabels() {
+            return Object.keys(this.data);
+        },
+
+        unitLabels() {
+            return {
+                checked: this.chartConfig.units[0].label,
+                unchecked: this.chartConfig.units[1].label,
+            };
+        },
+
+        unitToggleState() {
+            console.log(this.selectedUnits + ', ' + this.chartConfig.units[0].label);
+            return this.selectedUnits === this.chartConfig.units[0];
+        },
+    },
+
+    watch: {
+        data(newValue: Response<any>) {
+            this.createChartAndShowErrors(newValue);
+        },
+    },
+
     created() {
         for (let i: number = 0; i < MAX_CITY_COUNT; i++) {
             this.tips.push(null);
@@ -86,7 +154,7 @@ export default {
         }
     },
 
-    destroyed() {
+    unmounted() {
         this.tips.forEach((tip: D3ToolTip) => {
             if (tip) {
                 tip.destroy();
@@ -129,8 +197,8 @@ export default {
         },
 
         appendCityArea(chart: d3.Selection<d3.BaseType, {}, null, undefined>, index: number,
-                       city: string, xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>,
-                       maxField: string, minField ?: string) {
+            city: string, xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>,
+            maxField: string, minField ?: string) {
 
             const data: Response<PrecipDataPoint | TempDataPoint> = this.data;
             if (!data || !data[city] || !data[city].data || data[city].data.length === 0) {
@@ -203,8 +271,8 @@ export default {
         },
 
         appendCityAreaPoints(chart: d3.Selection<d3.BaseType, {}, null, undefined>, index: number,
-                             city: string, xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>,
-                             maxVar: string, minVar ?: string) {
+            city: string, xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>,
+            maxVar: string, minVar ?: string) {
 
             const data: Response<PrecipDataPoint | TempDataPoint> = this.data;
             if (!data || !data[city] || !data[city].data || data[city].data.length === 0) {
@@ -227,8 +295,8 @@ export default {
         },
 
         createCityAreaPoints(chart: d3.Selection<d3.BaseType, {}, null, undefined>, cityData: any, index: number,
-                             xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>, yVar: string,
-                             tip: D3ToolTip) {
+            xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>, yVar: string,
+            tip: D3ToolTip) {
             chart.selectAll('.point')
                 .data(cityData)
                 .enter().append('svg:circle')
@@ -287,10 +355,10 @@ export default {
             const barPad: number = 0.1;
             // const xScale: d3.ScaleOrdinal<string, any> = d3.scaleOrdinal() // <any> to work around @types issue?
             const xScale: d3.ScalePoint<string> = d3.scalePoint()
-                // .domain([ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ])
-                // .domain([ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ])
+            // .domain([ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ])
+            // .domain([ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ])
                 .domain(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'])
-                // .rangeRoundPoints([ 0, chartWidth ], barPad); //barPad, barOuterPad);
+            // .rangeRoundPoints([ 0, chartWidth ], barPad); //barPad, barOuterPad);
                 .range([0, chartWidth])
                 .padding(barPad);
 
@@ -326,8 +394,8 @@ export default {
                 .attr('transform', 'translate(' + chartMargin.left + ', ' + chartMargin.top + ')');
 
             const xAxis: d3.Axis<any> = d3.axisBottom(xScale)
-                // .scale(xScale)
-                // .orient('bottom')
+            // .scale(xScale)
+            // .orient('bottom')
                 .tickFormat((d: any, i: number) => {
                     return MonthUtil.get(i);
                 });
@@ -338,8 +406,8 @@ export default {
                 .call(xAxis);
 
             const yAxis: d3.Axis<any> = d3.axisLeft(yScale)
-                // .scale(yScale)
-                // .orient('left')
+            // .scale(yScale)
+            // .orient('left')
                 .tickFormat((d: any) => {
                     return d + this.chartConfig.units[0].axisSuffix;
                 }); // e.g. '"' or "deg. F"
@@ -440,7 +508,7 @@ export default {
         },
 
         maxForCity(city: CityInfo<TempDataPoint | PrecipDataPoint> | null,
-                   maxProp: string): number {
+            maxProp: string): number {
 
             let max: number = 100;
 
@@ -455,7 +523,7 @@ export default {
         },
 
         minForCity(city: CityInfo<TempDataPoint | PrecipDataPoint> | null,
-                   minProp: string): number {
+            minProp: string): number {
 
             let min: number = 0;
 
@@ -478,39 +546,7 @@ export default {
             this.setUnitsCallback(unitConfig);
         },
     },
-
-    computed: {
-        dataLoaded() {
-            return !this.mask;
-        },
-
-        chartId() {
-            return `chart-${this.index}`;
-        },
-
-        legendLabels() {
-            return Object.keys(this.data);
-        },
-
-        unitLabels() {
-            return {
-                checked: this.chartConfig.units[0].label,
-                unchecked: this.chartConfig.units[1].label
-            };
-        },
-
-        unitToggleState() {
-            console.log(this.selectedUnits + ', ' + this.chartConfig.units[0].label);
-            return this.selectedUnits === this.chartConfig.units[0];
-        },
-    },
-
-    watch: {
-        data(newValue: Response<any>) {
-            this.createChartAndShowErrors(newValue);
-        },
-    },
-}
+};
 </script>
 
 <style lang="less">

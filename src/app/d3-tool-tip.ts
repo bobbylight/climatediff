@@ -81,7 +81,7 @@ export default class D3ToolTip {
             nw: this.direction_nw,
             ne: this.direction_ne,
             sw: this.direction_sw,
-            se: this.direction_se
+            se: this.direction_se,
         };
 
         this.directions = Object.keys(this.directionCallbacks);
@@ -277,7 +277,7 @@ export default class D3ToolTip {
         const bbox: BoundingBox = this.getScreenBBox();
         return {
             top:  bbox.n.y - this.node.offsetHeight,
-            left: bbox.n.x - this.node.offsetWidth / 2
+            left: bbox.n.x - this.node.offsetWidth / 2,
         };
     }
 
@@ -285,7 +285,7 @@ export default class D3ToolTip {
         const bbox: BoundingBox = this.getScreenBBox();
         return {
             top:  bbox.s.y,
-            left: bbox.s.x - this.node.offsetWidth / 2
+            left: bbox.s.x - this.node.offsetWidth / 2,
         };
     }
 
@@ -293,7 +293,7 @@ export default class D3ToolTip {
         const bbox: BoundingBox = this.getScreenBBox();
         return {
             top:  bbox.e.y - this.node.offsetHeight / 2,
-            left: bbox.e.x
+            left: bbox.e.x,
         };
     }
 
@@ -301,7 +301,7 @@ export default class D3ToolTip {
         const bbox: BoundingBox = this.getScreenBBox();
         return {
             top:  bbox.w.y - this.node.offsetHeight / 2,
-            left: bbox.w.x - this.node.offsetWidth
+            left: bbox.w.x - this.node.offsetWidth,
         };
     }
 
@@ -309,7 +309,7 @@ export default class D3ToolTip {
         const bbox: BoundingBox = this.getScreenBBox();
         return {
             top:  bbox.nw.y - this.node.offsetHeight,
-            left: bbox.nw.x - this.node.offsetWidth
+            left: bbox.nw.x - this.node.offsetWidth,
         };
     }
 
@@ -317,7 +317,7 @@ export default class D3ToolTip {
         const bbox: BoundingBox = this.getScreenBBox();
         return {
             top:  bbox.ne.y - this.node.offsetHeight,
-            left: bbox.ne.x
+            left: bbox.ne.x,
         };
     }
 
@@ -325,7 +325,7 @@ export default class D3ToolTip {
         const bbox: BoundingBox = this.getScreenBBox();
         return {
             top:  bbox.sw.y,
-            left: bbox.sw.x - this.node.offsetWidth
+            left: bbox.sw.x - this.node.offsetWidth,
         };
     }
 
@@ -333,7 +333,7 @@ export default class D3ToolTip {
         const bbox: BoundingBox = this.getScreenBBox();
         return {
             top:  bbox.se.y,
-            left: bbox.e.x
+            left: bbox.e.x,
         };
     }
 

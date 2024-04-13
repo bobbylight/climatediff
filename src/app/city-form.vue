@@ -1,27 +1,56 @@
 <template>
     <div class="city-form">
         <v-container :class="formHeaderClasses">
-            <v-row wrap justify="center" class="form-header-inner">
+            <v-row
+                wrap
+                justify="center"
+                class="form-header-inner"
+            >
                 <h1>Cities to compare:</h1>
             </v-row>
         </v-container>
 
-        <form @submit.prevent="onSubmit" id='cityForm' role='form'>
-
+        <form
+            id="cityForm"
+            role="form"
+            @submit.prevent="onSubmit"
+        >
             <v-container>
-                <v-row wrap justify="center">
-
+                <v-row
+                    wrap
+                    justify="center"
+                >
                     <v-col xs3>
-                        <Typeahead url="api/locations" v-model="city1" filter-param-name="input"
-                                   :query-params="locationQueryParams" icon="location_city"
-                                   response-label-field="city_name" response-value-field="city_name" id="city1" label="City 1:"
-                                   classes="city-info" focus="true"></Typeahead>
+                        <Typeahead
+                            id="city1"
+                            v-model="city1"
+                            url="api/locations"
+                            filter-param-name="input"
+                            :query-params="locationQueryParams"
+                            icon="location_city"
+                            response-label-field="city_name"
+                            response-value-field="city_name"
+                            label="City 1:"
+                            classes="city-info"
+                            focus="true"
+                        />
                     </v-col>
-                    <v-col xs3 offset-xs1>
-                        <Typeahead url="api/locations" v-model="city2" filter-param-name="input"
-                                   :query-params="locationQueryParams" icon="location_city"
-                                   response-label-field="city_name" response-value-field="city_name" id="city2" label="City 2:"
-                                   classes="city-info"></Typeahead>
+                    <v-col
+                        xs3
+                        offset-xs1
+                    >
+                        <Typeahead
+                            id="city2"
+                            v-model="city2"
+                            url="api/locations"
+                            filter-param-name="input"
+                            :query-params="locationQueryParams"
+                            icon="location_city"
+                            response-label-field="city_name"
+                            response-value-field="city_name"
+                            label="City 2:"
+                            classes="city-info"
+                        />
                     </v-col>
                 </v-row>
             </v-container>
@@ -29,11 +58,16 @@
             <v-container class="button-panel">
                 <v-row>
                     <v-col class="d-flex justify-center">
-                        <v-btn type='submit' color="primary" :disabled="loading">Compare!</v-btn>
+                        <v-btn
+                            type="submit"
+                            color="primary"
+                            :disabled="loading"
+                        >
+                            Compare!
+                        </v-btn>
                     </v-col>
                 </v-row>
             </v-container>
-
         </form>
     </div>
 </template>
@@ -58,11 +92,11 @@ export default {
             city1: this.initialCity1,
             city2: this.initialCity2,
             locationQueryParams: {
-                limit: 10
+                limit: 10,
             },
             formHeaderClasses: {
                 'form-header': true,
-                submitted: false
+                submitted: false,
             },
         };
     },
@@ -73,7 +107,7 @@ export default {
             this.submitCallback(this.city1, this.city2);
         },
     },
-}
+};
 </script>
 
 <style lang="less">

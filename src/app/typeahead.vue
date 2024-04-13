@@ -1,8 +1,12 @@
 <template>
-    <span :id="spanId" :class="classes">
+    <span
+        :id="spanId"
+        :class="classes"
+    >
         <v-autocomplete
-            ref="select"
             :id="id"
+            ref="select"
+            v-model:search-input="search"
             :label="label"
             :placeholder="placeholder"
             :loading="loading"
@@ -12,10 +16,9 @@
             :items="items"
             :item-text="responseLabelField"
             :item-value="responseValueField"
-            :search-input.sync="search"
             :value="curValue"
             @input="fireUpdateEvent($event)"
-            ></v-autocomplete>
+        />
     </span>
 </template>
 
@@ -24,7 +27,7 @@ import Ajax, { QueryParams } from './ajax';
 
 export default {
     props: {
-        /**
+    /**
          * "value" facilitates v-model support
          */
         value: String,
@@ -69,6 +72,14 @@ export default {
         },
     },
 
+    watch: {
+        search: function (newValue: string) {
+            if (newValue) {
+                this.runQuery(newValue);
+            }
+        },
+    },
+
     created() {
         if (this.value) {
             const item: any = {};
@@ -79,21 +90,13 @@ export default {
     },
 
     mounted() {
-        // if (this.focus === 'true' || !!this.focus) {
-        //     (this.$refs.select as HTMLElement).focus();
-        // }
-    },
-
-    watch: {
-        search: function (newValue: string, oldValue: string) {
-            if (newValue) {
-                this.runQuery(newValue);
-            }
-        },
+    // if (this.focus === 'true' || !!this.focus) {
+    //     (this.$refs.select as HTMLElement).focus();
+    // }
     },
 
     methods: {
-        /**
+    /**
          * Fires an "input" event stating our value has changed.  Part of implementing v-model for this component.
          */
         fireUpdateEvent(newValue: string) {
@@ -120,7 +123,7 @@ export default {
             this.loading = false;
         },
     },
-}
+};
 </script>
 
 <style lang="less">

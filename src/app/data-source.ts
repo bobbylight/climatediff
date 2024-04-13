@@ -39,14 +39,13 @@ export class DataSource {
 
         if (DataSource.isSomethingNotCached(cached)) {
             this.getPrecipitationDataSomeUncached(callback, failureCallback, cached, ...cities);
-        }
-        else {
+        } else {
             this.runCallback(this.precipCache, callback, failureCallback, ...cities);
         }
     }
 
     private getPrecipitationDataSomeUncached(callback: Callback<PrecipDataPoint>, failureCallback: Function,
-                                           cached: boolean[], ...cities: string[]) {
+        cached: boolean[], ...cities: string[]) {
 
         // Build the URL to fetch data for cities not yet cached
         let url: string = 'api/precipitation';
@@ -67,7 +66,7 @@ export class DataSource {
                     metadata: temp.metadata,
                     debug: temp.debug,
                     errors: temp.errors,
-                    queries: temp.queries
+                    queries: temp.queries,
                 };
             });
             this.runCallback(this.precipCache, callback, failureCallback, ...cities);
@@ -85,14 +84,13 @@ export class DataSource {
 
         if (DataSource.isSomethingNotCached(cached)) {
             this.getTemperatureDataSomeUncached(callback, failureCallback, cached, ...cities);
-        }
-        else {
+        } else {
             this.runCallback(this.tempCache, callback, failureCallback, ...cities);
         }
     }
 
     private getTemperatureDataSomeUncached(callback: Callback<TempDataPoint>, failureCallback: Function,
-                                           cached: boolean[], ...cities: string[]) {
+        cached: boolean[], ...cities: string[]) {
 
         // Build the URL to fetch data for cities not yet cached
         let url: string = 'api/temperature';
@@ -113,7 +111,7 @@ export class DataSource {
                     metadata: temp.metadata,
                     debug: temp.debug,
                     errors: temp.errors,
-                    queries: temp.queries
+                    queries: temp.queries,
                 };
             });
             this.runCallback(this.tempCache, callback, failureCallback, ...cities);
@@ -132,7 +130,7 @@ export class DataSource {
     }
 
     private runCallback(cache: Cache<any>, callback: Callback<any>, failureCallback: Function,
-                           ...cities: string[]) {
+        ...cities: string[]) {
 
         const response: Response<any> = {};
 

@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview --debug",
+    "lint": "eslint --ext .ts,.vue --ignore-path .gitignore --fix src",
     "make-aws-archive": "rm -f aws-archive.zip && cd dist && zip -r aws-archive.zip . && mv ./aws-archive.zip ../"
   },
   "repository": {
@@ -15,14 +16,16 @@
   },
   "devDependencies": {
     "@mdi/font": "7.4.47",
+    "@stylistic/eslint-plugin": "1.7.0",
     "@types/d3": "5.0.0",
+    "@typescript-eslint/parser": "7.6.0",
     "@vitejs/plugin-vue": "5.0.4",
     "eslint": "8.57.0",
+    "eslint-plugin-vue": "9.24.1",
     "less": "3.8.1",
     "rimraf": "2.6.2",
     "typescript": "5.2.2",
     "vite": "5.2.8",
-    "vite-plugin-eslint": "1.8.1",
     "vite-plugin-vuetify": "2.0.3"
   },
   "dependencies": {

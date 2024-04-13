@@ -1,5 +1,8 @@
 <template>
-    <v-footer color="black" class="app-footer">
+    <v-footer
+        color="black"
+        class="app-footer"
+    >
         <div class="footer-content">
             &copy; 2024 Climatediff
         </div>
@@ -8,7 +11,7 @@
 
 <script>
 export default {
-}
+};
 </script>
 
 <style lang="less">

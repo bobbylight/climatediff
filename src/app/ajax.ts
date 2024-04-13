@@ -27,8 +27,7 @@ export default class Ajax {
 
             if (request.status < 400) {
                 success(request.response);
-            }
-            else if (failure) {
+            } else if (failure) {
                 failure(request.response);
             }
         };
@@ -51,7 +50,9 @@ export default class Ajax {
 
     static createQueryString(queryParams: QueryParams): string {
         return Object.keys(queryParams)
-            .map((key) => { return `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`; })
+            .map(key => {
+                return `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`; 
+            })
             .join('&');
     }
 }

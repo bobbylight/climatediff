@@ -1,36 +1,56 @@
 <template>
-    <v-container fluid class="main-container">
-        <v-row wrap justify="center">
-
+    <v-container
+        fluid
+        class="main-container"
+    >
+        <v-row
+            wrap
+            justify="center"
+        >
             <v-col xs12>
-                <CityForm :initial-city1="city1" :initial-city2="city2"
-                          :submit-callback="updateClimateDiff"
-                          :loading="loading"></CityForm>
+                <CityForm
+                    :initial-city1="city1"
+                    :initial-city2="city2"
+                    :submit-callback="updateClimateDiff"
+                    :loading="loading"
+                />
             </v-col>
 
-            <v-col xs12 class="results-title" v-if="showCharts">
-                <h1>{{resultsTitle}}</h1>
+            <v-col
+                v-if="showCharts"
+                xs12
+                class="results-title"
+            >
+                <h1>{{ resultsTitle }}</h1>
             </v-col>
 
-            <v-col xs8 class="results" v-if='showCharts'>
-
-                <Chart chart-title='Temperature' index="1"
-                       title-icon='fa-thermometer-three-quarters'
-                       :data='tempData'
-                       :chart-config='tempChartConfig'
-                       :set-units-callback='setUnits'
-                       :mask='maskTempResults'
-                       min-prop="min" max-prop="max"></Chart>
-                <Chart chart-title='Precipitation' index="2"
-                       title-icon='fa-tint'
-                       :data='precipData'
-                       :chart-config='precipChartConfig'
-                       :set-units-callback='setUnits'
-                       :mask='maskPrecipResults'
-                       max-prop="precip"></Chart>
-
+            <v-col
+                v-if="showCharts"
+                xs8
+                class="results"
+            >
+                <Chart
+                    chart-title="Temperature"
+                    index="1"
+                    title-icon="fa-thermometer-three-quarters"
+                    :data="tempData"
+                    :chart-config="tempChartConfig"
+                    :set-units-callback="setUnits"
+                    :mask="maskTempResults"
+                    min-prop="min"
+                    max-prop="max"
+                />
+                <Chart
+                    chart-title="Precipitation"
+                    index="2"
+                    title-icon="fa-tint"
+                    :data="precipData"
+                    :chart-config="precipChartConfig"
+                    :set-units-callback="setUnits"
+                    :mask="maskPrecipResults"
+                    max-prop="precip"
+                />
             </v-col>
-
         </v-row>
     </v-container>
 </template>
@@ -49,6 +69,19 @@ export default {
     components: {
         Chart,
         CityForm,
+    },
+
+    /**
+     * Called when the route changes.  Update the UI to reflect our new cities.
+     *
+     * @param {Route} to The route we're going to.
+     * @param {Route} from The route we're coming from.
+     * @param next Callback.
+     */
+    // TODO: Why isn't this called?  We're calling Component.registerHooks()...
+    beforeRouteUpdate(to: Route, from: Route, next: Function) {
+        this.setCitiesFromRoute(to);
+        next();
     },
 
     data() {
@@ -78,8 +111,8 @@ export default {
         this.tempChartConfig = {
             units: [
                 { axisSuffix: '\u00b0 F', label: '\u00b0 F', convert: Utils.arrayCtoF },
-                { axisSuffix: '\u00b0 C', label: '\u00b0 C', convert: Utils.arrayFtoC }
-            ]
+                { axisSuffix: '\u00b0 C', label: '\u00b0 C', convert: Utils.arrayFtoC },
+            ],
         };
         const identity: (data: any) => any = (data: any) => {
             return data;
@@ -87,29 +120,16 @@ export default {
         this.precipChartConfig = {
             units: [
                 { axisSuffix: '"', label: 'in', convert: identity },
-                { axisSuffix: 'cm', label: 'cm', convert: identity }
-            ]
+                { axisSuffix: 'cm', label: 'cm', convert: identity },
+            ],
         };
-    },
-
-    /**
-     * Called when the route changes.  Update the UI to reflect our new cities.
-     *
-     * @param {Route} to The route we're going to.
-     * @param {Route} from The route we're coming from.
-     * @param next Callback.
-     */
-    // TODO: Why isn't this called?  We're calling Component.registerHooks()...
-    beforeRouteUpdate(to: Route, from: Route, next: Function) {
-        this.setCitiesFromRoute(to);
-        next();
     },
 
     /**
      * Called when the component is initially displayed.
      */
     beforeMount() {
-        // If cities were initially passed in, go ahead and run the comparison.
+    // If cities were initially passed in, go ahead and run the comparison.
         if (this.$route.params.city1 && this.$route.params.city2) {
             const city1: string = Utils.cityRouteFormToReadableForm(this.$route.params.city1);
             const city2: string = Utils.cityRouteFormToReadableForm(this.$route.params.city2);
@@ -147,8 +167,8 @@ export default {
             this.$router.push({
                 name: 'compare', params: {
                     city1: Utils.cityReadableFormToRouteForm(city1),
-                    city2: Utils.cityReadableFormToRouteForm(city2)
-                }
+                    city2: Utils.cityReadableFormToRouteForm(city2),
+                },
             });
 
             // Route params seem to be auto-bound to properties here?  So set our cities last to avoid '_'s in them.
@@ -197,7 +217,7 @@ export default {
             dataSource.getTemperatureData(tempSuccess, tempFailure, this.city1, this.city2);
         },
     },
-}
+};
 </script>
 
 <style lang="less">

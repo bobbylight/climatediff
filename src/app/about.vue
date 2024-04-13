@@ -1,12 +1,15 @@
 <template>
     <v-container class="about-container">
-
-        <v-row wrap justify-center>
-
+        <v-row
+            wrap
+            justify-center
+        >
             <v-col xs6>
-
                 <div class="about-section about-header">
-                    <img class="about-image" src="/img/263883.svg">
+                    <img
+                        class="about-image"
+                        src="/img/263883.svg"
+                    >
                     <h3>About Climatediff</h3>
                     <h6>Version: [AIV]{version}[/AIV]<span class="about-metadata-splitter">|</span>[AIV]{date}[/AIV]</h6>
                 </div>
@@ -20,19 +23,27 @@
                 <div class="about-section about-thanks">
                     <h4>A Huge Thanks To:</h4>
                     <ul>
-                        <li>This site uses the NOAA's <a href='https://www.ncdc.noaa.gov/cdo-web/webservices/v2'>
-                            Web services</a> to generate its pretty charts</li>
-                        <li>The source code for this application <a href='https://github.com/bobbylight/climatediff'>
-                            lives on GitHub</a></li>
+                        <li>
+                            This site uses the NOAA's <a href="https://www.ncdc.noaa.gov/cdo-web/webservices/v2">
+                                Web services</a> to generate its pretty charts
+                        </li>
+                        <li>
+                            The source code for this application <a href="https://github.com/bobbylight/climatediff">
+                                lives on GitHub</a>
+                        </li>
                         <li>"About" icon made by Freepik from <a href="https://www.flaticon.com">www.flaticon.com</a></li>
                     </ul>
                 </div>
 
                 <div class="about-buttons">
-                    <v-btn color="primary" @click="goBack">Back</v-btn>
+                    <v-btn
+                        color="primary"
+                        @click="goBack"
+                    >
+                        Back
+                    </v-btn>
                 </div>
             </v-col>
-
         </v-row>
     </v-container>
 </template>
@@ -43,9 +54,9 @@ export default {
     methods: {
         goBack() {
             this.$router.push({ name: 'compare' });
-        }
-    }
-}
+        },
+    },
+};
 </script>
 
 <style lang="less">

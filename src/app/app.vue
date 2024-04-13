@@ -1,24 +1,40 @@
 <template>
     <v-app>
-        <v-app-bar color="black" class="app-toolbar">
-
-            <v-app-bar-title class="app-title" @click="onReset()">
-                <i class="fa fa-cloud"></i> ClimateDiff
+        <v-app-bar
+            color="black"
+            class="app-toolbar"
+        >
+            <v-app-bar-title
+                class="app-title"
+                @click="onReset()"
+            >
+                <i class="fa fa-cloud" /> ClimateDiff
             </v-app-bar-title>
 
-            <v-spacer></v-spacer>
+            <v-spacer />
 
-            <v-btn :icon=true @click="viewOnGitHub" title="View on GitHub">
-                <v-icon icon="mdi-github"></v-icon>
+            <v-btn
+                :icon="true"
+                title="View on GitHub"
+                @click="viewOnGitHub"
+            >
+                <v-icon icon="mdi-github" />
             </v-btn>
-            <v-btn :icon=true @click="showAboutDialog" title="About ClimateDiff">
-                <v-icon icon="mdi-help"></v-icon>
+            <v-btn
+                :icon="true"
+                title="About ClimateDiff"
+                @click="showAboutDialog"
+            >
+                <v-icon icon="mdi-help" />
             </v-btn>
         </v-app-bar>
 
         <v-main>
             <router-view v-slot="{ Component, route }">
-                <transition name="page" mode="out-in">
+                <transition
+                    name="page"
+                    mode="out-in"
+                >
                     <component
                         :is="Component"
                         :key="route.path"
@@ -27,7 +43,7 @@
             </router-view>
         </v-main>
 
-        <AppFooter app></AppFooter>
+        <AppFooter app />
     </v-app>
 </template>
 
@@ -52,7 +68,7 @@ export default {
             window.open('https://github.com/bobbylight/climatediff', '_blank');
         },
     },
-}
+};
 </script>
 
 <style lang="less">
