@@ -23,7 +23,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Create stub init.php file
       run: |
-        cp src/init.php.orig src/init.php
+        cp public/api/init.php.orig public/api/init.php
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
