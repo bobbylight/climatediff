@@ -44,6 +44,6 @@ eb deploy --label "label for new version"
 ```
 
 ## Miscellaneous
-Non-Font-Awesome icons were grabbed from:
+Icons were grabbed from:
 
 * http://www.clipartbest.com/free-printable-weather-symbols

@@ -32,7 +32,7 @@
                 <Chart
                     chart-title="Temperature"
                     index="1"
-                    title-icon="fa-thermometer-three-quarters"
+                    title-icon="mdi-thermometer"
                     :data="tempData"
                     :chart-config="tempChartConfig"
                     :set-units-callback="setUnits"
@@ -43,7 +43,7 @@
                 <Chart
                     chart-title="Precipitation"
                     index="2"
-                    title-icon="fa-tint"
+                    title-icon="mdi-weather-pouring"
                     :data="precipData"
                     :chart-config="precipChartConfig"
                     :set-units-callback="setUnits"

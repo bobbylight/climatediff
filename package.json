@@ -30,7 +30,6 @@
   },
   "dependencies": {
     "d3": "5.7.0",
-    "font-awesome": "4.7.0",
     "vue": "3.4.21",
     "vue-router": "4.3.0",
     "vuetify": "3.5.15"

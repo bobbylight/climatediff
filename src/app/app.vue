@@ -8,7 +8,7 @@
                 class="app-title"
                 @click="onReset()"
             >
-                <i class="fa fa-cloud" /> ClimateDiff
+                <v-icon icon="mdi-cloud" /> ClimateDiff
             </v-app-bar-title>
 
             <v-spacer />
