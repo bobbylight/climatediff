@@ -62,10 +62,7 @@ const props = defineProps({
         type: String,
         default: '',
     },
-    focus: {
-        type: Boolean,
-        default: false,
-    },
+    focus: Boolean,
     debounceMillis: {
         type: Number,
         default: 300,

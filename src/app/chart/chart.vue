@@ -113,10 +113,7 @@ export default {
             type: Object,//Response<any>;
             required: true,
         },
-        mask: {
-            type: Boolean,
-            required: true,
-        },
+        mask: Boolean,
         maxProp: {
             type: String,
             required: true,
@@ -349,7 +346,6 @@ export default {
             const mainChartDiv: HTMLElement = element.querySelector('.chart-content'); // Flex fill layout
             const width: number = mainChartDiv.offsetWidth;
             const height: number = mainChartDiv.offsetHeight;
-            console.log(width + ', ' + height);
             if (width > 0 && height > 0) {
                 mainChartDiv.querySelector('.chart').setAttribute('viewBox', `0 0 ${width} ${height}`);
             }

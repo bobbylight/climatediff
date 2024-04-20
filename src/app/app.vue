@@ -54,12 +54,8 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const onReset = () => router.push({name: 'start'});
-
 const showAboutDialog = () => router.push({name: 'about'});
-
-const viewOnGitHub = () => {
-    window.open('https://github.com/bobbylight/climatediff', '_blank');
-};
+const viewOnGitHub = () => window.open('https://github.com/bobbylight/climatediff', '_blank');
 </script>
 
 <style scoped>

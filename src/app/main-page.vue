@@ -162,7 +162,6 @@ const updateClimateDiff = (newCity1: string, newCity2: string) => {
     const updatePrecipChart: Function = () => {
 
         const precipSuccess: Callback<PrecipDataPoint> = (responseData: Response<PrecipDataPoint>) => {
-            console.log(JSON.stringify(responseData));
             // result.data.data = celsiusToFahrenheit(result.data.data);
             maskPrecipResults.value = false;
             precipData.value = responseData;

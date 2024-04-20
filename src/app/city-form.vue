@@ -88,10 +88,7 @@ const props = defineProps({
         type: Function,
         required: true,
     },
-    loading: {
-        type: Boolean,
-        required: true,
-    },
+    loading: Boolean,
 });
 
 const city1 = ref(props.initialCity1);
