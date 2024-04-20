@@ -47,27 +47,18 @@
     </v-app>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import AppFooter from './app-footer.vue';
+import { useRouter } from 'vue-router';
 
-export default {
-    components: {
-        AppFooter,
-    },
+const router = useRouter();
 
-    methods: {
-        onReset() {
-            this.$router.push({name: 'start'});
-        },
+const onReset = () => router.push({name: 'start'});
 
-        showAboutDialog() {
-            this.$router.push({name: 'about'});
-        },
+const showAboutDialog = () => router.push({name: 'about'});
 
-        viewOnGitHub() {
-            window.open('https://github.com/bobbylight/climatediff', '_blank');
-        },
-    },
+const viewOnGitHub = () => {
+    window.open('https://github.com/bobbylight/climatediff', '_blank');
 };
 </script>
 

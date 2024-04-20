@@ -7,7 +7,7 @@
             wrap
             justify="center"
         >
-            <v-col xs12>
+            <v-col cols="12">
                 <CityForm
                     :initial-city1="city1"
                     :initial-city2="city2"
@@ -18,7 +18,7 @@
 
             <v-col
                 v-if="showCharts"
-                xs12
+                cols="12"
                 class="results-title"
             >
                 <h1>{{ resultsTitle }}</h1>
@@ -26,7 +26,7 @@
 
             <v-col
                 v-if="showCharts"
-                xs8
+                cols="8"
                 class="results"
             >
                 <Chart
@@ -55,169 +55,144 @@
     </v-container>
 </template>
 
-<script lang="ts">
-import { PrecipDataPoint, TempDataPoint, Response, UnitConfig } from './climatediff';
+<script setup lang="ts">
+import { Ref, onBeforeMount, ref } from 'vue';
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
+import { PrecipDataPoint, TempDataPoint, Response, UnitConfig, ChartConfig } from './climatediff';
 import Utils from './utils';
 import Chart from './chart/chart.vue';
 import CityForm from './city-form.vue';
 import { RouteLocationNormalized } from 'vue-router';
 import dataSource, { Callback } from './data-source';
 
-const TYPEAHEAD_WAIT_MILLIS: number = 500;
+const route = useRoute();
+const router = useRouter();
 
-export default {
-    components: {
-        Chart,
-        CityForm,
-    },
+const identity: (data: any) => any = (data: any) => data;
 
-    /**
-     * Called when the route changes.  Update the UI to reflect our new cities.
-     *
-     * @param {RouteLocationNormalized} to The route we're going to.
-     * @param {RouteLocationNormalized} from The route we're coming from.
-     * @param next Callback.
-     */
-    // TODO: Why isn't this called?  We're calling Component.registerHooks()...
-    beforeRouteUpdate(to: RouteLocationNormalized, from: RouteLocationNormalized, next: Function) {
-        this.setCitiesFromRoute(to);
-        next();
-    },
+/**
+ * Called when the route changes.  Update the UI to reflect our new cities.
+ *
+ * @param {RouteLocationNormalized} to The route we're going to.
+ * @param {RouteLocationNormalized} from The route we're coming from.
+ * @param next Callback.
+ */
+onBeforeRouteUpdate((to: RouteLocationNormalized, _from: RouteLocationNormalized, next: Function) => {
+    setCitiesFromRoute(to);
+    next();
+});
 
-    data() {
-        return {
-            city1: null,//string = null;
-            city2: null,//string = null;
-            loading: false,
-            tempChartConfig: null,//ChartConfig = null;
-            precipChartConfig: null,//ChartConfig = null;
-            showCharts: false,
-            maskTempResults: false,
-            maskPrecipResults: false,
-            resultsTitle: null,//string = null;
-            tempData: null,//Response<TempDataPoint> = null;
-            precipData: null,//Response<PrecipDataPoint> = null;
-            typeaheadWatiMillis: TYPEAHEAD_WAIT_MILLIS,
-        };
-    },
+const city1 = ref(null); //string = null;
+const city2 = ref(null); //string = null;
+const loading = ref(false);
+const tempChartConfig: Ref<ChartConfig> = ref({
+    units: [
+        { axisSuffix: '\u00b0 F', label: '\u00b0 F', convert: Utils.arrayCtoF },
+        { axisSuffix: '\u00b0 C', label: '\u00b0 C', convert: Utils.arrayFtoC },
+    ],
+});
+const precipChartConfig: Ref<ChartConfig> = ref({
+    units: [
+        { axisSuffix: '"', label: 'in', convert: identity },
+        { axisSuffix: 'cm', label: 'cm', convert: identity },
+    ],
+});
+const showCharts = ref(false);
+const maskTempResults = ref(false);
+const maskPrecipResults = ref(false);
+const resultsTitle = ref(null); //string = null;
+const tempData = ref(null); //Response<TempDataPoint> = null;
+const precipData = ref(null); //Response<PrecipDataPoint> = null;
 
-    /**
-     * Called when the component is first created.
-     */
-    created() {
-
-        this.setCitiesFromRoute(this.$route);
-
-        this.tempChartConfig = {
-            units: [
-                { axisSuffix: '\u00b0 F', label: '\u00b0 F', convert: Utils.arrayCtoF },
-                { axisSuffix: '\u00b0 C', label: '\u00b0 C', convert: Utils.arrayFtoC },
-            ],
-        };
-        const identity: (data: any) => any = (data: any) => {
-            return data;
-        };
-        this.precipChartConfig = {
-            units: [
-                { axisSuffix: '"', label: 'in', convert: identity },
-                { axisSuffix: 'cm', label: 'cm', convert: identity },
-            ],
-        };
-    },
-
-    /**
-     * Called when the component is initially displayed.
-     */
-    beforeMount() {
+onBeforeMount(() => {
     // If cities were initially passed in, go ahead and run the comparison.
-        if (this.$route.params.city1 && this.$route.params.city2) {
-            const city1: string = Utils.cityRouteFormToReadableForm(this.$route.params.city1);
-            const city2: string = Utils.cityRouteFormToReadableForm(this.$route.params.city2);
-            this.updateClimateDiff(city1, city2);
-        }
-    },
+    if (route.params.city1 && route.params.city2) {
+        const city1 = Utils.cityRouteFormToReadableForm(route.params.city1 as string);
+        const city2 = Utils.cityRouteFormToReadableForm(route.params.city2 as string);
+        updateClimateDiff(city1, city2);
+    }
+});
 
-    methods: {
-        setCitiesFromRoute(route: RouteLocationNormalized) {
+const setCitiesFromRoute = (route: RouteLocationNormalized) => {
 
-            const prevCity1: string = this.city1;
-            const prevCity2: string = this.city2;
+    const prevCity1: string = city1.value;
+    const prevCity2: string = city2.value;
 
-            this.city1 = Utils.cityRouteFormToReadableForm(route.params.city1 as string || 'Raleigh, NC US');
-            this.city2 = Utils.cityRouteFormToReadableForm(
-                route.params.city2 as string || (route.params.city1 ? '' : 'Lexington, KY US'));
+    city1.value = Utils.cityRouteFormToReadableForm(route.params.city1 as string || 'Raleigh, NC US');
+    city2.value = Utils.cityRouteFormToReadableForm(
+        route.params.city2 as string || (route.params.city1 ? '' : 'Lexington, KY US'));
 
-            if (!route.params.city1 || this.city1 !== prevCity1 || this.city2 !== prevCity2) {
-                this.showCharts = false;
-            }
-        },
-
-        setUnits(unitConfig: UnitConfig) {
-            // NOTE: This assumes exactly 2 unit choices, not > 2
-            this.tempData.city1.data = unitConfig.convert.call(this, this.tempData.city1.data);
-            if (this.tempData.city2) {
-                this.tempData.city2.data = unitConfig.convert.call(this, this.tempData.city2.data);
-            }
-        },
-
-        updateClimateDiff(city1: string, city2: string) {
-
-            this.loading = true;
-
-            this.$router.push({
-                name: 'compare', params: {
-                    city1: Utils.cityReadableFormToRouteForm(city1),
-                    city2: Utils.cityReadableFormToRouteForm(city2),
-                },
-            });
-
-            // Route params seem to be auto-bound to properties here?  So set our cities last to avoid '_'s in them.
-            this.city1 = city1;
-            this.city2 = city2;
-            this.showCharts = true;
-            this.maskTempResults = true;
-            this.maskPrecipResults = true;
-
-            this.resultsTitle = `Comparing ${this.city1} to ${this.city2}:`;
-
-            // Mimic an empty data set to clear out previous graphs
-            this.tempData = {};
-            this.precipData = {};
-
-            const updatePrecipChart: Function = () => {
-
-                const precipSuccess: Callback<PrecipDataPoint> = (responseData: Response<PrecipDataPoint>) => {
-                    console.log(JSON.stringify(responseData));
-                    // result.data.data = celsiusToFahrenheit(result.data.data);
-                    this.maskPrecipResults = false;
-                    this.precipData = responseData;
-                    this.loading = false;
-                };
-                const precipFailure: Function = () => {
-                    alert('An error occurred fetching precipitation data!');
-                    this.maskPrecipResults = false;
-                    this.loading = false;
-                };
-
-                dataSource.getPrecipitationData(precipSuccess, precipFailure, this.city1, this.city2);
-            };
-
-            const tempSuccess: Callback<TempDataPoint> = (responseData: Response<TempDataPoint>) => {
-                this.maskTempResults = false;
-                this.tempData = responseData;
-                updatePrecipChart();
-            };
-
-            const tempFailure: Function = () => {
-                alert('An error occurred fetching temperature data.  Please try again!');
-                this.maskTempResults = false;
-                updatePrecipChart();
-            };
-
-            dataSource.getTemperatureData(tempSuccess, tempFailure, this.city1, this.city2);
-        },
-    },
+    if (!route.params.city1 || city1.value !== prevCity1 || city2.value !== prevCity2) {
+        showCharts.value = false;
+    }
 };
+
+const setUnits = (unitConfig: UnitConfig) => {
+    // NOTE: This assumes exactly 2 unit choices, not > 2
+    tempData.value.city1.data = unitConfig.convert.call(this, tempData.value.city1.data);
+    if (tempData.value.city2) {
+        tempData.value.city2.data = unitConfig.convert.call(this, tempData.value.city2.data);
+    }
+};
+
+const updateClimateDiff = (newCity1: string, newCity2: string) => {
+
+    loading.value = true;
+
+    router.push({
+        name: 'compare', params: {
+            city1: Utils.cityReadableFormToRouteForm(newCity1),
+            city2: Utils.cityReadableFormToRouteForm(newCity2),
+        },
+    });
+
+    // Route params seem to be auto-bound to properties here?  So set our cities last to avoid '_'s in them.
+    city1.value = newCity1;
+    city2.value = newCity2;
+    showCharts.value = true;
+    maskTempResults.value = true;
+    maskPrecipResults.value = true;
+
+    resultsTitle.value = `Comparing ${city1.value} to ${city2.value}:`;
+
+    // Mimic an empty data set to clear out previous graphs
+    tempData.value = {};
+    precipData.value = {};
+
+    const updatePrecipChart: Function = () => {
+
+        const precipSuccess: Callback<PrecipDataPoint> = (responseData: Response<PrecipDataPoint>) => {
+            console.log(JSON.stringify(responseData));
+            // result.data.data = celsiusToFahrenheit(result.data.data);
+            maskPrecipResults.value = false;
+            precipData.value = responseData;
+            loading.value = false;
+        };
+        const precipFailure: Function = () => {
+            alert('An error occurred fetching precipitation data!');
+            maskPrecipResults.value = false;
+            loading.value = false;
+        };
+
+        dataSource.getPrecipitationData(precipSuccess, precipFailure, city1.value, city2.value);
+    };
+
+    const tempSuccess: Callback<TempDataPoint> = (responseData: Response<TempDataPoint>) => {
+        maskTempResults.value = false;
+        tempData.value = responseData;
+        updatePrecipChart();
+    };
+
+    const tempFailure: Function = () => {
+        alert('An error occurred fetching temperature data.  Please try again!');
+        maskTempResults.value = false;
+        updatePrecipChart();
+    };
+
+    dataSource.getTemperatureData(tempSuccess, tempFailure, city1.value, city2.value);
+};
+
+setCitiesFromRoute(route);
 </script>
 
 <style scoped>

@@ -157,7 +157,6 @@ export default {
         },
 
         unitToggleState() {
-            console.log(this.selectedUnits + ', ' + this.chartConfig.units[0].label);
             return this.selectedUnits === this.chartConfig.units[0];
         },
     },
@@ -574,7 +573,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .chart-card {
     margin-bottom: 2em;
 
@@ -588,11 +587,6 @@ export default {
 
     --chart-color-2: maroon;
     --chart-fill-2: lightcoral;
-}
-
-.title-icon {
-    font-size: 24px;
-    margin-right: 16px;
 }
 
 .main-chart-div {
@@ -671,7 +665,6 @@ y {
     fill-opacity: 0.3;
     stroke-width: 0;
     transition: fill-opacity var(--chart-transition-duration);
-
 
     &.area1 {
         fill: var(--chart-fill-1);

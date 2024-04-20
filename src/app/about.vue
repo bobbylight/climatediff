@@ -49,15 +49,12 @@
     </v-container>
 </template>
 
-<script lang="ts">
-export default {
+<script setup lang="ts">
+import { useRouter } from 'vue-router';
 
-    methods: {
-        goBack() {
-            this.$router.push({ name: 'compare' });
-        },
-    },
-};
+const router = useRouter();
+
+const goBack = () => router.push({ name: 'compare' });
 </script>
 
 <style scoped>

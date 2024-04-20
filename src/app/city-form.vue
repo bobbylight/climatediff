@@ -10,9 +10,8 @@
             </v-row>
         </v-container>
 
-        <form
+        <v-form
             id="cityForm"
-            role="form"
             @submit.prevent="onSubmit"
         >
             <v-container>
@@ -27,7 +26,7 @@
                             url="api/locations"
                             filter-param-name="input"
                             :query-params="locationQueryParams"
-                            icon="location_city"
+                            icon="mdi-city"
                             response-label-field="city_name"
                             response-value-field="city_name"
                             label="City 1:"
@@ -45,7 +44,7 @@
                             url="api/locations"
                             filter-param-name="input"
                             :query-params="locationQueryParams"
-                            icon="location_city"
+                            icon="mdi-city"
                             response-label-field="city_name"
                             response-value-field="city_name"
                             label="City 2:"
@@ -68,57 +67,49 @@
                     </v-col>
                 </v-row>
             </v-container>
-        </form>
+        </v-form>
     </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref } from 'vue';
 import Typeahead from './typeahead.vue';
 
-export default {
-    components: {
-        Typeahead,
+const props = defineProps({
+    initialCity1: {
+        type: String,
+        default: '',
     },
+    initialCity2: {
+        type: String,
+        default: '',
+    },
+    submitCallback: {
+        type: Function,
+        required: true,
+    },
+    loading: {
+        type: Boolean,
+        required: true,
+    },
+});
 
-    props: {
-        initialCity1: {
-            type: String,
-            required: true,
-        },
-        initialCity2: {
-            type: String,
-            required: true,
-        },
-        submitCallback: {
-            type: Function,
-            required: true,
-        },
-        loading: {
-            type: Boolean,
-            required: true,
-        },
-    },
+const city1 = ref(props.initialCity1);
+const city2 = ref(props.initialCity2);
+const locationQueryParams = {
+    limit: 10,
+};
+const formHeaderClasses = ref({
+    'form-header': true,
+    submitted: false,
+});
 
-    data() {
-        return {
-            city1: this.initialCity1,
-            city2: this.initialCity2,
-            locationQueryParams: {
-                limit: 10,
-            },
-            formHeaderClasses: {
-                'form-header': true,
-                submitted: false,
-            },
-        };
-    },
-
-    methods: {
-        onSubmit() {
-            this.formHeaderClasses.submitted = true;
-            this.submitCallback(this.city1, this.city2);
-        },
-    },
+const onSubmit = () => {
+    formHeaderClasses.value = {
+        'form-header': true,
+        submitted: false,
+    };
+    props.submitCallback(city1.value, city2.value);
 };
 </script>
 
