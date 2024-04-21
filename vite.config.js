@@ -13,6 +13,11 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            "@": path.resolve(__dirname, "./src"),
+            '@': path.resolve(__dirname, './src'),
         },
-    },})
+    },
+    define: {
+        __APP_VERSION__: JSON.stringify('0.9.0'),
+        __APP_BUILD_DATE__: JSON.stringify(new Date().toISOString()),
+    },
+})

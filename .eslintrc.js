@@ -38,5 +38,10 @@ module.exports = {
                 jest: true
             }
         }
-    ]
+    ],
+    globals: {
+        // vite.config.ts defines
+        __APP_BUILD_DATE__: true,
+        __APP_VERSION__: true,
+    }
 }

@@ -12,7 +12,7 @@
                         src="/img/263883.svg"
                     >
                     <h3>About Climatediff</h3>
-                    <h6>Version: [AIV]{version}[/AIV]<span class="about-metadata-splitter">|</span>[AIV]{date}[/AIV]</h6>
+                    <h6>Version: {{ version }}<span class="about-metadata-splitter">|</span>{{ buildDate }}</h6>
                 </div>
 
                 <div class="about-section about-content">
@@ -55,6 +55,12 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const goBack = () => router.push({ name: 'compare' });
+const buildDate = new Date(__APP_BUILD_DATE__).toLocaleDateString(undefined, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+});
+const version = __APP_VERSION__;
 </script>
 
 <style scoped>
