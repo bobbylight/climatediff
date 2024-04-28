@@ -19,7 +19,10 @@
                     wrap
                     justify="center"
                 >
-                    <v-col xs3>
+                    <v-col
+                        cols="12"
+                        md="6"
+                    >
                         <Typeahead
                             id="city1"
                             v-model="city1"
@@ -35,8 +38,8 @@
                         />
                     </v-col>
                     <v-col
-                        xs3
-                        offset-xs1
+                        cols="12"
+                        md="6"
                     >
                         <Typeahead
                             id="city2"
@@ -52,10 +55,8 @@
                         />
                     </v-col>
                 </v-row>
-            </v-container>
 
-            <v-container class="button-panel">
-                <v-row>
+                <v-row class="button-panel">
                     <v-col class="d-flex justify-center">
                         <v-btn
                             type="submit"
@@ -104,7 +105,7 @@ const formHeaderClasses = ref({
 const onSubmit = () => {
     formHeaderClasses.value = {
         'form-header': true,
-        submitted: false,
+        submitted: true,
     };
     props.submitCallback(city1.value, city2.value);
 };

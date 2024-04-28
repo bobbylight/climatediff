@@ -11,9 +11,10 @@
                 <v-icon icon="mdi-cloud" /> ClimateDiff
             </v-app-bar-title>
 
-            <v-spacer />
+            <v-spacer class="d-none d-sm-flex" />
 
             <v-btn
+                class="d-none d-sm-flex"
                 :icon="true"
                 title="View on GitHub"
                 @click="viewOnGitHub"
@@ -21,6 +22,7 @@
                 <v-icon icon="mdi-github" />
             </v-btn>
             <v-btn
+                class="d-none d-sm-flex"
                 :icon="true"
                 title="About ClimateDiff"
                 @click="showAboutDialog"
@@ -65,5 +67,10 @@ const viewOnGitHub = () => window.open('https://github.com/bobbylight/climatedif
 
 .app-title {
     cursor: pointer;
+    /* Matches "sm" and "xs" breakpoints */
+    @media (max-width: 600px) {
+        margin-inline-start: 0;
+        text-align: center;
+    }
 }
 </style>

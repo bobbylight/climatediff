@@ -4,7 +4,7 @@
             color="primary"
             dark
         >
-            <v-toolbar-title style="padding-left: 16px">
+            <v-toolbar-title class="title">
                 <v-icon
                     v-if="titleIcon"
                     class="title-icon"
@@ -583,6 +583,10 @@ export default {
 
     --chart-color-2: maroon;
     --chart-fill-2: lightcoral;
+
+    .v-toolbar-title.title {
+        margin-inline-start: 0;
+    }
 }
 
 .main-chart-div {

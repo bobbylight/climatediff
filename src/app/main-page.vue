@@ -15,9 +15,15 @@
                     :loading="loading"
                 />
             </v-col>
+        </v-row>
 
+        <v-row
+            v-if="showCharts"
+            wrap
+            justify="center"
+            class="pa-4 pa-md-0"
+        >
             <v-col
-                v-if="showCharts"
                 cols="12"
                 class="results-title"
             >
@@ -25,8 +31,8 @@
             </v-col>
 
             <v-col
-                v-if="showCharts"
-                cols="8"
+                cols="12"
+                md="8"
                 class="results"
             >
                 <Chart

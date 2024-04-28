@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container class="about-container">
         <v-row
             wrap
             justify-center
@@ -64,6 +64,12 @@ const version = __APP_VERSION__;
 </script>
 
 <style scoped>
+.about-container {
+    @media (min-width: 1920px) {
+        max-width: 1200px;
+    }
+}
+
 .about-section {
     padding-bottom: 2rem;
 }
