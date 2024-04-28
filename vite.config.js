@@ -17,7 +17,7 @@ export default defineConfig({
         },
     },
     define: {
-        __APP_VERSION__: JSON.stringify('0.9.0'),
+        __APP_VERSION__: JSON.stringify('1.0.0'),
         __APP_BUILD_DATE__: JSON.stringify(new Date().toISOString()),
     },
 })
