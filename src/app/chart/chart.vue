@@ -76,6 +76,7 @@ import D3ToolTip from '../d3-tool-tip';
 import MonthUtil from '../month-util';
 import ChartLegend from './chart-legend.vue';
 import Messages from '../messages';
+import { D3BrushEvent } from 'd3';
 
 const TRANSITION_DURATION_MILLIS: number = 300;
 const MAX_CITY_COUNT: number = 2;
@@ -187,19 +188,19 @@ export default {
     },
 
     methods: {
-        expandPoint(tipCallback: Function): d3.ValueFn<d3.BaseType, any, any> {
+        expandPoint(tipCallback: Function): any { //d3.ValueFn<d3.BaseType, any, any> {
             // function scope important so 'this' refers to the mouseover'd DOM node
-            return function (e: TempDataPoint) {
-                tipCallback(e);
+            return function (e: D3BrushEvent<any>, data: TempDataPoint) {
+                tipCallback(e, data);
                 d3.select(this).transition()
                     .attr('r', POINT_SIZE_ARMED);
             };
         },
 
-        collapsePoint(tipCallback: Function): d3.ValueFn<d3.BaseType, any, any> {
+        collapsePoint(tipCallback: Function): any { //d3.ValueFn<d3.BaseType, any, any> {
             // function scope important so 'this' refers to the mouseover'd DOM node
-            return function (e: TempDataPoint) {
-                tipCallback(e);
+            return function (e: D3BrushEvent<any>, data: TempDataPoint) {
+                tipCallback(e, data);
                 d3.select(this).transition()
                     .attr('r', POINT_SIZE_DEFAULT);
             };

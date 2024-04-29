@@ -1,4 +1,6 @@
 import * as d3 from 'd3';
+import { D3BrushEvent } from 'd3';
+import { TempDataPoint } from './climatediff';
 
 /**
  * The bounding box of a part of an SVG.
@@ -69,7 +71,6 @@ export default class D3ToolTip {
     private node: HTMLDivElement;
     private svg: SVGSVGElement;
     private point: SVGPoint;
-    private target: SVGElement | EventTarget;
 
     constructor() {
 
@@ -127,16 +128,16 @@ export default class D3ToolTip {
         return this;
     }
 
-    show(): D3ToolTip {
+    show(e: D3BrushEvent<any>, data: TempDataPoint): D3ToolTip {
+        //
+        // const args: any = Array.prototype.slice.call(arguments);
+        // if (args[args.length - 1] instanceof SVGElement) {
+        //     this.target = args.pop();
+        // }
 
-        const args: any = Array.prototype.slice.call(arguments);
-        if (args[args.length - 1] instanceof SVGElement) {
-            this.target = args.pop();
-        }
-
-        const content: string = this.content.apply(this, args);
-        const poffset: any = this.offs.apply(this, args);
-        const dir: string = this.dir.apply(this, args);
+        const content: string = this.content.call(this, data);
+        const poffset: any = this.offs.call(this); // TODO: Make this data only, not a function, for simplicity
+        const dir: string = this.dir.call(this); // TODO: Same with this
         const nodel: d3.Selection<HTMLDivElement, {}, null, undefined> = this.getNodeEl();
         const scrollTop: number = document.documentElement.scrollTop || document.body.scrollTop;
         const scrollLeft: number  = document.documentElement.scrollLeft || document.body.scrollLeft;
@@ -150,7 +151,7 @@ export default class D3ToolTip {
         while (i--) {
             nodel.classed(this.directions[i], false);
         }
-        const coords: any = this.directionCallbacks[dir].apply(this);
+        const coords: any = this.directionCallbacks[dir].call(this, e);
         nodel.classed(dir, true)
             .style('top', (coords.top +  poffset[0]) + scrollTop + 'px')
             .style('left', (coords.left + poffset[1]) + scrollLeft + 'px');
@@ -236,9 +237,9 @@ export default class D3ToolTip {
      *
      * Returns an Object {n, s, e, w, nw, sw, ne, se}
      */
-    private getScreenBBox(): BoundingBox {
+    private getScreenBBox(e: D3BrushEvent<any>): BoundingBox {
 
-        let targetel: any /*SVGElement | EventTarget*/ = this.target || (d3 as any).event.target; // TODO: Type
+        let targetel: any /*SVGElement | EventTarget*/ = (e as any).currentTarget;//this.target || (d3 as any).event.target; // TODO: Type
         while (!targetel.getScreenCTM && 'undefined' === targetel.parentNode) {
             targetel = targetel.parentNode;
         }
@@ -273,64 +274,64 @@ export default class D3ToolTip {
         return bbox;
     }
 
-    private direction_n() {
-        const bbox: BoundingBox = this.getScreenBBox();
+    private direction_n(e: D3BrushEvent<any>) {
+        const bbox: BoundingBox = this.getScreenBBox(e);
         return {
             top:  bbox.n.y - this.node.offsetHeight,
             left: bbox.n.x - this.node.offsetWidth / 2,
         };
     }
 
-    private direction_s() {
-        const bbox: BoundingBox = this.getScreenBBox();
+    private direction_s(e: D3BrushEvent<any>) {
+        const bbox: BoundingBox = this.getScreenBBox(e);
         return {
             top:  bbox.s.y,
             left: bbox.s.x - this.node.offsetWidth / 2,
         };
     }
 
-    private direction_e() {
-        const bbox: BoundingBox = this.getScreenBBox();
+    private direction_e(e: D3BrushEvent<any>) {
+        const bbox: BoundingBox = this.getScreenBBox(e);
         return {
             top:  bbox.e.y - this.node.offsetHeight / 2,
             left: bbox.e.x,
         };
     }
 
-    private direction_w() {
-        const bbox: BoundingBox = this.getScreenBBox();
+    private direction_w(e: D3BrushEvent<any>) {
+        const bbox: BoundingBox = this.getScreenBBox(e);
         return {
             top:  bbox.w.y - this.node.offsetHeight / 2,
             left: bbox.w.x - this.node.offsetWidth,
         };
     }
 
-    private direction_nw() {
-        const bbox: BoundingBox = this.getScreenBBox();
+    private direction_nw(e: D3BrushEvent<any>) {
+        const bbox: BoundingBox = this.getScreenBBox(e);
         return {
             top:  bbox.nw.y - this.node.offsetHeight,
             left: bbox.nw.x - this.node.offsetWidth,
         };
     }
 
-    private direction_ne() {
-        const bbox: BoundingBox = this.getScreenBBox();
+    private direction_ne(e: D3BrushEvent<any>) {
+        const bbox: BoundingBox = this.getScreenBBox(e);
         return {
             top:  bbox.ne.y - this.node.offsetHeight,
             left: bbox.ne.x,
         };
     }
 
-    private direction_sw() {
-        const bbox: BoundingBox = this.getScreenBBox();
+    private direction_sw(e: D3BrushEvent<any>) {
+        const bbox: BoundingBox = this.getScreenBBox(e);
         return {
             top:  bbox.sw.y,
             left: bbox.sw.x - this.node.offsetWidth,
         };
     }
 
-    private direction_se() {
-        const bbox: BoundingBox = this.getScreenBBox();
+    private direction_se(e: D3BrushEvent<any>) {
+        const bbox: BoundingBox = this.getScreenBBox(e);
         return {
             top:  bbox.se.y,
             left: bbox.e.x,

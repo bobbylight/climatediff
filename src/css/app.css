@@ -7,22 +7,8 @@ html, body {
     font-family: 'Roboto', sans-serif; /* Catch everything not in '.application', such as tool tips */
 }
 
-.application.theme--light {
-    background: #fafafa;/*#87cefa;//url(../img/cloud-2725456_1920.jpg) no-repeat center center fixed;*/
-    background-size: cover;
-
-    --chart-axis-color: #888888;
-    --chart-border-color: #ddd;
-    --chart-transition-duration: 0.3s;
-    --chart-unfocused-opacity: 0.1;
-
-    --chart-color-1: steelblue;
-    --chart-fill-1: lightsteelblue;
-
-    --chart-color-2: maroon;
-    --chart-fill-2: lightcoral;
-
-    --d3-tip-background: rgba(0, 0, 0, 0.7);
+.v-application.v-theme--light {
+    background: #fafafa;
 }
 
 h1 {
@@ -30,6 +16,7 @@ h1 {
 }
 
 .d3-tip {
+    --d3-tip-background: rgba(0, 0, 0, 0.7);
 
     line-height: 1;
     font-weight: bold;
