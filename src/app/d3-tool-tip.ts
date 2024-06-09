@@ -1,5 +1,4 @@
 import * as d3 from 'd3';
-import { D3BrushEvent } from 'd3';
 import { TempDataPoint } from './climatediff';
 
 /**
@@ -128,13 +127,7 @@ export default class D3ToolTip {
         return this;
     }
 
-    show(e: D3BrushEvent<any>, data: TempDataPoint): D3ToolTip {
-        //
-        // const args: any = Array.prototype.slice.call(arguments);
-        // if (args[args.length - 1] instanceof SVGElement) {
-        //     this.target = args.pop();
-        // }
-
+    show(e: MouseEvent, data: TempDataPoint): D3ToolTip {
         const content: string = this.content.call(this, data);
         const poffset: any = this.offs.call(this); // TODO: Make this data only, not a function, for simplicity
         const dir: string = this.dir.call(this); // TODO: Same with this
@@ -237,10 +230,11 @@ export default class D3ToolTip {
      *
      * Returns an Object {n, s, e, w, nw, sw, ne, se}
      */
-    private getScreenBBox(e: D3BrushEvent<any>): BoundingBox {
+    private getScreenBBox(e: MouseEvent): BoundingBox {
 
-        let targetel: any /*SVGElement | EventTarget*/ = (e as any).currentTarget;//this.target || (d3 as any).event.target; // TODO: Type
-        while (!targetel.getScreenCTM && 'undefined' === targetel.parentNode) {
+        let targetel: any /*EventTarget*/ = e.currentTarget;
+        while (!(targetel instanceof SVGGraphicsElement)) {
+        //while (!targetel.getScreenCTM && 'undefined' === targetel.parentNode) {
             targetel = targetel.parentNode;
         }
 
@@ -274,7 +268,7 @@ export default class D3ToolTip {
         return bbox;
     }
 
-    private direction_n(e: D3BrushEvent<any>) {
+    private direction_n(e: MouseEvent) {
         const bbox: BoundingBox = this.getScreenBBox(e);
         return {
             top:  bbox.n.y - this.node.offsetHeight,
@@ -282,7 +276,7 @@ export default class D3ToolTip {
         };
     }
 
-    private direction_s(e: D3BrushEvent<any>) {
+    private direction_s(e: MouseEvent) {
         const bbox: BoundingBox = this.getScreenBBox(e);
         return {
             top:  bbox.s.y,
@@ -290,7 +284,7 @@ export default class D3ToolTip {
         };
     }
 
-    private direction_e(e: D3BrushEvent<any>) {
+    private direction_e(e: MouseEvent) {
         const bbox: BoundingBox = this.getScreenBBox(e);
         return {
             top:  bbox.e.y - this.node.offsetHeight / 2,
@@ -298,7 +292,7 @@ export default class D3ToolTip {
         };
     }
 
-    private direction_w(e: D3BrushEvent<any>) {
+    private direction_w(e: MouseEvent) {
         const bbox: BoundingBox = this.getScreenBBox(e);
         return {
             top:  bbox.w.y - this.node.offsetHeight / 2,
@@ -306,7 +300,7 @@ export default class D3ToolTip {
         };
     }
 
-    private direction_nw(e: D3BrushEvent<any>) {
+    private direction_nw(e: MouseEvent) {
         const bbox: BoundingBox = this.getScreenBBox(e);
         return {
             top:  bbox.nw.y - this.node.offsetHeight,
@@ -314,7 +308,7 @@ export default class D3ToolTip {
         };
     }
 
-    private direction_ne(e: D3BrushEvent<any>) {
+    private direction_ne(e: MouseEvent) {
         const bbox: BoundingBox = this.getScreenBBox(e);
         return {
             top:  bbox.ne.y - this.node.offsetHeight,
@@ -322,7 +316,7 @@ export default class D3ToolTip {
         };
     }
 
-    private direction_sw(e: D3BrushEvent<any>) {
+    private direction_sw(e: MouseEvent) {
         const bbox: BoundingBox = this.getScreenBBox(e);
         return {
             top:  bbox.sw.y,
@@ -330,7 +324,7 @@ export default class D3ToolTip {
         };
     }
 
-    private direction_se(e: D3BrushEvent<any>) {
+    private direction_se(e: MouseEvent) {
         const bbox: BoundingBox = this.getScreenBBox(e);
         return {
             top:  bbox.se.y,
