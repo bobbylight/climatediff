@@ -188,7 +188,7 @@ export default {
     },
 
     methods: {
-        expandPoint(tipCallback: Function): any { //d3.ValueFn<d3.BaseType, any, any> {
+        expandPoint(tipCallback: Function): (this: SVGElement, event: any, d: TempDataPoint) => void {
             // function scope important so 'this' refers to the mouseover'd DOM node
             return function (e: D3BrushEvent<any>, data: TempDataPoint) {
                 tipCallback(e, data);
@@ -197,7 +197,7 @@ export default {
             };
         },
 
-        collapsePoint(tipCallback: Function): any { //d3.ValueFn<d3.BaseType, any, any> {
+        collapsePoint(tipCallback: Function): (this: SVGElement, event: any, d: TempDataPoint) => void {
             // function scope important so 'this' refers to the mouseover'd DOM node
             return function (e: D3BrushEvent<any>, data: TempDataPoint) {
                 tipCallback(e, data);
@@ -206,23 +206,9 @@ export default {
             };
         },
 
-        createEmptyArea(xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>) {
-            return d3.area()
-                .x((d: any, i: number) => {
-                    return xScale(i);
-                })
-                .y0((d: any) => {
-                    return yScale(0);
-                })
-                .y1((d: any) => {
-                    return yScale(0);
-                })
-                .curve(d3.curveCardinal);
-        },
-
-        appendCityArea(chart: d3.Selection<d3.BaseType, {}, null, undefined>, index: number,
-            city: string, xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>,
-            maxField: string, minField ?: string) {
+        appendCityArea(chart: d3.Selection<SVGElement, TempDataPoint, null, undefined>, index: number,
+            city: string, xScale: d3.ScalePoint<number>, yScale: d3.ScaleLinear<number, number>,
+            maxField: string, minField?: string) {
 
             const data: Response<PrecipDataPoint | TempDataPoint> = this.data;
             if (!data || !data[city] || !data[city].data || data[city].data.length === 0) {
@@ -294,8 +280,8 @@ export default {
 
         },
 
-        appendCityAreaPoints(chart: d3.Selection<d3.BaseType, {}, null, undefined>, index: number,
-            city: string, xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>,
+        appendCityAreaPoints(chart: d3.Selection<SVGElement, TempDataPoint, null, undefined>, index: number,
+            city: string, xScale: d3.ScalePoint<number>, yScale: d3.ScaleLinear<number, number>,
             maxVar: string, minVar ?: string) {
 
             const data: Response<PrecipDataPoint | TempDataPoint> = this.data;
@@ -318,8 +304,8 @@ export default {
             }
         },
 
-        createCityAreaPoints(chart: d3.Selection<d3.BaseType, {}, null, undefined>, cityData: any, index: number,
-            xScale: d3.ScalePoint<any>, yScale: d3.ScaleLinear<number, number>, yVar: string,
+        createCityAreaPoints(chart: d3.Selection<SVGElement, TempDataPoint, null, undefined>, cityData: any, index: number,
+            xScale: d3.ScalePoint<number>, yScale: d3.ScaleLinear<number, number>, yVar: string,
             tip: D3ToolTip) {
             chart.selectAll('.point')
                 .data(cityData)
@@ -335,8 +321,8 @@ export default {
                     return 3;
                 })
                 .attr('pointer-events', 'all')
-                .on('mouseover', this.expandPoint(tip.show) as any)
-                .on('mouseout', this.collapsePoint(tip.hide) as any) // TODO: Fix this and previous line's types
+                .on('mouseover', this.expandPoint(tip.show))
+                .on('mouseout', this.collapsePoint(tip.hide))
                 .style('opacity', 0)
                 .transition()
                 .duration(TRANSITION_DURATION_MILLIS)
@@ -376,12 +362,8 @@ export default {
                 .range([chartHeight, 0]);
 
             const barPad: number = 0.1;
-            // const xScale: d3.ScaleOrdinal<string, any> = d3.scaleOrdinal() // <any> to work around @types issue?
-            const xScale: d3.ScalePoint<string> = d3.scalePoint()
-            // .domain([ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ])
-            // .domain([ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ])
-                .domain(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'])
-            // .rangeRoundPoints([ 0, chartWidth ], barPad); //barPad, barOuterPad);
+            const xScale: d3.ScalePoint<number> = d3.scalePoint<number>()
+                .domain([ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ])
                 .range([0, chartWidth])
                 .padding(barPad);
 
@@ -403,7 +385,7 @@ export default {
             yScale.domain([min, max + topPadding]);
 
             // Remove previous chart, if any
-            const chartDomNode: Element = chartWrapper.querySelector('.chart');
+            const chartDomNode: SVGElement = chartWrapper.querySelector('.chart');
             d3.select(chartDomNode)
                 .select('g').remove();
 
@@ -412,13 +394,11 @@ export default {
                 return;
             }
 
-            const chart: d3.Selection<d3.BaseType, {}, null, undefined> = d3.select(chartDomNode)
+            const chart: d3.Selection<SVGElement, TempDataPoint, null, undefined> = d3.select<SVGElement, TempDataPoint>(chartDomNode)
                 .append('g')
                 .attr('transform', 'translate(' + chartMargin.left + ', ' + chartMargin.top + ')');
 
             const xAxis: d3.Axis<any> = d3.axisBottom(xScale)
-            // .scale(xScale)
-            // .orient('bottom')
                 .tickFormat((d: any, i: number) => {
                     return MonthUtil.get(i);
                 });
@@ -429,8 +409,6 @@ export default {
                 .call(xAxis);
 
             const yAxis: d3.Axis<any> = d3.axisLeft(yScale)
-            // .scale(yScale)
-            // .orient('left')
                 .tickFormat((d: any) => {
                     return d + this.chartConfig.units[0].axisSuffix;
                 }); // e.g. '"' or "deg. F"
@@ -453,7 +431,6 @@ export default {
             });
 
             this.fixViewBox(this.$el);
-            //      $scope.resultsLoaded = true;
         },
 
         createChartAndShowErrors(data: Response<any>) {
