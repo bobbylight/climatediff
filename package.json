@@ -7,20 +7,22 @@
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint --ext .ts,.vue --ignore-path .gitignore --fix src",
+    "lint": "eslint --ignore-pattern .gitignore --fix src",
     "make-aws-archive": "rm -f aws-archive.zip && cd dist && zip -r aws-archive.zip . && mv ./aws-archive.zip ../"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/bobbylight/climatediff.git"
   },
+  "type": "module",
   "devDependencies": {
+    "@eslint/js": "9.4.0",
     "@mdi/font": "7.4.47",
-    "@stylistic/eslint-plugin": "1.7.2",
+    "@stylistic/eslint-plugin": "2.1.0",
     "@types/d3": "7.4.3",
-    "@typescript-eslint/parser": "7.12.0",
+    "@typescript-eslint/parser": "8.0.0-alpha.30",
     "@vitejs/plugin-vue": "5.0.5",
-    "eslint": "8.57.0",
+    "eslint": "9.4.0",
     "eslint-plugin-vue": "9.26.0",
     "typescript": "5.4.5",
     "vite": "5.2.13",
